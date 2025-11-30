@@ -22,7 +22,30 @@
                 <input type="email" id="email" name="email" required>
             </div>
             <div class="form-group">
-                <label for="password">Password</label>
+                <div class="label-row">
+                    <label for="password">Password</label>
+                    <div class="pw-rules-wrapper">
+                        <button id="pw-rules-btn" type="button" class="pw-rules-btn" aria-expanded="false" aria-controls="pw-rules-popup" title="Password rules">ℹ</button>
+
+                        <div id="pw-rules-popup" class="pw-rules-popup" role="dialog" aria-modal="false" hidden>
+                            <div class="pw-rules-content">
+                                <button id="pw-rules-close" type="button" class="pw-rules-close" aria-label="Close">×</button>
+                                <h4>Password rules</h4>
+                                <ul id="passwordRules" class="password-rules" aria-live="polite">
+                                    <li data-rule="minLength">At least 8 characters</li>
+                                    <li data-rule="maxLength">No more than 128 characters</li>
+                                    <li data-rule="lowercase">Contains a lowercase letter</li>
+                                    <li data-rule="uppercase">Contains an uppercase letter</li>
+                                    <li data-rule="number">Contains a number</li>
+                                    <li data-rule="special">Contains a special character (e.g. !@#$%)</li>
+                                    <li data-rule="noSpaces">No spaces</li>
+                                    <li data-rule="notContainEmail">Doesn't contain your email local-part</li>
+                                    <li data-rule="notCommon">Not a common password</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <input type="password" id="password" name="password" required>
             </div>
             <div class="form-group">

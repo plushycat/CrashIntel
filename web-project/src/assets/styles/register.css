@@ -138,6 +138,8 @@ form {
 .form-group {
     margin-bottom: 1.2rem;
 }
+.form-group { position: relative; }
+.label-row { display: flex; align-items: baseline; gap: 8px; }
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
@@ -155,6 +157,9 @@ input[type="password"] {
     background: var(--glass-bg);
     color: var(--text-light);
 }
+
+/* restore original padding so browser native show-password control stays in its default spot */
+input[type="password"] { padding-right: 12px; }
 input[type="email"]:focus,
 input[type="password"]:focus {
     border-color: #007bff;
@@ -316,4 +321,103 @@ body:not(.dark-mode) button[type="submit"] {
         font-size: 15px;
         padding: 10px;
     }
+}
+
+/* Password rules popup & button (minimal, mobile-friendly) */
+.pw-rules-wrapper {
+    position: relative; /* anchor popup relative to the wrapper */
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+}
+.pw-rules-btn {
+    /* visually separate the button from the input */
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.08);
+    color: #111;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+    box-shadow: 0 2px 6px rgba(16,24,40,0.06);
+}
+.pw-rules-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 10px 24px rgba(16,24,40,0.12);
+}
+.pw-rules-btn:focus {
+    outline: 3px solid rgba(100,149,237,0.18);
+    box-shadow: 0 10px 24px rgba(16,24,40,0.12), 0 0 0 4px rgba(100,149,237,0.06);
+}
+.pw-rules-popup {
+    position: absolute;
+    top: 50%; /* vertically center to the label */
+    left: calc(100% + 10px); /* place to the right side of the label */
+    transform: translateY(-50%);
+    min-width: 260px;
+    max-width: 380px;
+    background: rgba(255,255,255,0.96);
+    color: #222;
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    z-index: 80;
+}
+.pw-rules-popup[aria-modal="true"] {
+    background: #fff;
+}
+.pw-rules-content {
+    padding: 12px 12px 14px 12px;
+}
+.pw-rules-close {
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    float: right;
+    cursor: pointer;
+    color: #666;
+}
+.pw-rules-content h4 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+}
+.password-rules { list-style: none; padding-left: 0; margin: 6px 0 0 0; font-size: 13px; }
+.password-rules li { color: #b33; margin: 6px 0; display: flex; align-items: center; }
+.password-rules li::before { content: '•'; display: inline-block; width: 1em; margin-right: 6px; }
+.password-rules li.valid { color: #0a0; }
+.password-rules li.valid::before { content: '✔'; color: #0a0; }
+.password-rules li.invalid { color: #c33; }
+
+/* Slightly darker styling for dark mode */
+.dark-mode .pw-rules-popup { background: rgba(18,18,18,0.98); color: var(--text-dark); border: 1px solid rgba(255,255,255,0.06); }
+.dark-mode .pw-rules-close { color: #ddd; }
+.dark-mode .pw-rules-btn {
+    /* keep the button white in dark mode too */
+    background: #ffffff;
+    color: #111;
+    border: 1px solid rgba(0,0,0,0.12);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.45);
+}
+.dark-mode .pw-rules-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+}
+.dark-mode .pw-rules-btn:focus {
+    outline: 3px solid rgba(100,149,237,0.12);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.6), 0 0 0 4px rgba(100,149,237,0.04);
+}
+
+@media (max-width: 720px) {
+    /* On smaller screens, stack the rules under the input for usability */
+    .label-row { flex-wrap: wrap; gap: 6px; }
+    .pw-rules-wrapper { order: 2; width: 100%; margin-top: 6px; }
+    .pw-rules-popup { position: absolute; top: calc(100% + 8px); left: 0; transform: none; min-width: auto; max-width: calc(100vw - 32px); margin: 0 16px; }
+    .pw-rules-btn { width: auto; height: auto; padding: 6px 10px; border-radius: 6px; }
 }
