@@ -1,423 +1,119 @@
-:root {
-    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    --glass-bg: rgba(255, 255, 255, 0.1);
-    --glass-border: rgba(255, 255, 255, 0.2);
-    --shadow-light: 0 8px 32px rgba(0, 0, 0, 0.1);
-    --shadow-dark: 0 8px 32px rgba(0, 0, 0, 0.3);
-    --text-light: #333;
-    --text-dark: #e2e2e2;
-    --bg-light: #f8f9fa;
-    --bg-dark: #121212;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes gradientShift {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
+/* REGISTER STYLES */
 body {
-    background: var(--primary-gradient);
-    background-size: 400% 400%;
-    animation: gradientShift 8s ease infinite;
-    min-height: 100vh;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.label-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
 }
 
-.register-container {
-    background: var(--glass-bg);
-    -webkit-backdrop-filter: blur(15px);
-    backdrop-filter: blur(15px);
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    box-shadow: var(--shadow-light);
-    padding: 2.5rem 2rem;
-    width: 100%;
-    max-width: 400px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    animation: fadeInUp 1s ease-out;
-}
-
-/* Ensure form container sits above the watermark */
-.register-container {
-    position: relative;
-    z-index: 2;
-}
-
-h1 {
-    text-align: center;
-    color: var(--text-light);
-    margin-bottom: 1.5rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-}
-
-.google-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(90deg, #fff 60%, #e3e3e3 100%);
-    border: none;
-    border-radius: 8px;
-    box-shadow: var(--shadow-light);
-    padding: 12px 0;
-    width: 100%;
-    font-size: 16px;
-    color: #444;
-    cursor: pointer;
-    margin-bottom: 1.2rem;
-    transition: var(--transition);
-}
-.google-btn:hover {
-    box-shadow: var(--shadow-dark);
-    transform: translateY(-2px);
-}
-.google-icon {
-    width: 22px;
-    height: 22px;
-    margin-right: 10px;
-}
-
-.divider {
-    width: 100%;
-    text-align: center;
-    margin: 1rem 0;
-    position: relative;
-}
-.divider span {
-    background: var(--glass-bg);
-    padding: 0 12px;
-    color: var(--text-light);
-    font-size: 14px;
-    position: relative;
-    z-index: 1;
-}
-.divider:before {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(90deg, #e3e3e3 0%, #b3b3b3 100%);
-    z-index: 0;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
-
-.form-group {
-    margin-bottom: 1.2rem;
-}
-.form-group { position: relative; }
-.label-row { display: flex; align-items: baseline; gap: 8px; }
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: var(--text-light);
-    font-weight: 500;
-}
-input[type="email"],
-input[type="password"] {
-    border: 1px solid var(--glass-border);
-    border-radius: 6px;
-    padding: 12px;
-    width: 100%;
-    font-size: 15px;
-    transition: var(--transition);
-    background: var(--glass-bg);
-    color: var(--text-light);
-}
-
-/* restore original padding so browser native show-password control stays in its default spot */
-input[type="password"] { padding-right: 12px; }
-input[type="email"]:focus,
-input[type="password"]:focus {
-    border-color: #007bff;
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
-}
-button[type="submit"] {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    background-size: 200% 200%;
-    border: none;
-    border-radius: 6px;
-    color: white;
-    padding: 12px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 0.5rem;
-    transition: var(--transition);
-    font-weight: 600;
-    animation: gradientShift 3s ease infinite;
-}
-button[type="submit"]:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-dark);
-    animation-duration: 1.5s;
-}
-
-.dark-mode button[type="submit"] {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    background-size: 200% 200%;
-    animation: gradientShift 3s ease infinite;
-}
-
-.dark-mode button[type="submit"]:hover {
-    animation-duration: 1.5s;
-}
-
-body:not(.dark-mode) button[type="submit"] {
-    background: linear-gradient(135deg, #18db60 0%, #61e35a 50%, #59e0be 100%);
-    background-size: 200% 200%;
-    animation: gradientShift 3s ease infinite;
-}
-
-.message {
-    text-align: center;
-    margin-top: 1rem;
-    color: var(--text-light);
-    font-size: 14px;
-}
-.message a {
-    color: #aef3c8;
-    text-decoration: none;
-    font-weight: 500;
-    transition: var(--transition);
-}
-
-.message a:hover {
-    color: #f1e8bb;
-    text-decoration: underline;
-    transform: translateY(-1px);
-    font-size: 1.05em;
-}
-
-.dark-mode .message a {
-    color: #4fc3f7;
-}
-
-.dark-mode .message a:hover {
-    color: #e4a9dd;
-}
-.error-message {
-    color: #d32f2f;
-    text-align: center;
-    margin-top: 1rem;
-    font-size: 15px;
-}
-
-/* Watermark branding (persistent, subtle) */
-.watermark {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 17rem;
-    font-weight: 1000;
-    font-family: 'Karla', 'Playfair Display', serif;
-    color: rgba(0, 0, 0, 0.08); /* stronger, ensures visibility under forms */
-    pointer-events: none;
-    z-index: 0;
-    -webkit-user-select: none;
-    user-select: none;
-    letter-spacing: 8px;
-}
-
-@media (max-width: 600px) {
-    .watermark {
-        /* move watermark toward the top and reduce size on small screens */
-        font-size: 2.2rem;
-        top: 8%;
-        left: 50%;
-        transform: translateX(-50%);
-        opacity: 0.65;
-    }
-}
-
-/* Hide watermark on very small narrow screens to avoid overlap */
-@media (max-width: 380px) {
-    .watermark {
-        display: none;
-    }
-}
-
-.dark-mode .watermark {
-    color: rgba(255, 255, 255, 0.08);
-}
-
-.dark-mode .register-container {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--text-dark);
-}
-
-.dark-mode .form-group label {
-    color: var(--text-dark);
-}
-
-.dark-mode input[type="email"],
-.dark-mode input[type="password"] {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--text-dark);
-}
-
-.dark-mode .message {
-    color: var(--text-dark);
-}
-
-.dark-mode h1 {
-    color: var(--text-dark);
-}
-
-.dark-mode .divider span {
-    color: var(--text-dark);
-}
-
-@media (max-width: 600px) {
-    .register-container {
-        padding: 1.2rem 0.5rem;
-        border-radius: 12px;
-        max-width: 95vw;
-    }
-    h1 {
-        font-size: 1.5rem;
-    }
-    .google-btn {
-        font-size: 15px;
-        padding: 10px 0;
-    }
-    button[type="submit"] {
-        font-size: 15px;
-        padding: 10px;
-    }
-}
-
-/* Password rules popup & button (minimal, mobile-friendly) */
+/* Password Rules Popup - Unique to Register Page */
 .pw-rules-wrapper {
-    position: relative; /* anchor popup relative to the wrapper */
-    display: inline-flex;
-    align-items: baseline;
-    gap: 6px;
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
 }
 .pw-rules-btn {
-    /* visually separate the button from the input */
-    background: #ffffff;
-    border: 1px solid rgba(0,0,0,0.08);
-    color: #111;
-    width: 20px;
-    height: 20px;
-    padding: 0;
-    border-radius: 50%;
-    font-size: 12px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, border-color 0.12s ease;
-    box-shadow: 0 2px 6px rgba(16,24,40,0.06);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: #111;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s ease;
 }
 .pw-rules-btn:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 10px 24px rgba(16,24,40,0.12);
+  transform: translateY(-2px) scale(1.02);
 }
-.pw-rules-btn:focus {
-    outline: 3px solid rgba(100,149,237,0.18);
-    box-shadow: 0 10px 24px rgba(16,24,40,0.12), 0 0 0 4px rgba(100,149,237,0.06);
-}
+
 .pw-rules-popup {
-    position: absolute;
-    top: 50%; /* vertically center to the label */
-    left: calc(100% + 10px); /* place to the right side of the label */
-    transform: translateY(-50%);
-    min-width: 260px;
-    max-width: 380px;
-    background: rgba(255,255,255,0.96);
-    color: #222;
-    border: 1px solid rgba(0,0,0,0.06);
-    border-radius: 10px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-    z-index: 80;
-}
-.pw-rules-popup[aria-modal="true"] {
-    background: #fff;
-}
-.pw-rules-content {
-    padding: 12px 12px 14px 12px;
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 10px);
+  transform: translateY(-50%);
+  min-width: 260px;
+  max-width: 380px;
+  background: rgba(255, 255, 255, 0.96);
+  color: #222;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  z-index: 80;
+  padding: 12px;
 }
 .pw-rules-close {
-    background: transparent;
-    border: none;
-    font-size: 18px;
-    float: right;
-    cursor: pointer;
-    color: #666;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  float: right;
+  cursor: pointer;
 }
-.pw-rules-content h4 {
-    margin: 0 0 8px 0;
-    font-size: 14px;
+.password-rules {
+  list-style: none;
+  padding-left: 0;
+  margin: 6px 0 0 0;
+  font-size: 13px;
 }
-.password-rules { list-style: none; padding-left: 0; margin: 6px 0 0 0; font-size: 13px; }
-.password-rules li { color: #b33; margin: 6px 0; display: flex; align-items: center; }
-.password-rules li::before { content: '•'; display: inline-block; width: 1em; margin-right: 6px; }
-.password-rules li.valid { color: #0a0; }
-.password-rules li.valid::before { content: '✔'; color: #0a0; }
-.password-rules li.invalid { color: #c33; }
+.password-rules li {
+  color: #b33;
+  margin: 6px 0;
+  display: flex;
+  align-items: center;
+}
+.password-rules li::before {
+  content: "•";
+  width: 1em;
+  margin-right: 6px;
+}
+.password-rules li.valid {
+  color: #0a0;
+}
+.password-rules li.valid::before {
+  content: "✔";
+}
 
-/* Slightly darker styling for dark mode */
-.dark-mode .pw-rules-popup { background: rgba(18,18,18,0.98); color: var(--text-dark); border: 1px solid rgba(255,255,255,0.06); }
-.dark-mode .pw-rules-close { color: #ddd; }
+.dark-mode .pw-rules-popup {
+  background: rgba(18, 18, 18, 0.98);
+  color: #e2e2e2;
+}
 .dark-mode .pw-rules-btn {
-    /* keep the button white in dark mode too */
-    background: #ffffff;
-    color: #111;
-    border: 1px solid rgba(0,0,0,0.12);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.45);
-}
-.dark-mode .pw-rules-btn:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.6);
-}
-.dark-mode .pw-rules-btn:focus {
-    outline: 3px solid rgba(100,149,237,0.12);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.6), 0 0 0 4px rgba(100,149,237,0.04);
+  background: #ffffff;
+  color: #111;
 }
 
 @media (max-width: 720px) {
-    /* On smaller screens, stack the rules under the input for usability */
-    .label-row { flex-wrap: wrap; gap: 6px; }
-    .pw-rules-wrapper { order: 2; width: 100%; margin-top: 6px; }
-    .pw-rules-popup { position: absolute; top: calc(100% + 8px); left: 0; transform: none; min-width: auto; max-width: calc(100vw - 32px); margin: 0 16px; }
-    .pw-rules-btn { width: auto; height: auto; padding: 6px 10px; border-radius: 6px; }
+  /* 1. Allow the label and button to wrap if needed */
+  .label-row {
+    flex-wrap: wrap;
+  }
+
+  .pw-rules-popup {
+    /* 'fixed' means: Ignore the button position, stick to the screen glass */
+    position: fixed;
+
+    /* Move to exact center */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    /* Size it nicely for a phone */
+    min-width: auto;
+    width: 85%;
+    max-width: 350px;
+
+    /* Ensure it sits on top of everything else */
+    z-index: 2000;
+
+    /* Optional: Dim the background so they focus on the popup */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 0 100vh rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
 }
