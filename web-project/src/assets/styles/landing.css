@@ -1,0 +1,143 @@
+.hero-content h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #fff 0%, #e0e7ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: fadeInUp 1s ease-out;
+}
+
+.hero-content p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+    animation: fadeInUp 1s ease-out 0.2s both;
+    color:white;
+}
+
+.cta-button {
+    /* base fallback style; mode-specific variants below override backgrounds and text color */
+    background: linear-gradient(135deg, rgba(200,200,200,0.08) 0%, rgba(200,200,200,0.06) 100%);
+    background-size: 200% 200%;
+    color: var(--text-light);
+    padding: 16px 32px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--shadow-light);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeInUp 1s ease-out 0.4s both;
+    position: relative;
+    overflow: visible;
+}
+
+/* Light mode: default (non-hover) button colors */
+body:not(.dark-mode) .cta-button {
+    background: linear-gradient(135deg, rgba(240, 216, 178, 0.95) 0%, rgba(243, 193, 240, 0.95) 100%);
+    color: var(--text-light);
+    border-color: rgba(255,255,255,0.45);
+}
+
+/* Dark mode: default (non-hover) button colors */
+body.dark-mode .cta-button {
+    background: linear-gradient(135deg, rgba(178,240,215,0.95) 0%, rgba(193,221,243,0.95) 100%);
+    color: var(--text-light);
+    border-color: rgba(255,255,255,0.45);
+}
+
+.cta-button:hover {
+    transform: translateY(-5px) scale(1.05);
+    border-color: rgba(255, 255, 255, 0.9);
+    color:white;
+    animation: pulseGlow 1.2s ease-in-out infinite, shimmer 2s ease-in-out infinite;
+}
+
+/* Light mode hover colors (vibrant green/cyan) */
+body:not(.dark-mode) .cta-button:hover {
+    background: linear-gradient(135deg, #7be495 0%, #23c48a 60%, #14b389 100%);
+    box-shadow: 0 18px 60px rgba(36, 194, 141, 0.25), inset 0 0 26px rgba(255, 255, 255, 0.18);
+}
+
+/* Dark mode hover colors (purple/pink) */
+body.dark-mode .cta-button:hover {
+    background: linear-gradient(135deg, #7a7bff 0%, #b364ff 50%, #ff79a9 100%);
+    box-shadow: 0 18px 60px rgba(179, 96, 238, 0.18), inset 0 0 18px rgba(255, 255, 255, 0.04);
+}
+
+.cta-button::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(90deg, rgba(79, 172, 254, 0.5), rgba(0, 242, 254, 0.5), rgba(79, 172, 254, 0.5));
+    background-size: 200% 100%;
+    border-radius: 50px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.25s, transform 0.6s;
+    transform: scale(0.98);
+}
+
+body:not(.dark-mode) .cta-button::after {
+    background: linear-gradient(90deg, rgba(168,230,207,0.55), rgba(121,219,169,0.55), rgba(84,195,138,0.55));
+}
+
+body.dark-mode .cta-button::after {
+    background: linear-gradient(90deg, rgba(180,120,255,0.45), rgba(120,100,255,0.45), rgba(255,121,169,0.45));
+}
+
+body:not(.dark-mode) .cta-button:hover::after,
+body.dark-mode .cta-button:hover::after {
+    opacity: 1;
+    transform: scale(1.02) rotate(-0.5deg);
+    animation: backgroundShift 3s linear infinite;
+}
+
+.cta-button::before {
+    display: none;
+}
+
+.feature h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-light);
+}
+
+.feature p {
+    line-height: 1.6;
+    opacity: 0.8;
+}
+
+.dark-mode .hero-content h1 {
+    background: linear-gradient(135deg, #e0e7ff 0%, #fff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.dark-mode .feature h2 {
+    color: var(--text-dark);
+}
+
+.dark-mode .feature p {
+    opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+    .hero-content p {
+        font-size: 1.1rem;
+    }
+    .cta-button {
+        padding: 14px 28px;
+        font-size: 1rem;
+    }
+}

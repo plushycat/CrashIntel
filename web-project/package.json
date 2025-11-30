@@ -1,0 +1,28 @@
+{
+  "name": "web-project",
+  "version": "1.0.0",
+  "description": "A web project featuring a responsive landing page and a login page with modern design effects.",
+  "main": "src/index.html",
+  "scripts": {
+    "start": "live-server src",
+    "build": "echo 'Build process not defined yet.'"
+  },
+  "keywords": [
+    "landing",
+    "login",
+    "responsive",
+    "gradient",
+    "web"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "live-server": "^1.2.1"
+  },
+  "devDependencies": {},
+  "homepage": "https://yourprojecthomepage.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/web-project.git"
+  }
+}
