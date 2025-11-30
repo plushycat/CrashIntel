@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         localStorage.setItem('theme', theme);
     });
 
-    registerForm.addEventListener('submit', function(event) {
+    registerForm.addEventListener('submit', async function(event) {
         event.preventDefault();
         errorMessage.textContent = '';
 
@@ -89,9 +89,29 @@ document.addEventListener('DOMContentLoaded', async function() {
             return;
         }
 
-        // Simulate registration request
-        console.log('Registering:', { email, password });
-        // Here you would typically send a request to your server for registration
+        if (!supabase) {
+            errorMessage.textContent = 'Auth client not configured.';
+            return;
+        }
+
+        try {
+            const { data, error } = await supabase.auth.signUp({ email, password });
+            if (error) {
+                errorMessage.textContent = error.message || 'Registration failed';
+                return;
+            }
+
+            // If user is signed in immediately, redirect. Otherwise, show check-your-email.
+            const { data: sessionData } = await supabase.auth.getSession();
+            if (sessionData?.session) {
+                window.location.href = '/dashboard.html';
+            } else {
+                errorMessage.textContent = 'Registration successful — please check your email to confirm your account.';
+            }
+        } catch (err) {
+            console.error(err);
+            errorMessage.textContent = 'An unexpected error occurred.';
+        }
     });
 
     // Live validation: update rule indicators as the user types
@@ -189,7 +209,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
-            options: { redirectTo: window.location.origin + '/register.html' }
+            options: { redirectTo: window.location.origin + '/dashboard.html' }
         });
         if (error) {
             console.error('OAuth error:', error.message);

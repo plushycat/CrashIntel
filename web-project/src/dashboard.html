@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CrashIntel</title>
+</head>
+<body>
+    <div id="app">Checking session…</div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+    <script src="assets/scripts/supabaseConfig.js"></script>
+    <script src="assets/scripts/supabaseClient.js"></script>
+    <script>
+        (async function(){
+            const supabase = window.supabaseClient;
+            if (!supabase) {
+                console.error('Supabase client not available on window.supabaseClient');
+                // optionally redirect to login
+            } else {
+                const { data } = await supabase.auth.getSession();
+                const session = data?.session ?? null;
+                if (!session) {
+                    // not signed in
+                    window.location.href = '/login.html';
+                    return;
+                }
+                const user = session.user;
+                // session exists
+                const email = user?.email || 'user';
+                document.getElementById('app').innerHTML = `<h1>Welcome, ${email}</h1>`;
+            }
+        })();
+    </script>
+</body>
+</html>

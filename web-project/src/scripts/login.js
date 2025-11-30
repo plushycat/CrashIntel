@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         localStorage.setItem('theme', theme);
     });
 
-    loginForm.addEventListener('submit', function(event) {
+    loginForm.addEventListener('submit', async function(event) {
         event.preventDefault();
         errorMessage.textContent = '';
 
@@ -75,9 +75,23 @@ document.addEventListener('DOMContentLoaded', async function() {
             return;
         }
 
-        // Simulate a login request
-        console.log('Logging in with:', { email, password });
-        // Here you would typically send a request to your server for authentication
+        if (!supabase) {
+            errorMessage.textContent = 'Auth client not configured.';
+            return;
+        }
+
+        try {
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) {
+                errorMessage.textContent = error.message || 'Login failed';
+                return;
+            }
+            // Successful login -> redirect to dashboard
+            window.location.href = '/dashboard.html';
+        } catch (err) {
+            console.error(err);
+            errorMessage.textContent = 'An unexpected error occurred.';
+        }
     });
 
     // Google OAuth via Supabase
@@ -91,7 +105,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
-            options: { redirectTo: window.location.origin + '/login.html' }
+            options: { redirectTo: window.location.origin + '/dashboard.html' }
         });
         if (error) {
             console.error('OAuth error:', error.message);
