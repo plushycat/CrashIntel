@@ -156,7 +156,8 @@ input[type="password"]:focus {
     box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
 }
 button[type="submit"] {
-    background: var(--accent-gradient);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-size: 200% 200%;
     border: none;
     border-radius: 6px;
     color: white;
@@ -166,11 +167,30 @@ button[type="submit"] {
     margin-top: 0.5rem;
     transition: var(--transition);
     font-weight: 600;
+    animation: gradientShift 3s ease infinite;
 }
 button[type="submit"]:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-dark);
+    animation-duration: 1.5s;
 }
+
+.dark-mode button[type="submit"] {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
+}
+
+.dark-mode button[type="submit"]:hover {
+    animation-duration: 1.5s;
+}
+
+body:not(.dark-mode) button[type="submit"] {
+    background: linear-gradient(135deg, #18db60 0%, #61e35a 50%, #59e0be 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
+}
+
 .message {
     text-align: center;
     margin-top: 1rem;
