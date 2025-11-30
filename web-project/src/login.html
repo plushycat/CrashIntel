@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - CrashIntel</title>
     <link rel="stylesheet" href="assets/styles/main.css">
     <link rel="stylesheet" href="assets/styles/login.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="watermark">CrashIntel</div>
@@ -29,7 +31,7 @@
             <p class="message">Don't have an account? <a href="register.html">Register here</a></p>
         </form>
         <div id="errorMessage" class="error-message"></div>
-    </div>
+    </div>    
     <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light mode">
         <span class="theme-icon">🌙</span>
     </button>
@@ -42,9 +44,8 @@
             <a href="index.html" class="nav-link" title="Back">⬅️</a>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
-    <script src="assets/scripts/supabaseConfig.js"></script>
-    <script src="assets/scripts/supabaseClient.js"></script>
+    <script src="scripts/supabaseConfig.js"></script>
+    <script src="scripts/supabaseClient.js"></script>
     <script src="scripts/login.js"></script>
 </body>
 </html>

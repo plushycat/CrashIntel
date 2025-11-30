@@ -4,32 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - CrashIntel</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <div id="app">Checking session…</div>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
-    <script src="assets/scripts/supabaseConfig.js"></script>
-    <script src="assets/scripts/supabaseClient.js"></script>
+    <div id="app" style="text-align: center; margin-top: 50px; font-family: sans-serif;">
+        Checking session...
+    </div>
+
+    <script src="scripts/supabaseConfig.js"></script>
+    <script src="scripts/supabaseClient.js"></script>
+
     <script>
         (async function(){
+            // Wait for the scripts to load
             const supabase = window.supabaseClient;
+            
             if (!supabase) {
-                console.error('Supabase client not available on window.supabaseClient');
-                // optionally redirect to login
+                console.error('Supabase client not available.');
+                document.getElementById('app').innerHTML = "Error: Could not load configuration.";
             } else {
+                // Check if user is logged in
                 const { data } = await supabase.auth.getSession();
                 const session = data?.session ?? null;
+
                 if (!session) {
-                    // not signed in
-                    window.location.href = '/login.html';
+                    // Not signed in? Kick them back to login
+                    window.location.href = 'login.html';
                     return;
                 }
+
+                // Signed in? Show welcome message
                 const user = session.user;
-                // session exists
-                const email = user?.email || 'user';
-                document.getElementById('app').innerHTML = `<h1>Welcome, ${email}</h1>`;
+                const email = user?.email || 'User';
+                
+                document.getElementById('app').innerHTML = `
+                    <h1>Welcome, ${email}</h1>
+                    <button onclick="logout()" style="padding: 10px 20px; cursor: pointer;">Sign Out</button>
+                `;
             }
         })();
+
+        async function logout() {
+            const supabase = window.supabaseClient;
+            await supabase.auth.signOut();
+            window.location.href = 'login.html';
+        }
     </script>
 </body>
 </html>
