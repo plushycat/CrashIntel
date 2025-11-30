@@ -63,6 +63,12 @@ body {
     animation: fadeInUp 1s ease-out;
 }
 
+/* Ensure form container sits above the watermark */
+.login-container {
+    position: relative;
+    z-index: 2;
+}
+
 h1 {
     text-align: center;
     color: var(--text-light);
@@ -222,6 +228,35 @@ body:not(.dark-mode) button[type="submit"] {
     text-align: center;
     margin-top: 1rem;
     font-size: 15px;
+}
+
+/* Watermark branding (persistent, subtle) */
+.watermark {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 17rem;
+    font-weight: 1000;
+    font-family: 'Karla', 'Playfair Display', serif;
+    color: rgba(0, 0, 0, 0.08); /* stronger, ensures visibility under forms */
+    pointer-events: none;
+    z-index: 0;
+    -webkit-user-select: none;
+    user-select: none;
+    letter-spacing: 8px;
+}
+
+@media (max-width: 600px) {
+    .watermark {
+        font-size: 2.6rem;
+        transform: translate(-50%, -50%);
+        opacity: 0.9;
+    }
+}
+
+.dark-mode .watermark {
+    color: rgba(255, 255, 255, 0.08);
 }
 
 .dark-mode .login-container {
