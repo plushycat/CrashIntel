@@ -12,12 +12,18 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Supabase
     const supabase = window.supabaseClient;
-    if (!supabase) { alert("System Error: Supabase client not found."); return; }
+    if (!supabase) { 
+        console.error("Supabase client not found.");
+        // Force show page so you can at least see the error
+        document.body.classList.add('loaded');
+        return; 
+    }
 
     // --- INIT ---
     async function initDashboard() {
         // 1. Check Session
         const { data: { session }, error } = await supabase.auth.getSession();
+        
         if (error || !session) {
             window.location.href = 'login.html';
             return;
@@ -25,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         // 2. Setup User Info
         const user = session.user;
-        welcomeEmail.textContent = user.email;
+        if(welcomeEmail) welcomeEmail.textContent = user.email;
 
         // 3. Apply Theme
         const savedTheme = user.user_metadata?.theme || localStorage.getItem('theme');
@@ -34,39 +40,51 @@ document.addEventListener('DOMContentLoaded', async function() {
             themeIcon.textContent = '☀️';
         }
 
-        // 4. Show UI
-        loadingScreen.style.display = 'none';
-        dashboardContent.style.display = 'block';
+        // 4. Show UI (The Critical Fixes)
+        // A. Hide the loading text
+        if(loadingScreen) loadingScreen.style.display = 'none';
+        
+        // B. Show the actual dashboard div
+        if(dashboardContent) dashboardContent.style.display = 'block';
+        
+        // C. TURN ON THE LIGHTS (Fixes the blank page)
+        document.body.classList.add('loaded');
 
-        // 5. Load Fake Stats (Placeholder for real data)
+        // 5. Load Fake Stats
         loadMockStats();
     }
 
     function loadMockStats() {
-        // Simulate data fetching for the "Deep Dive" section
+        // Safe check in case elements don't exist yet
+        const elAccidents = document.getElementById('stat-accidents');
+        const elFatalities = document.getElementById('stat-fatalities');
+        const elCommon = document.getElementById('stat-common');
+
         setTimeout(() => {
-            document.getElementById('stat-accidents').innerText = "1,245";
-            document.getElementById('stat-fatalities').innerText = "32";
-            document.getElementById('stat-common').innerText = "Rear-End";
+            if(elAccidents) elAccidents.innerText = "1,245";
+            if(elFatalities) elFatalities.innerText = "32";
+            if(elCommon) elCommon.innerText = "Rear-End";
         }, 800);
     }
 
     // --- EVENT LISTENERS ---
     
-    // Logout
-    logoutBtn.addEventListener('click', async () => {
-        await supabase.auth.signOut();
-        window.location.href = 'login.html';
-    });
+    if(logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+            await supabase.auth.signOut();
+            window.location.href = 'login.html';
+        });
+    }
 
-    // Theme Toggle
-    themeToggle.addEventListener('click', async () => {
-        body.classList.toggle('dark-mode');
-        const theme = body.classList.contains('dark-mode') ? 'dark' : 'light';
-        themeIcon.textContent = body.classList.contains('dark-mode') ? '☀️' : '🌙';
-        localStorage.setItem('theme', theme);
-        await supabase.auth.updateUser({ data: { theme } });
-    });
+    if(themeToggle) {
+        themeToggle.addEventListener('click', async () => {
+            body.classList.toggle('dark-mode');
+            const theme = body.classList.contains('dark-mode') ? 'dark' : 'light';
+            themeIcon.textContent = body.classList.contains('dark-mode') ? '☀️' : '🌙';
+            localStorage.setItem('theme', theme);
+            await supabase.auth.updateUser({ data: { theme } });
+        });
+    }
 
     // Start
     initDashboard();
