@@ -202,3 +202,40 @@
     border-radius: 20px;
     z-index: 1; /* Ensures it sits below the nav dropdowns if they overlap */
 }
+
+/* --- LOGOUT BUTTON OVERRIDES --- */
+/* This targets the ID to override the default .btn-logout-small class */
+
+#logout-btn {
+    /* 1. Base Structure */
+    border: none;
+    border-radius: 20px; /* Matching the pill shape of the nav */
+    color: white;
+    padding: 8px 24px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--shadow-light);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* 2. Default Gradient (Dark Mode - Purple) */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
+}
+
+/* 3. Light Mode Override (Vibrant Green) */
+body:not(.dark-mode) #logout-btn {
+    background: linear-gradient(135deg, #18db60 0%, #61e35a 50%, #59e0be 100%);
+    background-size: 200% 200%;
+    color: white;
+    box-shadow: 0 4px 15px rgba(24, 219, 96, 0.3);
+}
+
+/* 4. Hover Effects */
+#logout-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-dark);
+    opacity: 0.95;
+    animation-duration: 1.5s;
+}
