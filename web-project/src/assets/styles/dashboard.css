@@ -1,11 +1,11 @@
 /* DASHBOARD STYLES */
-/* Relies on main.css for Glass Cards, Typography, and Form Elements */
 
 /* 1. LAYOUT & GRID */
 .dashboard-container {
   max-width: 1400px;
-  margin: 20px auto;
+  margin: 0 auto;
   padding: 0 20px;
+  padding-top: 20px; /* Default spacing */
   animation: fadeInUp 0.6s ease-out;
 }
 
@@ -30,6 +30,11 @@
   border-radius: 50px;
   margin-bottom: 30px;
   box-shadow: var(--shadow-light);
+  position: relative;
+  z-index: 90; /* Below the fixed toggle buttons (z-index 1000) */
+
+  /* CRITICAL ADJUSTMENT: Make space for the fixed hamburger & theme toggle */
+  margin-right: 160px;
 }
 
 .nav-brand {
@@ -37,10 +42,13 @@
   font-weight: 800;
   letter-spacing: 1px;
 }
+
 .nav-links {
   display: flex;
   gap: 10px;
+  align-items: center;
 }
+
 .nav-item {
   padding: 8px 20px;
   border-radius: 20px;
@@ -63,10 +71,17 @@
   align-items: center;
   gap: 15px;
 }
+
+.mobile-user-profile {
+  display: none;
+}
+
 .email-text {
   font-size: 0.9rem;
   opacity: 0.8;
 }
+
+/* Logout Button */
 .btn-logout-small {
   background: rgba(239, 68, 68, 0.2);
   border: 1px solid rgba(239, 68, 68, 0.4);
@@ -81,23 +96,28 @@
   background: rgba(239, 68, 68, 0.4);
 }
 
+/* Dashboard-Specific Mobile Toggle (Distinct from Global Hamburger) */
+.nav-toggle-dashboard {
+  display: none;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
 /* 3. MAP & STATS COMPONENTS */
 .map-container {
-  /* Inherits .glass-card from main.css */
   height: 100%;
   position: relative;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.map-placeholder {
-  text-align: center;
-  opacity: 0.5;
+  z-index: 1;
 }
 
 .stats-container {
-  /* Inherits .glass-card from main.css */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -138,7 +158,7 @@
 /* 4. ACCURACY PARADOX SECTION */
 .paradox-section {
   padding: 30px;
-} /* Inherits .glass-card */
+}
 .paradox-content {
   margin-top: 20px;
 }
@@ -149,7 +169,25 @@
   max-width: 600px;
 }
 .paradox-input {
-  flex: 1; /* Inherits input styles from main.css */
+  flex: 1;
+}
+
+.btn-submit {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  padding: 0 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+body:not(.dark-mode) .btn-submit {
+  background: linear-gradient(135deg, #18db60 0%, #61e35a 50%, #59e0be 100%);
+}
+.btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .paradox-cards {
@@ -168,6 +206,11 @@
 
 /* RESPONSIVE */
 @media (max-width: 900px) {
+  .dashboard-container {
+    /* PUSH CONTENT DOWN on mobile to clear the fixed buttons */
+    padding-top: 80px;
+  }
+
   .dashboard-grid-main {
     grid-template-columns: 1fr;
     height: auto;
@@ -175,21 +218,59 @@
   .map-container {
     height: 300px;
   }
-  .nav-links {
+
+  /* Reset margin on mobile since we pushed it down */
+  .glass-nav {
+    margin-right: 0;
+    flex-wrap: wrap;
+    border-radius: 20px;
+    padding: 15px 20px;
+  }
+
+  /* Dashboard Menu Toggle */
+  .nav-toggle-dashboard {
+    display: block;
+  }
+
+  .desktop-only {
     display: none;
   }
-  .glass-nav {
+
+  .nav-links {
+    display: none;
+    width: 100%;
     flex-direction: column;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--glass-border);
     gap: 15px;
-    border-radius: 20px;
   }
+
+  .nav-links.active {
+    display: flex;
+    animation: fadeInUp 0.4s ease-out;
+  }
+
+  .nav-item {
+    width: 100%;
+    text-align: center;
+  }
+
+  .mobile-user-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+    width: 100%;
+  }
+
   .paradox-cards {
     flex-direction: column;
   }
 }
 
 /* DARK MODE OVERRIDES */
-/* Note: Most overrides handled by main.css (inputs, glass bg). We only fix nav specific items here. */
 .dark-mode .nav-item:hover {
   background: rgba(255, 255, 255, 0.05);
 }
@@ -197,45 +278,31 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* Fix Map Corners */
-#crash-map {
-    border-radius: 20px;
-    z-index: 1; /* Ensures it sits below the nav dropdowns if they overlap */
+/* Logout Button */
+#logout-btn,
+#logout-btn-mobile {
+  border: none;
+  border-radius: 20px;
+  color: white;
+  padding: 8px 24px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-light);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
 }
 
-/* --- LOGOUT BUTTON OVERRIDES --- */
-/* This targets the ID to override the default .btn-logout-small class */
-
-#logout-btn {
-    /* 1. Base Structure */
-    border: none;
-    border-radius: 20px; /* Matching the pill shape of the nav */
-    color: white;
-    padding: 8px 24px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: var(--shadow-light);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    
-    /* 2. Default Gradient (Dark Mode - Purple) */
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    background-size: 200% 200%;
-    animation: gradientShift 3s ease infinite;
+body:not(.dark-mode) #logout-btn,
+body:not(.dark-mode) #logout-btn-mobile {
+  background: linear-gradient(135deg, #18db60 0%, #61e35a 50%, #59e0be 100%);
+  box-shadow: 0 4px 15px rgba(24, 219, 96, 0.3);
 }
 
-/* 3. Light Mode Override (Vibrant Green) */
-body:not(.dark-mode) #logout-btn {
-    background: linear-gradient(135deg, #18db60 0%, #61e35a 50%, #59e0be 100%);
-    background-size: 200% 200%;
-    color: white;
-    box-shadow: 0 4px 15px rgba(24, 219, 96, 0.3);
-}
-
-/* 4. Hover Effects */
-#logout-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-dark);
-    opacity: 0.95;
-    animation-duration: 1.5s;
+#logout-btn:hover,
+#logout-btn-mobile:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-dark);
 }

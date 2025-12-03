@@ -1,12 +1,20 @@
 document.addEventListener("DOMContentLoaded", async function () {
   // Elements
   const welcomeEmail = document.getElementById("welcome-email");
+  const welcomeEmailMobile = document.getElementById("welcome-email-mobile");
   const logoutBtn = document.getElementById("logout-btn");
+  const logoutBtnMobile = document.getElementById("logout-btn-mobile");
+  
   const loadingScreen = document.getElementById("loading-screen");
   const dashboardContent = document.getElementById("dashboard-content");
 
   const themeToggle = document.getElementById("theme-toggle");
   const themeIcon = document.querySelector(".theme-icon");
+  
+  // Dashboard-Specific Mobile Menu
+  const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+  const navLinks = document.getElementById("nav-links");
+
   const body = document.body;
 
   const supabase = window.supabaseClient;
@@ -30,6 +38,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     const user = session.user;
     if (welcomeEmail) welcomeEmail.textContent = user.email;
+    if (welcomeEmailMobile) welcomeEmailMobile.textContent = user.email;
 
     const savedTheme =
       user.user_metadata?.theme || localStorage.getItem("theme");
@@ -43,22 +52,16 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.body.classList.add("loaded");
 
     loadMockStats();
-
-    // INITIALIZE MAP
     initMap();
   }
 
   // --- MAP LOGIC ---
   function initMap() {
-    // 1. Create Map (Centered on Bangalore)
     const map = L.map("crash-map").setView([12.9716, 77.5946], 12);
-
-    // 2. Add Tiles (The visual map)
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors",
     }).addTo(map);
 
-    // 3. Add an Overlay (Example: High Risk Zone)
     const riskCircle = L.circle([12.9716, 77.5946], {
       color: "red",
       fillColor: "#f03",
@@ -66,20 +69,13 @@ document.addEventListener("DOMContentLoaded", async function () {
       radius: 1500,
     }).addTo(map);
 
-    // 4. Add a Popup
     riskCircle
       .bindPopup("<b>High Risk Zone</b><br>Silk Board Junction")
       .openPopup();
 
-    // 5. Click Event (Updates the stats panel)
     map.on("click", function (e) {
-      // Update stats when map is clicked (Mock interaction)
-      document.getElementById("stat-accidents").innerText = Math.floor(
-        Math.random() * 500
-      );
-      document.getElementById("stat-fatalities").innerText = Math.floor(
-        Math.random() * 10
-      );
+      document.getElementById("stat-accidents").innerText = Math.floor(Math.random() * 500);
+      document.getElementById("stat-fatalities").innerText = Math.floor(Math.random() * 10);
     });
   }
 
@@ -96,12 +92,13 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   // --- EVENT LISTENERS ---
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", async () => {
+  async function handleLogout() {
       await supabase.auth.signOut();
       window.location.href = "login.html";
-    });
   }
+
+  if (logoutBtn) logoutBtn.addEventListener("click", handleLogout);
+  if (logoutBtnMobile) logoutBtnMobile.addEventListener("click", handleLogout);
 
   if (themeToggle) {
     themeToggle.addEventListener("click", async () => {
@@ -113,6 +110,17 @@ document.addEventListener("DOMContentLoaded", async function () {
       localStorage.setItem("theme", theme);
       await supabase.auth.updateUser({ data: { theme } });
     });
+  }
+
+  // Dashboard Mobile Menu Toggle
+  if (mobileMenuBtn && navLinks) {
+      mobileMenuBtn.addEventListener("click", () => {
+          navLinks.classList.toggle("active");
+          const span = mobileMenuBtn.querySelector("span");
+          if (span) {
+              span.textContent = navLinks.classList.contains("active") ? "✕" : "☰";
+          }
+      });
   }
 
   initDashboard();
