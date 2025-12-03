@@ -6,7 +6,7 @@
   margin: 0 auto;
   padding: 0 20px;
   padding-top: 20px;
-  /* Added substantial bottom padding for breathing room */
+  /* Increased bottom padding for spacing below Accuracy Paradox */
   padding-bottom: 120px;
   animation: fadeInUp 0.6s ease-out;
 }
@@ -35,11 +35,22 @@
   position: relative;
   z-index: 90;
 
-  /* Desktop: Space for fixed buttons */
-  margin-right: 160px;
+  /* DEFAULT STATE (Desktop): 
+     Space just for the fixed icons (Theme Toggle + Hamburger Button).
+     Allows nav to be wider normally. */
+  margin-right: 130px;
 
-  /* Smooth transition for size changes */
+  /* Smooth transition for the shrink effect */
   transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* SHRUNK STATE: Triggered by JS when Global Hamburger is Hovered */
+.glass-nav.nav-shrunk {
+  /* Pushes left significantly to make room for the expanded menu text */
+  margin-right: 320px;
+
+  /* Optional: slightly dim to focus attention on the menu */
+  opacity: 0.9;
 }
 
 .nav-brand {
@@ -100,7 +111,6 @@
   background: rgba(239, 68, 68, 0.4);
 }
 
-/* Dashboard-Specific Mobile Toggle */
 .nav-toggle-dashboard {
   display: none;
   background: transparent;
@@ -162,8 +172,7 @@
 /* 4. ACCURACY PARADOX SECTION */
 .paradox-section {
   padding: 30px;
-  /* Ensure this block pushes away from the bottom of the page container */
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 }
 
 .paradox-content {
@@ -215,7 +224,6 @@ body:not(.dark-mode) .btn-submit {
 @media (max-width: 900px) {
   .dashboard-container {
     padding-top: 80px;
-    /* Slightly less bottom padding on mobile, but still substantial */
     padding-bottom: 100px;
   }
 
@@ -234,20 +242,10 @@ body:not(.dark-mode) .btn-submit {
     padding: 15px 20px;
   }
 
-  /* --- DYNAMIC REDUCTION STATE --- */
-  /* When the menu is expanded, we shrink the navbar container's width/padding */
-  .glass-nav.nav-expanded {
-    /* Shrink width to keep it clear of the top-right fixed buttons area */
-    margin-right: 20px;
-    margin-left: 20px; /* Center it visually or keep it balanced */
-
-    /* Slightly reduced padding for a tighter look */
-    padding: 15px 15px;
-
-    /* Optional: Darken background slightly for contrast when open */
-    background: rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+  /* On mobile, usually the fixed menu overlaps, so we don't necessarily shrink 
+     the same way, or we can simply allow the overlap. Resetting margin here. */
+  .glass-nav.nav-shrunk {
+    margin-right: 0;
   }
 
   .nav-toggle-dashboard {

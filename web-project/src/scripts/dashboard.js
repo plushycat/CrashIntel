@@ -4,17 +4,20 @@ document.addEventListener("DOMContentLoaded", async function () {
   const welcomeEmailMobile = document.getElementById("welcome-email-mobile");
   const logoutBtn = document.getElementById("logout-btn");
   const logoutBtnMobile = document.getElementById("logout-btn-mobile");
-
+  
   const loadingScreen = document.getElementById("loading-screen");
   const dashboardContent = document.getElementById("dashboard-content");
 
   const themeToggle = document.getElementById("theme-toggle");
   const themeIcon = document.querySelector(".theme-icon");
-
+  
   // Dashboard-Specific Mobile Menu
   const mobileMenuBtn = document.getElementById("mobile-menu-btn");
   const navLinks = document.getElementById("nav-links");
-  const glassNav = document.querySelector(".glass-nav"); // Select the navbar container
+  const glassNav = document.querySelector(".glass-nav");
+
+  // Global Navigation (Hamburger)
+  const globalNavContainer = document.querySelector(".nav-container");
 
   const body = document.body;
 
@@ -75,12 +78,8 @@ document.addEventListener("DOMContentLoaded", async function () {
       .openPopup();
 
     map.on("click", function (e) {
-      document.getElementById("stat-accidents").innerText = Math.floor(
-        Math.random() * 500
-      );
-      document.getElementById("stat-fatalities").innerText = Math.floor(
-        Math.random() * 10
-      );
+      document.getElementById("stat-accidents").innerText = Math.floor(Math.random() * 500);
+      document.getElementById("stat-fatalities").innerText = Math.floor(Math.random() * 10);
     });
   }
 
@@ -98,8 +97,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   // --- EVENT LISTENERS ---
   async function handleLogout() {
-    await supabase.auth.signOut();
-    window.location.href = "login.html";
+      await supabase.auth.signOut();
+      window.location.href = "login.html";
   }
 
   if (logoutBtn) logoutBtn.addEventListener("click", handleLogout);
@@ -117,21 +116,29 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   }
 
-  // Dashboard Mobile Menu Toggle with Dynamic Sizing
+  // Dashboard Mobile Menu Toggle (Internal)
   if (mobileMenuBtn && navLinks) {
-    mobileMenuBtn.addEventListener("click", () => {
-      navLinks.classList.toggle("active");
+      mobileMenuBtn.addEventListener("click", () => {
+          navLinks.classList.toggle("active");
+          // Also toggle shrink on the nav itself when mobile menu is open
+          if (glassNav) glassNav.classList.toggle("nav-mobile-open");
+          
+          const span = mobileMenuBtn.querySelector("span");
+          if (span) {
+              span.textContent = navLinks.classList.contains("active") ? "✕" : "☰";
+          }
+      });
+  }
+-
+  // When the global fixed menu (top right) is hovered/active, shrink the dashboard nav
+  if (globalNavContainer && glassNav) {
+      globalNavContainer.addEventListener("mouseenter", () => {
+          glassNav.classList.add("nav-shrunk");
+      });
 
-      // Toggle the 'nav-expanded' class on the parent container
-      if (glassNav) {
-        glassNav.classList.toggle("nav-expanded");
-      }
-
-      const span = mobileMenuBtn.querySelector("span");
-      if (span) {
-        span.textContent = navLinks.classList.contains("active") ? "✕" : "☰";
-      }
-    });
+      globalNavContainer.addEventListener("mouseleave", () => {
+          glassNav.classList.remove("nav-shrunk");
+      });
   }
 
   initDashboard();
