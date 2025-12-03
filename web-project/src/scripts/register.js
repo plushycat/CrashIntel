@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   }
 
-  // --- 5. THEME LOGIC (Preserved) ---
+  // --- 5. THEME LOGIC ---
   try {
     let themeFromServer = null;
     if (supabase) {
@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         email,
         password,
         options: {
-          // Redirect to Login page after confirming email
+          // This link is where the user goes when they CLICK the email link
           emailRedirectTo: window.location.origin + "/login.html",
         },
       });
@@ -184,10 +184,15 @@ document.addEventListener("DOMContentLoaded", async function () {
 
       // Success!
       showFeedback(
-        "Registration successful!<br>Please check your email to confirm your account.",
+        "Registration successful!<br>Redirecting to login...",
         "success"
       );
       registerForm.reset();
+
+      // --- NEW: Redirect to login page after successful email registration ---
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 5000);
     } catch (err) {
       console.error(err);
       submitBtn.innerText = originalBtnText;
@@ -231,8 +236,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   passwordInput.addEventListener("input", updatePasswordIndicators);
   emailInput.addEventListener("input", updatePasswordIndicators);
-  // confirmPasswordInput listener removed from here as match logic is handled on submit for cleanliness,
-  // but you can add it back if you want live "match" text.
 
   // Popup Toggles
   function openPwPopup() {

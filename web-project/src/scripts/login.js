@@ -8,9 +8,8 @@ document.addEventListener("DOMContentLoaded", async function () {
   const themeIcon = document.querySelector(".theme-icon");
   const body = document.body;
 
-  // Supabase client exposed on window (see your supabaseClient.js)
   const supabase = window.supabaseClient;
-  // --- NEW HELPER FUNCTION ---
+
   function showFeedback(message, type) {
     // Reset classes
     errorMessage.className = "error-message visible";
@@ -22,6 +21,25 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
     errorMessage.innerHTML = message;
   }
+
+  // --- Check for existing session (Crucial for handling OAuth redirect) ---
+  if (supabase) {
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.getSession();
+
+    // If a session exists (e.g., from a successful OAuth redirect with a token in the URL hash), redirect immediately.
+    if (session && !error) {
+      // Use a very short delay to ensure the Supabase client has fully processed the token.
+      setTimeout(() => {
+        window.location.href = "/dashboard.html";
+      }, 50);
+      return; // Exit the rest of the script execution
+    }
+  }
+  // ------
+
   // Load theme from Supabase user metadata, fallback to localStorage
   try {
     let themeFromServer = null;
@@ -119,24 +137,24 @@ document.addEventListener("DOMContentLoaded", async function () {
   });
 
   // Google OAuth via Supabase
-  // Google OAuth via Supabase
-    googleBtn.addEventListener('click', async function(e) {
-        e.preventDefault();
-        if (!supabase) {
-            showFeedback('Configuration error: auth client not found.', 'error');
-            return;
-        }
+  googleBtn.addEventListener("click", async function (e) {
+    e.preventDefault();
+    if (!supabase) {
+      showFeedback("Configuration error: auth client not found.", "error");
+      return;
+    }
 
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: { redirectTo: window.location.origin + '/dashboard.html' }
-        });
-        
-        if (error) {
-            console.error('OAuth error:', error.message);
-            showFeedback('Google login failed.', 'error');
-        }
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      // MODIFIED: Redirect to login page to handle session check
+      options: { redirectTo: window.location.origin + "/login.html" },
     });
+
+    if (error) {
+      console.error("OAuth error:", error.message);
+      showFeedback("Google login failed.", "error");
+    }
+  });
 
   function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
