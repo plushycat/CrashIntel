@@ -7,114 +7,60 @@
     <link rel="stylesheet" href="assets/styles/main.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        /* CRITICAL: Inline styles ensure the page is never blank, 
+           even if the main.css file path is wrong. */
         body {
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            background-color: #121212; /* Fallback dark bg */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-family: sans-serif;
             overflow: hidden;
         }
 
-        .loader-container {
+        .loader-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             padding: 40px 60px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 25px;
-            min-width: 300px;
+            gap: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         }
 
-        /* --- Custom Orbit Animation --- */
-        .orbit-spinner {
-            position: relative;
-            width: 80px;
-            height: 80px;
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #00f2fe;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
-            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            animation: spin 1s linear infinite;
         }
 
-        /* Outer Ring */
-        .orbit-spinner::before {
-            content: '';
-            position: absolute;
-            top: -2px; left: -2px; right: -2px; bottom: -2px;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            border-top-color: #00f2fe; /* Cyan */
-            border-right-color: #4facfe; /* Blue */
-            animation: spin 1.5s linear infinite;
-            filter: drop-shadow(0 0 5px #4facfe);
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Inner Ring */
-        .orbit-spinner::after {
-            content: '';
-            position: absolute;
-            top: 10px; left: 10px; right: 10px; bottom: 10px;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            border-bottom-color: #f093fb; /* Pink */
-            border-left-color: #f5576c; /* Red */
-            animation: spin 2s linear infinite reverse;
-        }
-
-        /* Glowing Core */
-        .core {
-            width: 12px;
-            height: 12px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.6);
-            animation: pulse-core 1.5s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes pulse-core {
-            0% { transform: scale(0.8); opacity: 0.6; }
-            50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 25px 8px rgba(255, 255, 255, 0.8); }
-            100% { transform: scale(0.8); opacity: 0.6; }
-        }
-
-        /* Text Styling with Gradient Shimmer */
-        .status-text {
-            font-family: 'Karla', sans-serif;
+        .message {
+            font-weight: 500;
             font-size: 1.1rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            background: linear-gradient(90deg, #ffffff, #a5b4fc, #ffffff);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shimmerText 2s linear infinite;
+            letter-spacing: 0.5px;
+            animation: pulse 1.5s infinite ease-in-out;
         }
-
-        @keyframes shimmerText {
-            to { background-position: 200% center; }
-        }
-
-        /* Watermark Adjustment */
-        .watermark {
-            font-size: 10rem;
-            opacity: 0.05;
-        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
     </style>
 </head>
 <body>
-    <div class="watermark">CrashIntel</div>
-    
-    <div class="glass-card loader-container">
-        <div class="orbit-spinner">
-            <div class="core"></div>
-        </div>
-        <div class="status-text">Establishing Connection...</div>
+    <div class="loader-card">
+        <div class="spinner"></div>
+        <div class="message">Verifying Session...</div>
     </div>
 
     <script src="scripts/supabaseConfig.js"></script>
@@ -123,38 +69,34 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const supabase = window.supabaseClient;
             
-            // 1. Maintain Theme Consistency
-            if (localStorage.getItem('theme') === 'dark') {
-                document.body.classList.add('dark-mode');
-            }
-
             if (!supabase) {
-                console.error('Supabase client missing');
+                document.querySelector('.message').textContent = 'Error: Supabase Client Missing';
+                // Fallback redirect after 2 seconds
                 setTimeout(() => window.location.href = 'login.html', 2000);
                 return;
             }
 
-            // 2. Listen for the Auth Event (OAuth callback)
-            const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            // 1. Listen for the auth state change (standard method)
+            supabase.auth.onAuthStateChange((event, session) => {
                 if (event === 'SIGNED_IN' || session) {
-                    // Success! Smooth redirect to Dashboard
-                    setTimeout(() => window.location.href = 'dashboard.html', 800);
-                } else if (event === 'SIGNED_OUT') {
-                    window.location.href = 'login.html';
+                    window.location.href = 'dashboard.html';
                 }
             });
 
-            // 3. Fallback Safety Net (if onAuthStateChange is slow or event misses)
+            // 2. Safety Check: If we are stuck here for more than 3 seconds
             setTimeout(async () => {
                 const { data: { session } } = await supabase.auth.getSession();
                 if (session) {
                     window.location.href = 'dashboard.html';
                 } else {
-                    // Only redirect back to login if we are truly stuck
-                    console.warn('Session check timeout');
-                    window.location.href = 'login.html';
+                    // Only redirect back to login if we truly have no session
+                    // and no error hash in the URL
+                    if (!window.location.hash.includes('error')) {
+                         console.warn("No session found, redirecting to login.");
+                         window.location.href = 'login.html';
+                    }
                 }
-            }, 4000);
+            }, 3000);
         });
     </script>
 </body>
