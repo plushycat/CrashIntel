@@ -287,7 +287,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: window.location.origin + "/dashboard.html" },
+      // MODIFIED: Redirect to loading.html to handle the token exchange smoothly
+      options: { redirectTo: window.location.origin + "/loading.html" },
     });
     if (error) {
       console.error("OAuth error:", error.message);

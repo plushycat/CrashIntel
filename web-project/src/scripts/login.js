@@ -146,8 +146,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      // MODIFIED: Redirect to login page to handle session check
-      options: { redirectTo: window.location.origin + "/login.html" },
+      //Redirect to loading.html to handle the token exchange smoothly
+      options: { redirectTo: window.location.origin + "/loading.html" },
     });
 
     if (error) {
