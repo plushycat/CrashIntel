@@ -5,7 +5,9 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 20px;
-  padding-top: 20px; /* Default spacing */
+  padding-top: 20px;
+  /* Added substantial bottom padding for breathing room */
+  padding-bottom: 120px;
   animation: fadeInUp 0.6s ease-out;
 }
 
@@ -31,10 +33,13 @@
   margin-bottom: 30px;
   box-shadow: var(--shadow-light);
   position: relative;
-  z-index: 90; /* Below the fixed toggle buttons (z-index 1000) */
+  z-index: 90;
 
-  /* CRITICAL ADJUSTMENT: Make space for the fixed hamburger & theme toggle */
+  /* Desktop: Space for fixed buttons */
   margin-right: 160px;
+
+  /* Smooth transition for size changes */
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .nav-brand {
@@ -81,7 +86,6 @@
   opacity: 0.8;
 }
 
-/* Logout Button */
 .btn-logout-small {
   background: rgba(239, 68, 68, 0.2);
   border: 1px solid rgba(239, 68, 68, 0.4);
@@ -96,7 +100,7 @@
   background: rgba(239, 68, 68, 0.4);
 }
 
-/* Dashboard-Specific Mobile Toggle (Distinct from Global Hamburger) */
+/* Dashboard-Specific Mobile Toggle */
 .nav-toggle-dashboard {
   display: none;
   background: transparent;
@@ -158,7 +162,10 @@
 /* 4. ACCURACY PARADOX SECTION */
 .paradox-section {
   padding: 30px;
+  /* Ensure this block pushes away from the bottom of the page container */
+  margin-bottom: 40px;
 }
+
 .paradox-content {
   margin-top: 20px;
 }
@@ -207,8 +214,9 @@ body:not(.dark-mode) .btn-submit {
 /* RESPONSIVE */
 @media (max-width: 900px) {
   .dashboard-container {
-    /* PUSH CONTENT DOWN on mobile to clear the fixed buttons */
     padding-top: 80px;
+    /* Slightly less bottom padding on mobile, but still substantial */
+    padding-bottom: 100px;
   }
 
   .dashboard-grid-main {
@@ -219,7 +227,6 @@ body:not(.dark-mode) .btn-submit {
     height: 300px;
   }
 
-  /* Reset margin on mobile since we pushed it down */
   .glass-nav {
     margin-right: 0;
     flex-wrap: wrap;
@@ -227,7 +234,22 @@ body:not(.dark-mode) .btn-submit {
     padding: 15px 20px;
   }
 
-  /* Dashboard Menu Toggle */
+  /* --- DYNAMIC REDUCTION STATE --- */
+  /* When the menu is expanded, we shrink the navbar container's width/padding */
+  .glass-nav.nav-expanded {
+    /* Shrink width to keep it clear of the top-right fixed buttons area */
+    margin-right: 20px;
+    margin-left: 20px; /* Center it visually or keep it balanced */
+
+    /* Slightly reduced padding for a tighter look */
+    padding: 15px 15px;
+
+    /* Optional: Darken background slightly for contrast when open */
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
   .nav-toggle-dashboard {
     display: block;
   }
