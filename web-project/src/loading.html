@@ -7,8 +7,6 @@
     <link rel="stylesheet" href="assets/styles/main.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* CRITICAL: Inline styles ensure the page is never blank, 
-           even if the main.css file path is wrong. */
         body {
             margin: 0;
             padding: 0;
@@ -16,7 +14,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #121212; /* Fallback dark bg */
+            background-color: #121212; 
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             font-family: sans-serif;
@@ -57,7 +55,7 @@
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
     </style>
 </head>
-<body>
+<body class="loaded">
     <div class="loader-card">
         <div class="spinner"></div>
         <div class="message">Verifying Session...</div>
@@ -66,32 +64,32 @@
     <script src="scripts/supabaseConfig.js"></script>
     <script src="scripts/supabaseClient.js"></script>
     <script>
+        //Ensure the body is visible immediately
+        window.addEventListener('load', () => document.body.classList.add('loaded'));
+
         document.addEventListener('DOMContentLoaded', async () => {
             const supabase = window.supabaseClient;
             
             if (!supabase) {
                 document.querySelector('.message').textContent = 'Error: Supabase Client Missing';
-                // Fallback redirect after 2 seconds
                 setTimeout(() => window.location.href = 'login.html', 2000);
                 return;
             }
 
-            // 1. Listen for the auth state change (standard method)
+            // 1. Listen for the auth state change
             supabase.auth.onAuthStateChange((event, session) => {
                 if (event === 'SIGNED_IN' || session) {
                     window.location.href = 'dashboard.html';
                 }
             });
 
-            // 2. Safety Check: If we are stuck here for more than 3 seconds
+            // 2. Safety Check / Fallback
             setTimeout(async () => {
                 const { data: { session } } = await supabase.auth.getSession();
                 if (session) {
                     window.location.href = 'dashboard.html';
                 } else {
-                    // Only redirect back to login if we truly have no session
-                    // and no error hash in the URL
-                    if (!window.location.hash.includes('error')) {
+                    if (!window.location.hash.includes('error') && !window.location.hash.includes('access_token')) {
                          console.warn("No session found, redirecting to login.");
                          window.location.href = 'login.html';
                     }
