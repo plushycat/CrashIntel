@@ -6,7 +6,7 @@
   margin: 0 auto;
   padding: 0 20px;
   padding-top: 20px;
-  /* Substantial spacing at the bottom */
+  /* Deep padding at the bottom */
   padding-bottom: 150px;
   animation: fadeInUp 0.6s ease-out;
 }
@@ -40,24 +40,24 @@ body {
   position: relative;
   z-index: 90;
 
-  /* --- FIX: Default State --- */
-  /* 1. Full Width (Touch the edge) */
-  margin-right: 0px;
+  /* --- SMOOTH ANIMATION FIX --- */
 
-  /* 2. BUT push content inward so it doesn't overlap the fixed buttons */
-  padding-right: 160px;
+  /* 1. DEFAULT: End just before the fixed buttons (approx 120px) 
+     This prevents the "Sign Out" button from ever being under the icons. */
+  margin-right: 120px;
 
-  /* Smoothly animate both margin and padding */
-  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  /* 2. Keep padding constant (No chopping) */
+  padding-right: 30px;
+
+  /* 3. Optimize for performance */
+  transition: margin-right 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: margin-right;
 }
 
-/* --- FIX: Shrunk State --- */
+/* SHRUNK STATE: Triggered by JS when Global Hamburger is Hovered */
 .glass-nav.nav-shrunk {
-  /* 1. Pull back to clear the menu text */
+  /* Retract further left to clear the dropped-down menu text */
   margin-right: 320px;
-
-  /* 2. Reset padding to normal since margin now handles the clearance */
-  padding-right: 30px;
 }
 
 .nav-brand {

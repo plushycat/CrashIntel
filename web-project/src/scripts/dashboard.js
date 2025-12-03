@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", async function () {
   const navLinks = document.getElementById("nav-links");
 
   // 1. GLOBAL HAMBURGER HOVER EFFECT
-  // When the global fixed menu (top right) is hovered, shrink the dashboard nav
   if (globalNavContainer && glassNav) {
     globalNavContainer.addEventListener("mouseenter", () => {
       glassNav.classList.add("nav-shrunk");
@@ -47,7 +46,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         : "🌙";
       localStorage.setItem("theme", theme);
 
-      // Attempt to save to Supabase if client exists
       if (window.supabaseClient) {
         const { data } = await window.supabaseClient.auth.getSession();
         if (data?.session) {
@@ -69,11 +67,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   if (!supabase) {
     console.error("Supabase client not found.");
-    // Even if no backend, show the UI so interactions can be tested
     if (loadingScreen) loadingScreen.style.display = "none";
     if (dashboardContent) dashboardContent.style.display = "block";
     document.body.classList.add("loaded");
-    // Load map anyway
     initMap();
     return;
   }
@@ -93,7 +89,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (welcomeEmail) welcomeEmail.textContent = user.email;
     if (welcomeEmailMobile) welcomeEmailMobile.textContent = user.email;
 
-    // Load Theme Preference
     const savedTheme =
       user.user_metadata?.theme || localStorage.getItem("theme");
     if (savedTheme === "dark") {
@@ -110,7 +105,6 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   function initMap() {
-    // Check if map container exists
     if (!document.getElementById("crash-map")) return;
 
     const map = L.map("crash-map").setView([12.9716, 77.5946], 12);
@@ -149,7 +143,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     }, 800);
   }
 
-  // Logout Logic
   async function handleLogout() {
     await supabase.auth.signOut();
     window.location.href = "login.html";
