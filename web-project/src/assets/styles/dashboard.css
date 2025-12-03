@@ -6,12 +6,11 @@
   margin: 0 auto;
   padding: 0 20px;
   padding-top: 20px;
-  /* Huge padding at the bottom as requested */
+  /* Substantial spacing at the bottom */
   padding-bottom: 150px;
   animation: fadeInUp 0.6s ease-out;
 }
 
-/* Ensure the body can scroll enough to show the bottom padding */
 body {
   min-height: 100vh;
   padding-bottom: 50px;
@@ -19,7 +18,7 @@ body {
 
 .dashboard-grid-main {
   display: grid;
-  grid-template-columns: 2fr 1fr; /* Map is bigger */
+  grid-template-columns: 2fr 1fr;
   gap: 20px;
   margin-bottom: 30px;
   height: 500px;
@@ -41,18 +40,24 @@ body {
   position: relative;
   z-index: 90;
 
-  /* DEFAULT STATE (Desktop): FULL WIDTH */
-  /* We remove the margin so it looks 'normal' and extends to the edge */
+  /* --- FIX: Default State --- */
+  /* 1. Full Width (Touch the edge) */
   margin-right: 0px;
 
-  /* Smooth transition for the shrink effect */
-  transition: margin-right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  /* 2. BUT push content inward so it doesn't overlap the fixed buttons */
+  padding-right: 160px;
+
+  /* Smoothly animate both margin and padding */
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* SHRUNK STATE: Triggered by JS when Global Hamburger is Hovered */
+/* --- FIX: Shrunk State --- */
 .glass-nav.nav-shrunk {
-  /* Pushes left significantly to make room for the expanded menu text */
-  margin-right: 300px;
+  /* 1. Pull back to clear the menu text */
+  margin-right: 320px;
+
+  /* 2. Reset padding to normal since margin now handles the clearance */
+  padding-right: 30px;
 }
 
 .nav-brand {
@@ -174,7 +179,6 @@ body {
 /* 4. ACCURACY PARADOX SECTION */
 .paradox-section {
   padding: 30px;
-  /* Extra margin specifically for this section */
   margin-bottom: 80px;
 }
 
@@ -238,16 +242,17 @@ body:not(.dark-mode) .btn-submit {
     height: 300px;
   }
 
+  /* Reset layout for mobile */
   .glass-nav {
     margin-right: 0;
+    padding: 15px 20px; /* Standard mobile padding */
     flex-wrap: wrap;
     border-radius: 20px;
-    padding: 15px 20px;
   }
 
-  /* On mobile, reset the shrink behavior to avoid layout breaking */
   .glass-nav.nav-shrunk {
     margin-right: 0;
+    padding: 15px 20px;
   }
 
   .nav-toggle-dashboard {
@@ -300,7 +305,6 @@ body:not(.dark-mode) .btn-submit {
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* Logout Button */
 #logout-btn,
 #logout-btn-mobile {
   border: none;
