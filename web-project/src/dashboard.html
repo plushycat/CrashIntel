@@ -4,51 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - CrashIntel</title>
+    
+    <link rel="stylesheet" href="assets/styles/main.css">
+    <link rel="stylesheet" href="assets/styles/dashboard.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <div id="app" style="text-align: center; margin-top: 50px; font-family: sans-serif;">
-        Checking session...
+
+    <button id="theme-toggle" class="theme-toggle">
+        <span class="theme-icon">🌙</span>
+    </button>
+
+    <div id="loading-screen" style="height: 100vh; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+        Connecting to satellite...
+    </div>
+
+    <div id="dashboard-content" class="dashboard-container" style="display: none;">
+        
+        <header class="dashboard-header">
+            <div class="user-welcome">
+                <h2 id="welcome-name">Welcome</h2>
+                <div id="welcome-email" class="user-email">...</div>
+            </div>
+            <button id="logout-btn" class="btn btn-logout">Sign Out</button>
+        </header>
+
+        <div class="dashboard-grid">
+            
+            <section class="glass-card">
+                <h3>📍 Report Hazard</h3>
+                <form id="report-form">
+                    <div class="form-group">
+                        <label>Location Name</label>
+                        <input type="text" id="location-input" placeholder="e.g. Silk Board Junction" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Severity Level</label>
+                        <select id="severity-input">
+                            <option value="Low">Low Risk</option>
+                            <option value="Medium">Medium Risk</option>
+                            <option value="High">High Risk</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn" style="width: 100%;">Submit Report</button>
+                </form>
+            </section>
+
+            <section class="glass-card">
+                <h3>Your Reports</h3>
+                <div id="reports-list" class="report-list">
+                    </div>
+            </section>
+        </div>
     </div>
 
     <script src="scripts/supabaseConfig.js"></script>
     <script src="scripts/supabaseClient.js"></script>
-
-    <script>
-        (async function(){
-            // Wait for the scripts to load
-            const supabase = window.supabaseClient;
-            
-            if (!supabase) {
-                console.error('Supabase client not available.');
-                document.getElementById('app').innerHTML = "Error: Could not load configuration.";
-            } else {
-                // Check if user is logged in
-                const { data } = await supabase.auth.getSession();
-                const session = data?.session ?? null;
-
-                if (!session) {
-                    // Not signed in? Kick them back to login
-                    window.location.href = 'login.html';
-                    return;
-                }
-
-                // Signed in? Show welcome message
-                const user = session.user;
-                const email = user?.email || 'User';
-                
-                document.getElementById('app').innerHTML = `
-                    <h1>Welcome, ${email}</h1>
-                    <button onclick="logout()" style="padding: 10px 20px; cursor: pointer;">Sign Out</button>
-                `;
-            }
-        })();
-
-        async function logout() {
-            const supabase = window.supabaseClient;
-            await supabase.auth.signOut();
-            window.location.href = 'login.html';
-        }
-    </script>
+    <script src="scripts/dashboard.js"></script>
 </body>
 </html>
