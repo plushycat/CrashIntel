@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="assets/styles/dashboard.css">
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head>
+    </head>
 <body>
 
     <button id="theme-toggle" class="theme-toggle">
@@ -22,43 +22,65 @@
 
     <div id="dashboard-content" class="dashboard-container" style="display: none;">
         
-        <header class="dashboard-header">
-            <div class="user-welcome">
-                <h2 id="welcome-name">Welcome</h2>
-                <div id="welcome-email" class="user-email">...</div>
+        <nav class="glass-nav">
+            <div class="nav-brand">CrashIntel</div>
+            <div class="nav-links">
+                <a href="#" class="nav-item active">Predictive RA</a>
+                <a href="#" class="nav-item">Risk Exp</a>
+                <a href="#" class="nav-item">Temporal</a>
+                <a href="#" class="nav-item">Accp</a>
             </div>
-            <button id="logout-btn" class="btn btn-logout">Sign Out</button>
-        </header>
+            <div class="user-profile">
+                <span id="welcome-email" class="email-text">...</span>
+                <button id="logout-btn" class="btn-logout-small">Sign Out</button>
+            </div>
+        </nav>
 
-        <div class="dashboard-grid">
+        <div class="dashboard-grid-main">
             
-            <section class="glass-card">
-                <h3>📍 Report Hazard</h3>
-                <form id="report-form">
-                    <div class="form-group">
-                        <label>Location Name</label>
-                        <input type="text" id="location-input" placeholder="e.g. Silk Board Junction" required>
+            <div class="map-container glass-card">
+                <div class="map-placeholder">
+                    <h3>Bangalore Incident Map</h3>
+                    <p>Interactive Visualization Loading...</p>
                     </div>
-                    
-                    <div class="form-group">
-                        <label>Severity Level</label>
-                        <select id="severity-input">
-                            <option value="Low">Low Risk</option>
-                            <option value="Medium">Medium Risk</option>
-                            <option value="High">High Risk</option>
-                        </select>
-                    </div>
+            </div>
 
-                    <button type="submit" class="btn" style="width: 100%;">Submit Report</button>
-                </form>
-            </section>
-
-            <section class="glass-card">
-                <h3>Your Reports</h3>
-                <div id="reports-list" class="report-list">
-                    </div>
-            </section>
+            <div class="stats-container glass-card">
+                <h3>Deep Dive</h3>
+                <div class="stat-box">
+                    <span class="stat-label">Total Accidents</span>
+                    <span class="stat-value" id="stat-accidents">Loading...</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Total Fatalities</span>
+                    <span class="stat-value" id="stat-fatalities">Loading...</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Most Common</span>
+                    <span class="stat-value highlight" id="stat-common">Loading...</span>
+                </div>
+                
+                <p class="stat-note">*Based on Location/Click</p>
+            </div>
         </div>
+
+        <section class="paradox-section glass-card">
+            <h3>Accuracy Paradox</h3>
+            
+            <div class="paradox-content">
+                <div class="paradox-test-area">
+                    <input type="text" placeholder="Run prediction test..." class="paradox-input">
+                    <button class="btn">Test</button>
+                </div>
+
+                <div class="paradox-cards">
+                    <div class="mini-card">Precision Score</div>
+                    <div class="mini-card">Recall Score</div>
+                    <div class="mini-card">F1 Score</div>
+                </div>
+            </div>
+        </section>
+
     </div>
 
     <script src="scripts/supabaseConfig.js"></script>
