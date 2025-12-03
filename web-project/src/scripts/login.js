@@ -144,10 +144,13 @@ document.addEventListener("DOMContentLoaded", async function () {
       return;
     }
 
+    // SAFE URL CONSTRUCTION:
+    // As the current page (src/), regardless of how the server is started.
+    const redirectUrl = new URL("loading.html", window.location.href).href;
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      //Redirect to loading.html to handle the token exchange smoothly
-      options: { redirectTo: window.location.origin + "/loading.html" },
+      options: { redirectTo: redirectUrl },
     });
 
     if (error) {
