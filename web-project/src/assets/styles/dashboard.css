@@ -6,9 +6,15 @@
   margin: 0 auto;
   padding: 0 20px;
   padding-top: 20px;
-  /* Increased bottom padding for spacing below Accuracy Paradox */
-  padding-bottom: 120px;
+  /* Huge padding at the bottom as requested */
+  padding-bottom: 150px;
   animation: fadeInUp 0.6s ease-out;
+}
+
+/* Ensure the body can scroll enough to show the bottom padding */
+body {
+  min-height: 100vh;
+  padding-bottom: 50px;
 }
 
 .dashboard-grid-main {
@@ -35,22 +41,18 @@
   position: relative;
   z-index: 90;
 
-  /* DEFAULT STATE (Desktop): 
-     Space just for the fixed icons (Theme Toggle + Hamburger Button).
-     Allows nav to be wider normally. */
-  margin-right: 130px;
+  /* DEFAULT STATE (Desktop): FULL WIDTH */
+  /* We remove the margin so it looks 'normal' and extends to the edge */
+  margin-right: 0px;
 
   /* Smooth transition for the shrink effect */
-  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: margin-right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 /* SHRUNK STATE: Triggered by JS when Global Hamburger is Hovered */
 .glass-nav.nav-shrunk {
   /* Pushes left significantly to make room for the expanded menu text */
-  margin-right: 320px;
-
-  /* Optional: slightly dim to focus attention on the menu */
-  opacity: 0.9;
+  margin-right: 300px;
 }
 
 .nav-brand {
@@ -172,7 +174,8 @@
 /* 4. ACCURACY PARADOX SECTION */
 .paradox-section {
   padding: 30px;
-  margin-bottom: 20px;
+  /* Extra margin specifically for this section */
+  margin-bottom: 80px;
 }
 
 .paradox-content {
@@ -242,8 +245,7 @@ body:not(.dark-mode) .btn-submit {
     padding: 15px 20px;
   }
 
-  /* On mobile, usually the fixed menu overlaps, so we don't necessarily shrink 
-     the same way, or we can simply allow the overlap. Resetting margin here. */
+  /* On mobile, reset the shrink behavior to avoid layout breaking */
   .glass-nav.nav-shrunk {
     margin-right: 0;
   }
