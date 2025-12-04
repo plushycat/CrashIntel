@@ -5,8 +5,6 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 20px;
-  padding-top: 20px;
-  /* Deep padding at the bottom */
   padding-bottom: 150px;
   animation: fadeInUp 0.6s ease-out;
 }
@@ -16,62 +14,82 @@ body {
   padding-bottom: 50px;
 }
 
-.dashboard-grid-main {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 20px;
+/* --- HEADER WRAPPER (FLEXBOX) --- */
+.dashboard-header {
+  display: flex; /* Side-by-side layout */
+  align-items: center; /* Perfect vertical alignment */
+  justify-content: space-between; /* Spacing */
+  gap: 20px; /* Minimum gap */
+
+  position: sticky;
+  top: 20px;
+  z-index: 1000;
   margin-bottom: 30px;
-  height: 500px;
+  margin-top: 20px;
 }
 
-/* 2. NAVIGATION BAR (Unique to Dashboard) */
+/* 2. NAVIGATION BAR */
 .glass-nav {
+  /* Flex Child: Takes up available space */
+  flex-grow: 1;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   background: var(--glass-bg);
   -webkit-backdrop-filter: blur(15px);
   backdrop-filter: blur(15px);
   border: 1px solid var(--glass-border);
   padding: 15px 30px;
   border-radius: 50px;
-  margin-bottom: 30px;
   box-shadow: var(--shadow-light);
-  position: relative;
-  z-index: 90;
 
-  /* --- SMOOTH ANIMATION FIX --- */
-
-  /* 1. DEFAULT: End just before the fixed buttons (approx 120px) 
-     This prevents the "Sign Out" button from ever being under the icons. */
-  margin-right: 120px;
-
-  /* 2. Keep padding constant (No chopping) */
-  padding-right: 30px;
-
-  /* 3. Optimize for performance */
+  /* ANIMATION: We animate the margin to create the "pull back" effect */
+  margin-right: 50px;
   transition: margin-right 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   will-change: margin-right;
+
+  white-space: nowrap;
 }
 
-/* SHRUNK STATE: Triggered by JS when Global Hamburger is Hovered */
+/* SHRUNK STATE: Increases gap between Nav and Buttons */
 .glass-nav.nav-shrunk {
-  /* Retract further left to clear the dropped-down menu text */
-  margin-right: 320px;
+  margin-right: 250px; /* Pulls the navbar back to the left */
 }
 
+/* 3. CONTROLS CONTAINER */
+.top-controls {
+  /* Flex Child: Sits next to nav, does not shrink */
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Even spacing between Hamburger and Theme */
+}
+
+/* Ensure children (buttons) behave normally in flex flow */
+.top-controls .nav-container,
+.top-controls .theme-toggle {
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  margin: 0 !important;
+  flex-shrink: 0;
+}
+
+/* INTERNAL NAV LAYOUT */
 .nav-brand {
   font-size: 1.5rem;
   font-weight: 800;
   letter-spacing: 1px;
+  margin-right: 40px;
 }
-
 .nav-links {
   display: flex;
   gap: 10px;
   align-items: center;
 }
-
 .nav-item {
   padding: 8px 20px;
   border-radius: 20px;
@@ -94,11 +112,9 @@ body {
   align-items: center;
   gap: 15px;
 }
-
 .mobile-user-profile {
   display: none;
 }
-
 .email-text {
   font-size: 0.9rem;
   opacity: 0.8;
@@ -127,7 +143,16 @@ body {
   cursor: pointer;
 }
 
-/* 3. MAP & STATS COMPONENTS */
+/* 4. GRID & CARDS */
+.dashboard-grid-main {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  margin-bottom: 30px;
+  min-height: 500px;
+  align-items: stretch;
+}
+
 .map-container {
   height: 100%;
   position: relative;
@@ -136,6 +161,7 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 1;
+  transition: opacity 0.36s ease, transform 0.36s ease;
 }
 
 .stats-container {
@@ -176,7 +202,19 @@ body {
   margin-top: auto;
 }
 
-/* 4. ACCURACY PARADOX SECTION */
+/* Smooth entrance */
+.dashboard-container .glass-card {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.42s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.42s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+body.loaded .dashboard-container .glass-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 5. ACCURACY PARADOX SECTION */
 .paradox-section {
   padding: 30px;
   margin-bottom: 80px;
@@ -230,8 +268,31 @@ body:not(.dark-mode) .btn-submit {
 /* RESPONSIVE */
 @media (max-width: 900px) {
   .dashboard-container {
-    padding-top: 80px;
+    padding-top: 20px;
     padding-bottom: 100px;
+  }
+
+  /* Stack the header contents properly on mobile */
+  .dashboard-header {
+    flex-wrap: wrap;
+  }
+
+  .glass-nav {
+    order: 2;
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    padding: 15px 20px;
+  }
+
+  /* Disable margin animation on mobile */
+  .glass-nav.nav-shrunk {
+    margin-right: 0;
+  }
+
+  .top-controls {
+    margin-left: auto; /* Push to right */
   }
 
   .dashboard-grid-main {
@@ -242,27 +303,12 @@ body:not(.dark-mode) .btn-submit {
     height: 300px;
   }
 
-  /* Reset layout for mobile */
-  .glass-nav {
-    margin-right: 0;
-    padding: 15px 20px; /* Standard mobile padding */
-    flex-wrap: wrap;
-    border-radius: 20px;
-  }
-
-  .glass-nav.nav-shrunk {
-    margin-right: 0;
-    padding: 15px 20px;
-  }
-
   .nav-toggle-dashboard {
     display: block;
   }
-
   .desktop-only {
     display: none;
   }
-
   .nav-links {
     display: none;
     width: 100%;
@@ -272,17 +318,14 @@ body:not(.dark-mode) .btn-submit {
     border-top: 1px solid var(--glass-border);
     gap: 15px;
   }
-
   .nav-links.active {
     display: flex;
     animation: fadeInUp 0.4s ease-out;
   }
-
   .nav-item {
     width: 100%;
     text-align: center;
   }
-
   .mobile-user-profile {
     display: flex;
     flex-direction: column;
@@ -291,7 +334,6 @@ body:not(.dark-mode) .btn-submit {
     margin-top: 15px;
     width: 100%;
   }
-
   .paradox-cards {
     flex-direction: column;
   }
@@ -304,7 +346,6 @@ body:not(.dark-mode) .btn-submit {
 .dark-mode .active {
   background: rgba(255, 255, 255, 0.1);
 }
-
 #logout-btn,
 #logout-btn-mobile {
   border: none;
@@ -320,13 +361,11 @@ body:not(.dark-mode) .btn-submit {
   background-size: 200% 200%;
   animation: gradientShift 3s ease infinite;
 }
-
 body:not(.dark-mode) #logout-btn,
 body:not(.dark-mode) #logout-btn-mobile {
   background: linear-gradient(135deg, #18db60 0%, #61e35a 50%, #59e0be 100%);
   box-shadow: 0 4px 15px rgba(24, 219, 96, 0.3);
 }
-
 #logout-btn:hover,
 #logout-btn-mobile:hover {
   transform: translateY(-2px);

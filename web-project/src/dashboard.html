@@ -22,21 +22,6 @@
 </head>
 
 <body>
-
-    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
-        <span class="theme-icon">🌙</span>
-    </button>
-
-    <div class="nav-container">
-        <button id="nav-toggle" class="nav-toggle" aria-label="Navigation menu">
-            <span class="nav-icon">☰</span>
-        </button>
-        <div class="nav-menu">
-            <a href="index.html" class="nav-link" title="Home">🏠</a>
-            <a href="landing.html" class="nav-link" title="Landing">🚀</a>
-        </div>
-    </div>
-
     <div id="loading-screen"
         style="height: 100vh; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
         Connecting to satellite...
@@ -44,33 +29,54 @@
 
     <div id="dashboard-content" class="dashboard-container" style="display: none;">
 
-        <nav class="glass-nav">
-            <div class="nav-brand">CrashIntel</div>
-            
-            <button id="mobile-menu-btn" class="nav-toggle-dashboard" aria-label="Toggle Dashboard Menu">
-                <span class="nav-icon">☰</span>
-            </button>
+        <div class="dashboard-header">
 
-            <div class="nav-links" id="nav-links">
-                <a href="#" class="nav-item active">Predictive RA</a>
-                <a href="#" class="nav-item">Risk Exp</a>
-                <a href="#" class="nav-item">Temporal</a>
-                <a href="#" class="nav-item">Accp</a>
-                
-                <div class="mobile-user-profile">
-                    <span id="welcome-email-mobile" class="email-text">...</span>
-                    <button id="logout-btn-mobile" class="btn-logout-small">Sign Out</button>
+            <nav class="glass-nav">
+                <div class="nav-brand">CrashIntel</div>
+
+                <button id="mobile-menu-btn" class="nav-toggle-dashboard" aria-label="Toggle Dashboard Menu">
+                    <span class="nav-icon">☰</span>
+                </button>
+
+                <div class="nav-links" id="nav-links">
+                    <a href="#" class="nav-item active">Predictive RA</a>
+                    <a href="#" class="nav-item">Risk Exp</a>
+                    <a href="#" class="nav-item">Temporal</a>
+                    <a href="#" class="nav-item">Accp</a>
+
+                    <div class="mobile-user-profile">
+                        <span id="welcome-email-mobile" class="email-text">...</span>
+                        <button id="logout-btn-mobile" class="btn-logout-small">Sign Out</button>
+                    </div>
                 </div>
+
+                <div class="user-profile desktop-only">
+                    <span id="welcome-email" class="email-text">...</span>
+                    <button id="logout-btn" class="btn-logout-small">Sign Out</button>
+                </div>
+            </nav>
+
+            <div class="top-controls">
+
+                <div class="nav-container">
+                    <button id="nav-toggle" class="nav-toggle" aria-label="Navigation menu">
+                        <span class="nav-icon">☰</span>
+                    </button>
+                    <div class="nav-menu">
+                        <a href="index.html" class="nav-link" title="Home">🏠</a>
+                        <button onclick="handleBackButton()" class="nav-link" title="Go Back"
+                            style="border:none; cursor:pointer; font-size:1.2rem;">⬅️</button>
+                    </div>
+                </div>
+
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
             </div>
 
-            <div class="user-profile desktop-only">
-                <span id="welcome-email" class="email-text">...</span>
-                <button id="logout-btn" class="btn-logout-small">Sign Out</button>
-            </div>
-        </nav>
+        </div>
 
         <div class="dashboard-grid-main">
-
             <div class="map-container glass-card" style="padding: 0;">
                 <div id="crash-map" style="width: 100%; height: 100%; border-radius: 20px;"></div>
             </div>

@@ -1,20 +1,29 @@
-document.addEventListener("DOMContentLoaded", async function () {
-  // --- UI INTERACTION LOGIC (Runs immediately) ---
+// --- SMART NAVIGATION LOGIC ---
+window.handleBackButton = function () {
+  const referrer = document.referrer;
+  if (
+    referrer &&
+    (referrer.includes("login.html") || referrer.includes("register.html"))
+  ) {
+    window.location.href = "index.html";
+  } else if (!referrer) {
+    window.location.href = "index.html";
+  } else {
+    window.history.back();
+  }
+};
 
-  // Elements
+document.addEventListener("DOMContentLoaded", async function () {
   const themeToggle = document.getElementById("theme-toggle");
-  const themeIcon = document.querySelector(".theme-icon");
   const body = document.body;
 
-  // Elements for Navbar Interaction
   const globalNavContainer = document.querySelector(".nav-container");
   const glassNav = document.querySelector(".glass-nav");
 
-  // Elements for Dashboard Mobile Menu
   const mobileMenuBtn = document.getElementById("mobile-menu-btn");
   const navLinks = document.getElementById("nav-links");
 
-  // 1. GLOBAL HAMBURGER HOVER EFFECT
+  // 1. HOVER EFFECT
   if (globalNavContainer && glassNav) {
     globalNavContainer.addEventListener("mouseenter", () => {
       glassNav.classList.add("nav-shrunk");
@@ -25,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   }
 
-  // 2. DASHBOARD MOBILE MENU TOGGLE
+  // 2. MOBILE MENU
   if (mobileMenuBtn && navLinks) {
     mobileMenuBtn.addEventListener("click", () => {
       navLinks.classList.toggle("active");
@@ -41,9 +50,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     themeToggle.addEventListener("click", async () => {
       body.classList.toggle("dark-mode");
       const theme = body.classList.contains("dark-mode") ? "dark" : "light";
-      themeIcon.textContent = body.classList.contains("dark-mode")
-        ? "☀️"
-        : "🌙";
+      const icon = themeToggle.querySelector(".theme-icon");
+      if (icon) icon.textContent = theme === "dark" ? "☀️" : "🌙";
+
       localStorage.setItem("theme", theme);
 
       if (window.supabaseClient) {
@@ -55,7 +64,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   }
 
-  // --- SUPABASE & DATA LOGIC ---
+  // --- SUPABASE & DATA ---
   const welcomeEmail = document.getElementById("welcome-email");
   const welcomeEmailMobile = document.getElementById("welcome-email-mobile");
   const logoutBtn = document.getElementById("logout-btn");
@@ -91,9 +100,11 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     const savedTheme =
       user.user_metadata?.theme || localStorage.getItem("theme");
+    const themeIcon = themeToggle?.querySelector(".theme-icon");
+
     if (savedTheme === "dark") {
       body.classList.add("dark-mode");
-      themeIcon.textContent = "☀️";
+      if (themeIcon) themeIcon.textContent = "☀️";
     }
 
     if (loadingScreen) loadingScreen.style.display = "none";
