@@ -53,9 +53,9 @@ body {
   white-space: nowrap;
 }
 
-/* SHRUNK STATE: Increases gap between Nav and Buttons */
+/* SHRUNK STATE: Increases gap between Nav and Buttons (Adjusted for 5 tabs) */
 .glass-nav.nav-shrunk {
-  margin-right: 250px; /* Pulls the navbar back to the left */
+  margin-right: 180px; /* Reduced from 250px to accommodate wider nav */
 }
 
 /* 3. CONTROLS CONTAINER */
@@ -87,11 +87,11 @@ body {
 }
 .nav-links {
   display: flex;
-  gap: 10px;
+  gap: 8px; /* Reduced from 10px to fit 5 tabs better */
   align-items: center;
 }
 .nav-item {
-  padding: 8px 20px;
+  padding: 8px 16px; /* Reduced from 20px to 16px for better fit */
   border-radius: 20px;
   font-size: 0.95rem;
   font-weight: 500;
@@ -236,12 +236,15 @@ body.loaded .dashboard-container .glass-card {
 .btn-submit {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   color: white;
-  padding: 0 24px;
+  padding: 12px 28px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-size: 0.95rem;
+  width: fit-content;
+  align-self: flex-start;
 }
 body:not(.dark-mode) .btn-submit {
   background: linear-gradient(135deg, #18db60 0%, #61e35a 50%, #59e0be 100%);
@@ -370,4 +373,95 @@ body:not(.dark-mode) #logout-btn-mobile {
 #logout-btn-mobile:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-dark);
+}
+
+/* GLASS TABLES & REPORT STYLES */
+.glass-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  color: var(--text-light); /* Darker text for light mode */
+  font-size: 0.95rem;
+}
+.glass-table th, 
+.glass-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid rgba(0,0,0,0.1); /* Darker border for light mode */
+}
+.glass-table th {
+  background: rgba(0, 0, 0, 0.05); /* Darker header for light mode */
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  color: #444; /* Explicit dark text for headers */
+}
+.glass-table tr:hover {
+  background: rgba(0, 0, 0, 0.03); /* Subtle dark hover for light mode */
+}
+
+/* Dark Mode Overrides */
+.dark-mode .glass-table {
+  color: var(--text-dark);
+}
+.dark-mode .glass-table th, 
+.dark-mode .glass-table td {
+  border-bottom: 1px solid var(--glass-border);
+}
+.dark-mode .glass-table th {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-dark);
+}
+.dark-mode .glass-table tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.report-subtitle {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    font-weight: 400;
+    margin-top: -10px;
+    color: #1f2937; /* Much darker for light mode */
+    opacity: 0.85;
+}
+.dark-mode .report-subtitle {
+    color: var(--text-dark);
+    opacity: 0.7;
+}
+
+.report-section-title {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    color: #1e40af; /* Darker blue for better light mode contrast */
+    border-left: 4px solid #1e40af;
+    padding-left: 10px;
+    font-weight: 600;
+}
+.dark-mode .report-section-title {
+    color: #4facfe;
+    border-left-color: #4facfe;
+}
+
+/* Report Body Text */
+.report-content p,
+.report-content li {
+    color: #374151; /* Dark gray for light mode */
+    line-height: 1.7;
+}
+.dark-mode .report-content p,
+.dark-mode .report-content li {
+    color: var(--text-dark);
+}
+.report-content strong {
+    color: #111827; /* Very dark for emphasis in light mode */
+}
+.dark-mode .report-content strong {
+    color: #fff;
+}
+
+/* Dark mode h1 override */
+.dark-mode h1 {
+    color: #ffffff !important;
 }

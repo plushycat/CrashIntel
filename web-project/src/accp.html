@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accuracy Paradox - CrashIntel</title>
+
+    <link rel="stylesheet" href="assets/styles/main.css">
+    <link rel="stylesheet" href="assets/styles/dashboard.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+    <link rel="manifest" href="assets/icons/site.webmanifest">
+    <link rel="shortcut icon" href="assets/icons/favicon.ico">
+    <meta name="theme-color" content="#ffffff">
+</head>
+
+<body>
+    <div id="loading-screen"
+        style="height: 100vh; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+        Loading Model Analysis...
+    </div>
+
+    <div id="dashboard-content" class="dashboard-container" style="display: none;">
+
+        <div class="dashboard-header">
+
+            <nav class="glass-nav">
+                <div class="nav-brand">CrashIntel</div>
+
+                <button id="mobile-menu-btn" class="nav-toggle-dashboard" aria-label="Toggle Dashboard Menu">
+                    <span class="nav-icon">☰</span>
+                </button>
+
+                <div class="nav-links" id="nav-links">
+                    <a href="dashboard.html" class="nav-item">Home</a>
+                    <a href="predictive-ra.html" class="nav-item">Predictive RA</a>
+                    <a href="risk-exp.html" class="nav-item">Risk Exp</a>
+                    <a href="temporal.html" class="nav-item">Temporal</a>
+                    <a href="accp.html" class="nav-item active">Accp</a>
+
+                    <div class="mobile-user-profile">
+                        <span id="welcome-email-mobile" class="email-text">...</span>
+                        <button id="logout-btn-mobile" class="btn-logout-small">Sign Out</button>
+                    </div>
+                </div>
+
+                <div class="user-profile desktop-only">
+                    <span id="welcome-email" class="email-text">...</span>
+                    <button id="logout-btn" class="btn-logout-small">Sign Out</button>
+                </div>
+            </nav>
+
+            <div class="top-controls">
+
+                <div class="nav-container">
+                    <button id="nav-toggle" class="nav-toggle" aria-label="Navigation menu">
+                        <span class="nav-icon">☰</span>
+                    </button>
+                    <div class="nav-menu">
+                        <a href="index.html" class="nav-link" title="Home">🏠</a>
+                        <button onclick="handleBackButton()" class="nav-link" title="Go Back"
+                            style="border:none; cursor:pointer; font-size:1.2rem;">⬅️</button>
+                    </div>
+                </div>
+
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Hero Section -->
+        <section class="glass-card" style="margin-bottom: 30px; text-align: center;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 15px;">Accuracy Paradox</h1>
+            <p style="font-size: 1.1rem; opacity: 0.8; max-width: 800px; margin: 0 auto;">
+                Deep dive into model performance metrics beyond simple accuracy. Understanding precision, recall, F1-score, and the trade-offs in predictive modeling.
+            </p>
+        </section>
+
+        <!-- Model Testing Section -->
+        <section class="glass-card" style="margin-bottom: 30px;">
+            <h3 style="margin-bottom: 20px;">Model Performance Testing</h3>
+            <div class="paradox-content">
+                <div class="paradox-test-area">
+                    <input type="text" placeholder="Enter test dataset or location..." class="paradox-input">
+                    <button class="btn-submit">Run Test</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Performance Metrics Grid -->
+        <div class="dashboard-grid-main">
+            <!-- Confusion Matrix -->
+            <div class="glass-card">
+                <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;">Confusion Matrix</h3>
+                <div style="min-height: 350px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; padding: 40px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: 15px;">📈</div>
+                        <h4>Confusion Matrix</h4>
+                        <p style="opacity: 0.7; margin-top: 10px;">
+                            True Positives vs False Positives<br>
+                            True Negatives vs False Negatives
+                        </p>
+                        <p style="opacity: 0.5; margin-top: 15px; font-size: 0.9rem;">Run a test to visualize results</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metrics Cards -->
+            <div class="glass-card" style="display: flex; flex-direction: column; gap: 20px;">
+                <h3 style="border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;">Performance Metrics</h3>
+                
+                <div class="stat-box">
+                    <span class="stat-label">Accuracy</span>
+                    <span class="stat-value">--%</span>
+                </div>
+
+                <div class="stat-box">
+                    <span class="stat-label">Precision</span>
+                    <span class="stat-value highlight">--%</span>
+                </div>
+
+                <div class="stat-box">
+                    <span class="stat-label">Recall</span>
+                    <span class="stat-value">--%</span>
+                </div>
+
+                <div class="stat-box">
+                    <span class="stat-label">F1 Score</span>
+                    <span class="stat-value">--%</span>
+                </div>
+
+                <p class="stat-note">*Run performance test to see metrics</p>
+            </div>
+        </div>
+
+        <!-- Metric Explanations -->
+        <section class="glass-card" style="margin-top: 30px; margin-bottom: 80px;">
+            <h3 style="margin-bottom: 20px;">Understanding the Metrics</h3>
+            <div class="paradox-cards">
+                <div class="mini-card" style="text-align: left; padding: 25px;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #4facfe; margin-bottom: 10px;">Precision</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8; line-height: 1.6;">
+                        Of all predicted accidents, how many actually occurred? 
+                        <br><br>
+                        <strong>High precision</strong> = Few false alarms
+                    </div>
+                </div>
+                <div class="mini-card" style="text-align: left; padding: 25px;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #10b981; margin-bottom: 10px;">Recall</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8; line-height: 1.6;">
+                        Of all actual accidents, how many were predicted?
+                        <br><br>
+                        <strong>High recall</strong> = Few missed accidents
+                    </div>
+                </div>
+                <div class="mini-card" style="text-align: left; padding: 25px;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #f59e0b; margin-bottom: 10px;">F1 Score</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8; line-height: 1.6;">
+                        Harmonic mean of precision and recall.
+                        <br><br>
+                        <strong>Balanced metric</strong> for overall performance
+                    </div>
+                </div>
+                <div class="mini-card" style="text-align: left; padding: 25px;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #8b5cf6; margin-bottom: 10px;">The Paradox</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8; line-height: 1.6;">
+                        A model can have high accuracy but poor predictive power.
+                        <br><br>
+                        <strong>Look beyond accuracy</strong> for true performance
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="scripts/supabaseConfig.js"></script>
+    <script src="scripts/supabaseClient.js"></script>
+    <script src="scripts/dashboard.js"></script>
+</body>
+
+</html>

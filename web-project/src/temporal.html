@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temporal Analysis - CrashIntel</title>
+
+    <link rel="stylesheet" href="assets/styles/main.css">
+    <link rel="stylesheet" href="assets/styles/dashboard.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+    <link rel="manifest" href="assets/icons/site.webmanifest">
+    <link rel="shortcut icon" href="assets/icons/favicon.ico">
+    <meta name="theme-color" content="#ffffff">
+</head>
+
+<body>
+    <div id="loading-screen"
+        style="height: 100vh; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+        Loading Temporal Analysis...
+    </div>
+
+    <div id="dashboard-content" class="dashboard-container" style="display: none;">
+
+        <div class="dashboard-header">
+
+            <nav class="glass-nav">
+                <div class="nav-brand">CrashIntel</div>
+
+                <button id="mobile-menu-btn" class="nav-toggle-dashboard" aria-label="Toggle Dashboard Menu">
+                    <span class="nav-icon">☰</span>
+                </button>
+
+                <div class="nav-links" id="nav-links">
+                    <a href="dashboard.html" class="nav-item">Home</a>
+                    <a href="predictive-ra.html" class="nav-item">Predictive RA</a>
+                    <a href="risk-exp.html" class="nav-item">Risk Exp</a>
+                    <a href="temporal.html" class="nav-item active">Temporal</a>
+                    <a href="accp.html" class="nav-item">Accp</a>
+
+                    <div class="mobile-user-profile">
+                        <span id="welcome-email-mobile" class="email-text">...</span>
+                        <button id="logout-btn-mobile" class="btn-logout-small">Sign Out</button>
+                    </div>
+                </div>
+
+                <div class="user-profile desktop-only">
+                    <span id="welcome-email" class="email-text">...</span>
+                    <button id="logout-btn" class="btn-logout-small">Sign Out</button>
+                </div>
+            </nav>
+
+            <div class="top-controls">
+
+                <div class="nav-container">
+                    <button id="nav-toggle" class="nav-toggle" aria-label="Navigation menu">
+                        <span class="nav-icon">☰</span>
+                    </button>
+                    <div class="nav-menu">
+                        <a href="index.html" class="nav-link" title="Home">🏠</a>
+                        <button onclick="handleBackButton()" class="nav-link" title="Go Back"
+                            style="border:none; cursor:pointer; font-size:1.2rem;">⬅️</button>
+                    </div>
+                </div>
+
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Hero Section -->
+        <section class="glass-card" style="margin-bottom: 30px; text-align: center;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 15px;">Temporal Analysis</h1>
+            <p style="font-size: 1.1rem; opacity: 0.8; max-width: 800px; margin: 0 auto;">
+                Analyze accident patterns over time to identify trends, seasonal variations, and time-based risk factors across hours, days, months, and years.
+            </p>
+        </section>
+
+        <!-- Timeline Visualization -->
+        <section class="glass-card" style="margin-bottom: 30px;">
+            <h3 style="margin-bottom: 20px;">Accident Timeline</h3>
+            <div style="min-height: 300px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; padding: 40px;">
+                <div style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 15px;">📊</div>
+                    <h3>Timeline Visualization</h3>
+                    <p style="opacity: 0.7; margin-top: 10px;">Interactive timeline chart will be displayed here</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analysis Controls and Stats -->
+        <div class="dashboard-grid-main">
+            <!-- Time Controls -->
+            <div class="glass-card" style="display: flex; flex-direction: column; gap: 20px;">
+                <h3 style="border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;">Analysis Controls</h3>
+                
+                <div class="form-group">
+                    <label>Time Granularity</label>
+                    <select style="width: 100%;">
+                        <option>Hourly</option>
+                        <option>Daily</option>
+                        <option>Weekly</option>
+                        <option>Monthly</option>
+                        <option>Yearly</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Date Range</label>
+                    <select style="width: 100%;">
+                        <option>Last 7 Days</option>
+                        <option>Last 30 Days</option>
+                        <option>Last 3 Months</option>
+                        <option>Last Year</option>
+                        <option>Last 5 Years</option>
+                        <option>Custom Range</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Day of Week</label>
+                    <select style="width: 100%;">
+                        <option>All Days</option>
+                        <option>Weekdays</option>
+                        <option>Weekends</option>
+                        <option>Monday</option>
+                        <option>Tuesday</option>
+                        <option>Wednesday</option>
+                        <option>Thursday</option>
+                        <option>Friday</option>
+                        <option>Saturday</option>
+                        <option>Sunday</option>
+                    </select>
+                </div>
+
+                <button class="btn-submit">Generate Analysis</button>
+            </div>
+
+            <!-- Temporal Statistics -->
+            <div class="glass-card" style="display: flex; flex-direction: column; gap: 20px;">
+                <h3 style="border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;">Key Insights</h3>
+                
+                <div class="stat-box">
+                    <span class="stat-label">Peak Hour</span>
+                    <span class="stat-value highlight">--</span>
+                </div>
+
+                <div class="stat-box">
+                    <span class="stat-label">Highest Risk Day</span>
+                    <span class="stat-value">--</span>
+                </div>
+
+                <div class="stat-box">
+                    <span class="stat-label">Trend Direction</span>
+                    <span class="stat-value">--</span>
+                </div>
+
+                <div class="stat-box">
+                    <span class="stat-label">Seasonality Score</span>
+                    <span class="stat-value">--</span>
+                </div>
+
+                <p class="stat-note">*Generate analysis to see insights</p>
+            </div>
+        </div>
+
+        <!-- Pattern Cards -->
+        <section class="glass-card" style="margin-top: 30px; margin-bottom: 80px;">
+            <h3 style="margin-bottom: 20px;">Detected Patterns</h3>
+            <div class="paradox-cards">
+                <div class="mini-card">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🌅</div>
+                    <div style="font-weight: 600; margin-bottom: 5px;">Morning Rush</div>
+                    <div style="font-size: 0.9rem; opacity: 0.7;">6 AM - 9 AM</div>
+                </div>
+                <div class="mini-card">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🌆</div>
+                    <div style="font-weight: 600; margin-bottom: 5px;">Evening Peak</div>
+                    <div style="font-size: 0.9rem; opacity: 0.7;">5 PM - 8 PM</div>
+                </div>
+                <div class="mini-card">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">📅</div>
+                    <div style="font-weight: 600; margin-bottom: 5px;">Weekend Trend</div>
+                    <div style="font-size: 0.9rem; opacity: 0.7;">Sat - Sun</div>
+                </div>
+                <div class="mini-card">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🌙</div>
+                    <div style="font-weight: 600; margin-bottom: 5px;">Night Hours</div>
+                    <div style="font-size: 0.9rem; opacity: 0.7;">10 PM - 4 AM</div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="scripts/supabaseConfig.js"></script>
+    <script src="scripts/supabaseClient.js"></script>
+    <script src="scripts/dashboard.js"></script>
+</body>
+
+</html>
