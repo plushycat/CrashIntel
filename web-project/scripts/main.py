@@ -1,35 +1,92 @@
-from fastapi import FastAPI, Query
-from fastapi.middleware.cors import CORSMiddleware
+import os
 import pandas as pd
-from typing import Optional
+import numpy as np
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import LabelEncoder
+from typing import Optional, List, Dict
 
-# 1. Initialize the App
+# --- 1. INITIALIZE APP ---
 app = FastAPI()
 
-# 2. Setup CORS (Security)
-# This allows your HTML/JS frontend to communicate with this Python backend
+# --- 2. SECURITY (CORS) ---
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow any origin (e.g., your local HTML file)
+    allow_origins=["*"],  # Allows all HTML files to access this API
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# 3. Load the Dataset
-# We load this ONCE when the server starts to make searches fast
-try:
-    df = pd.read_csv(
-        r"C:\Users\Asus\OneDrive\Documents\GitHub\CrashIntel\Analysis\Datasets\cleaned_for_phase_3.csv"
+# --- 3. GLOBAL VARIABLES ---
+model = None
+encoders = {}
+dataset = pd.DataFrame()
+
+
+# --- 4. SMART DATA LOADING ---
+def load_and_train():
+    global dataset, model, encoders
+
+    # A. FIND THE FILE
+    # Get the folder where THIS script (main.py) lives
+    current_script_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # Go UP two levels (scripts -> web-project -> CrashIntel)
+    # then DOWN into (Analysis -> Datasets)
+    csv_path = os.path.join(
+        current_script_dir,
+        "..",
+        "..",
+        "Analysis",
+        "Datasets",
+        "cleaned_for_phase_3.csv",
     )
-    print("✅ Dataset loaded successfully!")
-except FileNotFoundError:
-    print("❌ Error: 'cleaned_for_phase_3.csv' not found. Please check the file name.")
-    df = pd.DataFrame()  # Create empty dataframe to prevent crash
+    csv_path = os.path.normpath(csv_path)  # Fixes slashes for Windows
+
+    print(f"📂 Looking for dataset at: {csv_path}")
+
+    try:
+        # B. LOAD DATA
+        df = pd.read_csv(csv_path)
+        dataset = df.copy()
+        print(f"✅ Dataset loaded! ({len(df)} records)")
+
+        # C. TRAIN MODEL (For Predictive RA)
+        print("🤖 Training Prediction Model...")
+
+        # Select features
+        features = ["Location", "Vehicle_Type", "Weather_Condition"]
+        target = "Accident_Severity"
+
+        # Drop rows with missing values in these columns to prevent errors
+        df_clean = df.dropna(subset=features + [target]).copy()
+
+        # Encode text to numbers (e.g., "Car" -> 1)
+        for col in features:
+            le = LabelEncoder()
+            df_clean[col] = le.fit_transform(df_clean[col].astype(str))
+            encoders[col] = le
+
+        # Train Random Forest
+        model = RandomForestClassifier(n_estimators=50, random_state=42)
+        model.fit(df_clean[features], df_clean[target])
+        print("✅ AI Model Ready!")
+
+    except FileNotFoundError:
+        print("❌ ERROR: Could not find the CSV file. Check your folder structure.")
+    except Exception as e:
+        print(f"❌ ERROR loading data: {e}")
 
 
-# Helper: Clean up data for JSON (JSON cannot read 'NaN' values)
+# Run setup immediately on startup
+load_and_train()
+
+
+# --- 5. HELPER FUNCTIONS ---
 def clean_nans(data_list):
+    """Converts NaN values to None so JSON doesn't break."""
     for record in data_list:
         for key, value in record.items():
             if pd.isna(value):
@@ -37,7 +94,16 @@ def clean_nans(data_list):
     return data_list
 
 
-# 4. The API Endpoint
+# --- 6. API ENDPOINTS ---
+
+
+@app.get("/")
+def home():
+    """Simple check to see if server is online."""
+    status = "Online" if not dataset.empty else "Online (No Data)"
+    return {"status": status, "records": len(dataset)}
+
+
 @app.get("/search")
 def search_data(
     location: Optional[str] = None,
@@ -45,32 +111,110 @@ def search_data(
     weather: Optional[str] = None,
 ):
     """
-    Filters the dataset based on the provided parameters.
+    Filters data for the Dashboard 'Search' tab.
     """
-    # Start with the full dataset
-    results = df.copy()
+    if dataset.empty:
+        return []
 
-    # Apply Location Filter (Case-insensitive)
-    if location and location != "":
-        results = results[results["Location"].str.lower() == location.lower()]
+    results = dataset.copy()
 
-    # Apply Vehicle Filter
-    if vehicle_type and vehicle_type != "":
-        results = results[results["Vehicle_Type"].str.lower() == vehicle_type.lower()]
+    # Apply filters if provided
+    if location and location != "All Locations":
+        results = results[
+            results["Location"].astype(str).str.lower() == location.lower()
+        ]
 
-    # Apply Weather Filter
-    if weather and weather != "":
-        results = results[results["Weather_Condition"].str.lower() == weather.lower()]
+    if vehicle_type and vehicle_type != "All Vehicles":
+        results = results[
+            results["Vehicle_Type"].astype(str).str.lower() == vehicle_type.lower()
+        ]
 
-    # Limit results to 100 to avoid freezing the browser if too many match
-    results = results.head(100)
+    if weather and weather != "All Weathers":
+        results = results[
+            results["Weather_Condition"].astype(str).str.lower() == weather.lower()
+        ]
 
-    # Convert to Dictionary format for JSON response
-    data = results.to_dict(orient="records")
-    return clean_nans(data)
+    # Limit to 100 rows for speed
+    return clean_nans(results.head(100).to_dict(orient="records"))
 
 
-# 5. Root Endpoint (Just to check if it's running)
-@app.get("/")
-def home():
-    return {"message": "Traffic Data API is running. Go to /search to filter data."}
+@app.get("/predict")
+def predict_severity(location: str, vehicle_type: str, weather: str):
+    """
+    Predicts accident severity for the 'Predictive RA' page.
+    """
+    if model is None:
+        return {"error": "Model not trained."}
+
+    try:
+        # Encode inputs
+        loc_code = encoders["Location"].transform([location])[0]
+        veh_code = encoders["Vehicle_Type"].transform([vehicle_type])[0]
+        wea_code = encoders["Weather_Condition"].transform([weather])[0]
+
+        # Predict
+        prediction = model.predict([[loc_code, veh_code, wea_code]])[0]
+
+        # Calculate Confidence
+        probs = model.predict_proba([[loc_code, veh_code, wea_code]])[0]
+        confidence = round(np.max(probs) * 100, 1)
+
+        return {
+            "prediction": prediction,
+            "confidence": f"{confidence}%",
+            "details": f"High probability of {prediction} for {vehicle_type} in {location}.",
+        }
+    except Exception as e:
+        # This handles new values (e.g., a Location not in the training data)
+        return {"error": "Unknown input value. Try options from the dropdowns."}
+
+
+@app.get("/analyze/temporal")
+def analyze_temporal(granularity: str = "Hourly"):
+    """
+    Aggregates data for the 'Temporal' page.
+    Returns counts by Hour or Day of Week.
+    """
+    if dataset.empty:
+        return {"error": "No data"}
+
+    data = dataset.copy()
+    stats = {}
+
+    try:
+        if granularity == "Hourly":
+            # Group by Hour of Day
+            counts = data["Hour_of_Day"].value_counts().sort_index()
+            stats = {
+                "labels": [f"{h}:00" for h in counts.index],
+                "values": counts.values.tolist(),
+                "peak_label": f"{counts.idxmax()}:00",
+                "peak_value": int(counts.max()),
+            }
+
+        elif granularity == "Daily":
+            # Group by Day of Week (Sorting needs care to be Mon-Sun)
+            order = [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday",
+            ]
+            counts = data["Day_of_Week"].value_counts()
+            # Reindex to ensure correct order
+            counts = counts.reindex(order).fillna(0)
+
+            stats = {
+                "labels": counts.index.tolist(),
+                "values": counts.values.tolist(),
+                "peak_label": counts.idxmax(),
+                "peak_value": int(counts.max()),
+            }
+
+        return stats
+
+    except Exception as e:
+        return {"error": str(e)}

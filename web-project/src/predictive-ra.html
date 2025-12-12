@@ -4,50 +4,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Predictive RA - CrashIntel</title>
+    <title>Predictive Risk Analysis - CrashIntel</title>
 
     <link rel="stylesheet" href="assets/styles/main.css">
     <link rel="stylesheet" href="assets/styles/dashboard.css">
+    <link rel="stylesheet" href="assets/styles/predictive.css">
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
     <link rel="manifest" href="assets/icons/site.webmanifest">
-    <link rel="shortcut icon" href="assets/icons/favicon.ico">
     <meta name="theme-color" content="#ffffff">
 </head>
 
 <body>
-    <div id="loading-screen"
-        style="height: 100vh; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+    <div id="loading-screen" class="loading-screen">
         Loading Predictive Analysis...
     </div>
 
     <div id="dashboard-content" class="dashboard-container" style="display: none;">
 
         <div class="dashboard-header">
-
             <nav class="glass-nav">
                 <div class="nav-brand">CrashIntel</div>
-
                 <button id="mobile-menu-btn" class="nav-toggle-dashboard" aria-label="Toggle Dashboard Menu">
                     <span class="nav-icon">☰</span>
                 </button>
-
                 <div class="nav-links" id="nav-links">
                     <a href="dashboard.html" class="nav-item">Home</a>
                     <a href="predictive-ra.html" class="nav-item active">Predictive RA</a>
                     <a href="risk-exp.html" class="nav-item">Risk Exp</a>
                     <a href="temporal.html" class="nav-item">Temporal</a>
                     <a href="accp.html" class="nav-item">Accp</a>
-
                     <div class="mobile-user-profile">
                         <span id="welcome-email-mobile" class="email-text">...</span>
                         <button id="logout-btn-mobile" class="btn-logout-small">Sign Out</button>
                     </div>
                 </div>
-
                 <div class="user-profile desktop-only">
                     <span id="welcome-email" class="email-text">...</span>
                     <button id="logout-btn" class="btn-logout-small">Sign Out</button>
@@ -55,7 +49,6 @@
             </nav>
 
             <div class="top-controls">
-
                 <div class="nav-container">
                     <button id="nav-toggle" class="nav-toggle" aria-label="Navigation menu">
                         <span class="nav-icon">☰</span>
@@ -66,103 +59,92 @@
                             style="border:none; cursor:pointer; font-size:1.2rem;">⬅️</button>
                     </div>
                 </div>
-
                 <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
                     <span class="theme-icon">🌙</span>
                 </button>
             </div>
-
         </div>
 
-        <!-- Hero Section -->
-        <section class="glass-card" style="margin-bottom: 30px; text-align: center;">
-            <h1 style="font-size: 2.5rem; margin-bottom: 15px;">Predictive Risk Assessment</h1>
-            <p style="font-size: 1.1rem; opacity: 0.8; max-width: 800px; margin: 0 auto;">
-                Advanced machine learning models to predict accident risk patterns and high-risk zones based on historical data and environmental factors.
+        <section class="glass-card hero-section">
+            <h1 class="hero-title">Predictive Risk Analysis</h1>
+            <p class="hero-subtitle">
+                Use our AI model to predict accident severity based on location, vehicle type, and current weather conditions.
             </p>
         </section>
 
-        <!-- Main Content Grid -->
         <div class="dashboard-grid-main">
-            <!-- Prediction Input Section -->
-            <div class="glass-card" style="display: flex; flex-direction: column; gap: 20px;">
-                <h3 style="border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;">Risk Prediction Input</h3>
+            <div class="glass-card">
+                <h3 class="card-header">Input Parameters</h3>
                 
-                <div class="form-group">
-                    <label>Location</label>
-                    <input type="text" placeholder="Enter location or coordinates..." class="paradox-input">
-                </div>
-
-                <div class="form-group">
-                    <label>Time Period</label>
-                    <select style="width: 100%;">
-                        <option>Next 24 Hours</option>
-                        <option>Next 7 Days</option>
-                        <option>Next 30 Days</option>
-                        <option>Custom Range</option>
+                <div class="form-group mt-20">
+                    <label for="locationSelect">Location</label>
+                    <select id="locationSelect" class="glass-input full-width">
+                        <option value="Koramangala">Koramangala</option>
+                        <option value="Indiranagar">Indiranagar</option>
+                        <option value="Jayanagar">Jayanagar</option>
+                        <option value="Whitefield">Whitefield</option>
+                        <option value="HSR Layout">HSR Layout</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label>Weather Conditions</label>
-                    <select style="width: 100%;">
-                        <option>Clear</option>
-                        <option>Rainy</option>
-                        <option>Foggy</option>
-                        <option>Snowy</option>
-                        <option>Auto-detect</option>
+                    <label for="vehicleSelect">Vehicle Type</label>
+                    <select id="vehicleSelect" class="glass-input full-width">
+                        <option value="Car">Car</option>
+                        <option value="Motorcycle">Motorcycle</option>
+                        <option value="Auto Rickshaw">Auto Rickshaw</option>
+                        <option value="Bus">Bus</option>
+                        <option value="Truck">Truck</option>
                     </select>
                 </div>
 
-                <button class="btn-submit" style="margin-top: auto;">Run Prediction</button>
+                <div class="form-group">
+                    <label for="weatherSelect">Weather Condition</label>
+                    <select id="weatherSelect" class="glass-input full-width">
+                        <option value="Clear">Clear</option>
+                        <option value="Raining">Raining</option>
+                        <option value="Cloudy">Cloudy</option>
+                        <option value="Foggy">Foggy</option>
+                    </select>
+                </div>
+
+                <button id="analyzeBtn" class="btn-submit full-width mt-20">Analyze Risk</button>
             </div>
 
-            <!-- Results Preview Section -->
-            <div class="glass-card" style="display: flex; flex-direction: column; gap: 20px;">
-                <h3 style="border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;">Prediction Results</h3>
+            <div class="glass-card result-wrapper">
+                <h3>AI Prediction Result</h3>
                 
-                <div class="stat-box">
-                    <span class="stat-label">Risk Level</span>
-                    <span class="stat-value highlight">--</span>
+                <div id="resultContainer" class="result-container">
+                    <div class="result-icon" id="resultIcon">🔮</div>
+                    <h2 id="predictionResult" class="prediction-text">--</h2>
+                    <p id="confidenceLevel" class="confidence-text">Confidence: --</p>
+                    <p id="resultMessage" class="result-message"></p>
                 </div>
 
-                <div class="stat-box">
-                    <span class="stat-label">Confidence Score</span>
-                    <span class="stat-value">--</span>
+                <div id="placeholderResult" class="placeholder-container">
+                    <div class="placeholder-icon">🤖</div>
+                    <p>Select parameters and click "Analyze Risk" to see the prediction.</p>
                 </div>
-
-                <div class="stat-box">
-                    <span class="stat-label">High-Risk Zones</span>
-                    <span class="stat-value">--</span>
-                </div>
-
-                <p class="stat-note">*Run a prediction to see results</p>
             </div>
         </div>
 
-        <!-- Additional Insights Section -->
-        <section class="glass-card" style="margin-bottom: 80px;">
-            <h3 style="margin-bottom: 20px;">Key Risk Factors</h3>
+        <section class="glass-card mt-30 mb-80">
+            <h3>Model Capabilities</h3>
             <div class="paradox-cards">
                 <div class="mini-card">
-                    <div style="font-size: 2rem; margin-bottom: 10px;">🚦</div>
-                    <div style="font-weight: 600; margin-bottom: 5px;">Traffic Density</div>
-                    <div style="font-size: 0.9rem; opacity: 0.7;">Analysis pending</div>
+                    <div class="card-icon">🌲</div>
+                    <div class="card-title">Random Forest</div>
+                    <div class="card-desc">Powered by robust ensemble learning</div>
                 </div>
                 <div class="mini-card">
-                    <div style="font-size: 2rem; margin-bottom: 10px;">🌧️</div>
-                    <div style="font-weight: 600; margin-bottom: 5px;">Weather Impact</div>
-                    <div style="font-size: 0.9rem; opacity: 0.7;">Analysis pending</div>
+                    <div class="card-icon">⚡</div>
+                    <div class="card-title">Real-time</div>
+                    <div class="card-desc">Instant inference engine</div>
                 </div>
                 <div class="mini-card">
-                    <div style="font-size: 2rem; margin-bottom: 10px;">⏰</div>
-                    <div style="font-weight: 600; margin-bottom: 5px;">Time Patterns</div>
-                    <div style="font-size: 0.9rem; opacity: 0.7;">Analysis pending</div>
-                </div>
-                <div class="mini-card">
-                    <div style="font-size: 2rem; margin-bottom: 10px;">📍</div>
-                    <div style="font-weight: 600; margin-bottom: 5px;">Location History</div>
-                    <div style="font-size: 0.9rem; opacity: 0.7;">Analysis pending</div>
+                    <div class="card-icon">🎯</div>
+                    <div class="card-title">High Accuracy</div>
+                    <div class="card-desc">Trained on verified accident data</div>
                 </div>
             </div>
         </section>
@@ -172,6 +154,6 @@
     <script src="scripts/supabaseConfig.js"></script>
     <script src="scripts/supabaseClient.js"></script>
     <script src="scripts/dashboard.js"></script>
+    <script src="scripts/predictive.js"></script>
 </body>
-
 </html>

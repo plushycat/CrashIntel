@@ -1,0 +1,102 @@
+/* Layout Utilities */
+.mt-20 { margin-top: 20px; }
+.mt-30 { margin-top: 30px; }
+.mb-80 { margin-bottom: 80px; }
+.full-width { width: 100%; padding: 10px; }
+
+/* Hero Section */
+.hero-section {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+}
+
+.hero-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.8;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Card Components */
+.card-header {
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 10px;
+}
+
+/* Result Card Styling */
+.result-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.result-container {
+    text-align: center;
+    margin-top: 30px;
+    display: none; /* Hidden by default */
+}
+
+.result-icon {
+    font-size: 4rem;
+    margin-bottom: 10px;
+}
+
+.prediction-text {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.confidence-text {
+    font-size: 1.1rem;
+    opacity: 0.8;
+}
+
+.result-message {
+    margin-top: 15px;
+    font-size: 0.9rem;
+    max-width: 300px;
+    line-height: 1.4;
+}
+
+/* Placeholder Styling */
+.placeholder-container {
+    text-align: center;
+    margin-top: 30px;
+    opacity: 0.5;
+}
+
+.placeholder-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+/* Mini Cards */
+.card-icon {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.card-title {
+    font-weight: 600;
+}
+
+.card-desc {
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+/* Loading Screen */
+.loading-screen {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
