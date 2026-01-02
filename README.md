@@ -99,6 +99,3 @@ Since the project includes a client-side inference engine for demonstration purp
 
 ---
 
-### Author
-**L. Ali Ismail Khan**
-*T. John Institute of Technology, Bengaluru*
