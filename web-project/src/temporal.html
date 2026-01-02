@@ -16,6 +16,173 @@
     <link rel="manifest" href="assets/icons/site.webmanifest">
     <link rel="shortcut icon" href="assets/icons/favicon.ico">
     <meta name="theme-color" content="#ffffff">
+
+    <style>
+        /* FAQ Accordion Styles */
+        .faq-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            margin-bottom: 12px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 24px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 1rem;
+            gap: 16px;
+            transition: background 0.2s ease;
+        }
+
+        .faq-question:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .faq-question-text {
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .faq-number {
+            background: var(--accent-primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .faq-toggle {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+            color: var(--accent-primary);
+            flex-shrink: 0;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.3s ease;
+            padding: 0 24px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 2000px;
+            padding: 20px 24px;
+        }
+
+        .faq-insight {
+            line-height: 1.7;
+            opacity: 0.9;
+            font-size: 0.95rem;
+            white-space: pre-line;
+        }
+
+        .faq-insight p {
+            margin-bottom: 12px;
+        }
+
+        /* FAQ Images */
+        .faq-images {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .faq-image-container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 10px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .faq-image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            display: block;
+        }
+
+        /* Loading state */
+        .faq-loading {
+            text-align: center;
+            padding: 60px 20px;
+            opacity: 0.7;
+        }
+
+        .faq-loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Stats summary */
+        .faq-summary {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .faq-summary-item {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 20px 30px;
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .faq-summary-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .faq-summary-label {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 
 <body>
@@ -74,123 +241,38 @@
 
         <!-- Hero Section -->
         <section class="glass-card" style="margin-bottom: 30px; text-align: center;">
-            <h1 style="font-size: 2.5rem; margin-bottom: 15px;">Temporal Analysis</h1>
+            <h1 style="font-size: 2.5rem; margin-bottom: 15px;">📊 Temporal Analysis</h1>
             <p style="font-size: 1.1rem; opacity: 0.8; max-width: 800px; margin: 0 auto;">
-                Analyze accident patterns over time to identify trends, seasonal variations, and time-based risk factors across hours, days, months, and years.
+                Explore 28 analysis questions from Phase 3. Click any question to reveal insights about accident patterns over time, weather conditions, vehicle types, and more.
             </p>
         </section>
 
-        <!-- Timeline Visualization -->
-        <section class="glass-card" style="margin-bottom: 30px;">
-            <h3 style="margin-bottom: 20px;">Accident Timeline</h3>
-            <div style="min-height: 300px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; padding: 40px;">
-                <div style="text-align: center;">
-                    <div style="font-size: 3rem; margin-bottom: 15px;">📊</div>
-                    <h3>Timeline Visualization</h3>
-                    <p style="opacity: 0.7; margin-top: 10px;">Interactive timeline chart will be displayed here</p>
-                </div>
+        <!-- Summary Stats -->
+        <div class="faq-summary">
+            <div class="faq-summary-item">
+                <div class="faq-summary-value" id="total-questions">--</div>
+                <div class="faq-summary-label">Analysis Questions</div>
             </div>
-        </section>
-
-        <!-- Analysis Controls and Stats -->
-        <div class="dashboard-grid-main">
-            <!-- Time Controls -->
-            <div class="glass-card" style="display: flex; flex-direction: column; gap: 20px;">
-                <h3 style="border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;">Analysis Controls</h3>
-                
-                <div class="form-group">
-                    <label>Time Granularity</label>
-                    <select id="granularity-select" style="width: 100%;">
-                        <option value="Hourly">Hourly</option>
-                        <option value="Daily">Daily</option>
-                        <option value="Weekly">Weekly</option>
-                        <option value="Monthly">Monthly</option>
-                        <option value="Yearly">Yearly</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Date Range</label>
-                    <select id="date-range-select" style="width: 100%;">
-                        <option value="7">Last 7 Days</option>
-                        <option value="30">Last 30 Days</option>
-                        <option value="90">Last 3 Months</option>
-                        <option value="365" selected>Last Year</option>
-                        <option value="1825">Last 5 Years</option>
-                        <option value="custom">Custom Range</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Day of Week</label>
-                    <select id="day-filter-select" style="width: 100%;">
-                        <option value="all">All Days</option>
-                        <option value="weekdays">Weekdays</option>
-                        <option value="weekends">Weekends</option>
-                        <option value="Monday">Monday</option>
-                        <option value="Tuesday">Tuesday</option>
-                        <option value="Wednesday">Wednesday</option>
-                        <option value="Thursday">Thursday</option>
-                        <option value="Friday">Friday</option>
-                        <option value="Saturday">Saturday</option>
-                        <option value="Sunday">Sunday</option>
-                    </select>
-                </div>
-
-                <button id="generate-btn" class="btn-submit">Generate Analysis</button>
+            <div class="faq-summary-item">
+                <div class="faq-summary-value">📈</div>
+                <div class="faq-summary-label">Data-Driven Insights</div>
             </div>
-
-            <!-- Temporal Statistics -->
-            <div class="glass-card" style="display: flex; flex-direction: column; gap: 20px;">
-                <h3 style="border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;">Key Insights</h3>
-                
-                <div class="stat-box">
-                    <span class="stat-label">Peak Hour</span>
-                    <span id="peak-hour-stat" class="stat-value highlight">--</span>
-                </div>
-
-                <div class="stat-box">
-                    <span class="stat-label">Highest Risk Day</span>
-                    <span id="highest-risk-day-stat" class="stat-value">--</span>
-                </div>
-
-                <div class="stat-box">
-                    <span class="stat-label">Trend Direction</span>
-                    <span id="trend-stat" class="stat-value">--</span>
-                </div>
-
-                <div class="stat-box">
-                    <span class="stat-label">Seasonality Score</span>
-                    <span id="seasonality-stat" class="stat-value">--</span>
-                </div>
-
-                <p class="stat-note">*Generate analysis to see insights</p>
+            <div class="faq-summary-item">
+                <div class="faq-summary-value">🔍</div>
+                <div class="faq-summary-label">Pattern Discovery</div>
             </div>
         </div>
 
-        <!-- Pattern Cards -->
-        <section class="glass-card" style="margin-top: 30px; margin-bottom: 80px;">
-            <h3 style="margin-bottom: 20px;">Detected Patterns</h3>
-            <div class="paradox-cards">
-                <div class="mini-card">
-                    <div style="font-size: 2rem; margin-bottom: 10px;">🌅</div>
-                    <div style="font-weight: 600; margin-bottom: 5px;">Morning Rush</div>
-                    <div style="font-size: 0.9rem; opacity: 0.7;">6 AM - 9 AM</div>
-                </div>
-                <div class="mini-card">
-                    <div style="font-size: 2rem; margin-bottom: 10px;">🌆</div>
-                    <div style="font-weight: 600; margin-bottom: 5px;">Evening Peak</div>
-                    <div style="font-size: 0.9rem; opacity: 0.7;">5 PM - 8 PM</div>
-                </div>
-                <div class="mini-card">
-                    <div style="font-size: 2rem; margin-bottom: 10px;">📅</div>
-                    <div style="font-weight: 600; margin-bottom: 5px;">Weekend Trend</div>
-                    <div style="font-size: 0.9rem; opacity: 0.7;">Sat - Sun</div>
-                </div>
-                <div class="mini-card">
-                    <div style="font-size: 2rem; margin-bottom: 10px;">🌙</div>
-                    <div style="font-weight: 600; margin-bottom: 5px;">Night Hours</div>
-                    <div style="font-size: 0.9rem; opacity: 0.7;">10 PM - 4 AM</div>
+        <!-- FAQ Accordion -->
+        <section class="glass-card" style="margin-bottom: 80px;">
+            <h3 style="margin-bottom: 25px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px;">
+                📋 Analysis Questions & Insights
+            </h3>
+            
+            <div id="faq-container" class="faq-container">
+                <div class="faq-loading">
+                    <div class="faq-loading-spinner"></div>
+                    <p>Loading analysis questions...</p>
                 </div>
             </div>
         </section>

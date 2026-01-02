@@ -1,4 +1,5 @@
 import os
+import json
 import pandas as pd
 import numpy as np
 from fastapi import FastAPI
@@ -216,5 +217,37 @@ def analyze_temporal(granularity: str = "Hourly"):
 
         return stats
 
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.get("/api/phase3/faq")
+def get_phase3_faq():
+    """
+    Returns all 30 analysis questions and insights from Phase 3 notebook
+    for the Temporal Analysis FAQ page.
+    """
+    try:
+        # Get the folder where THIS script (main.py) lives
+        current_script_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # Path to the FAQ JSON file
+        faq_path = os.path.join(
+            current_script_dir,
+            "..",
+            "..",
+            "Analysis",
+            "scripts",
+            "phase3_faq.json",
+        )
+        faq_path = os.path.normpath(faq_path)
+
+        with open(faq_path, "r", encoding="utf-8") as f:
+            faq_data = json.load(f)
+
+        return faq_data
+
+    except FileNotFoundError:
+        return {"error": "FAQ data file not found. Run phase3_faq_extractor.py first."}
     except Exception as e:
         return {"error": str(e)}
