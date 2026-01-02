@@ -61,4 +61,44 @@ Since the project includes a client-side inference engine for demonstration purp
 
 1.  **Clone the Repository:**
     ```bash
-    git clone
+    git clone [https://github.com/plushycat/CrashIntel.git](https://github.com/plushycat/CrashIntel.git)
+    cd CrashIntel
+    ```
+
+2.  **Launch the Dashboard:**
+    * Simply double-click **`predictive-ra.html`** (or `Final_Demo.html`) to open it in your web browser.
+    * *Optional:* For the best visual experience, run via a local server:
+        ```bash
+        # If using Python
+        python -m http.server 8000
+        # Then open http://localhost:8000
+        ```
+
+3.  **Test the Prediction:**
+    * Select a location (e.g., *Hebbal Flyover*).
+    * Adjust the **Speed Slider**.
+    * Click **"Analyze Risk"** to see the AI severity classification.
+
+---
+
+## Key Analytical Findings
+
+* **Nighttime Risk:** Fatal accidents are disproportionately high between **11 PM and 3 AM** due to lower traffic density allowing for higher speeds.
+* **High-Risk Profiles:**
+    * **Speed:** Impact speeds >80 km/h have a near-exponential correlation with fatality risk.
+    * **Vulnerability:** Two-wheelers account for the highest percentage of severe injuries in wet conditions.
+* **Hotspots:** Specific junctions (e.g., Silk Board, K.R. Puram) show cluster patterns distinct from highway accidents (NICE Road).
+
+---
+
+## Future Scope
+
+* Integration of real-time traffic API data (Google Maps/Mapbox).
+* Deployment of the Python FastAPI backend for centralized model retraining.
+* Expansion of the dataset to include granular features like "Seatbelt Usage" and "Driver Fatigue Levels."
+
+---
+
+### Author
+**L. Ali Ismail Khan**
+*T. John Institute of Technology, Bengaluru*
