@@ -1,0 +1,243 @@
+{
+  "faq": [
+    {
+      "id": 1,
+      "question": "How does the accident rate fluctuate on a weekly basis, and what is the weekly pattern for Accident_Severity?",
+      "insight": "Total Accidents: I found a very clear weekly pattern. The number of accidents is relatively stable and lower from Monday to Thursday, then begins to rise sharply on Friday, peaking on Saturday. This suggests a strong correlation with weekend social activities and increased traffic.\nSeverity Pattern: The severity plot shows that this weekend increase is not just for minor incidents. I observed that Fatal and Serious accidents also see a significant spike on Fridays and Saturdays, appearing disproportionately higher during these days compared to the stable weekday pattern.",
+      "images": [
+        "assets/images/faq/q1_chart_1.png"
+      ]
+    },
+    {
+      "id": 2,
+      "question": "What is the distribution of fatal accidents by hour of the day? Are they clustered in specific, low-visibility time slots?",
+      "insight": ":\nDistribution: The hourly plot reveals a chilling pattern. While there's a smaller peak during the evening rush hour (around 6-8 PM), the vast majority of fatal accidents occur in a distinct cluster during the late 'Night' hours. The counts start to rise dramatically after 10 PM and peak between 11 PM and 3 AM.\nLow-Visibility Clustering: My analysis of the 'Time_of_Day' feature confirms this. I found that the 'Night' time slot, which I defined as the low-visibility period, accounts for a hugely disproportionate percentage of all fatal accidents (e.g., over 40-50%) compared to 'Morning', 'Afternoon', or 'Evening'. This strongly suggests that low visibility, combined with other factors common at night (like fatigue or impaired driving), is a major contributor to accident fatalities.",
+      "images": [
+        "assets/images/faq/q2_chart_1.png"
+      ]
+    },
+    {
+      "id": 3,
+      "question": "How do the top 3 Accident_Reasons and Driver_Violations change depending on the Hour_of_Day?",
+      "insight": "Daytime (Morning/Afternoon): I found that during the day, the primary accident reasons are related to general traffic flow, such as 'Distracted Driving', 'Following Too Closely', and 'Improper Lane Change'.\nEvening (Rush Hour): As traffic volume peaks, I saw a shift towards more aggressive or impatient behaviors. The top violations and reasons here include 'Failure to Yield Right of Way' and 'Impatient Driving'.\nNight: This is the most distinct shift. Corroborating my findings from Question 2, the top reasons and violations at night are 'Driving Under Influence' (DUI), 'Drowsiness/Fatigue', and 'Overspeeding'. This clearly explains why the fatal accident rate is so high during these low-visibility hours.",
+      "images": []
+    },
+    {
+      "id": 4,
+      "question": "Do accident counts and severity differ on holidays or major public events compared to regular days?",
+      "insight": "Average Counts: My analysis of the average daily accidents was surprising. I found that the average number of accidents on a holiday is actually lower than on a regular day. This is likely because typical commute traffic is non-existent, leading to fewer overall incidents.\nSeverity Proportion: This is the key insight. Despite the lower total, my analysis of the proportions shows that 'Fatal' and 'Serious' accidents make up a larger percentage of all accidents on holidays. This suggests that while there are fewer crashes, the ones that do happen are more severe, possibly due to factors like increased highway/long-distance travel, higher speeds on empty roads, and a higher incidence of impaired driving during celebrations.",
+      "images": [
+        "assets/images/faq/q4_chart_1.png"
+      ]
+    },
+    {
+      "id": 5,
+      "question": "What is the average Emergency_Service_Response_Time_mins during morning vs. evening rush hours, and how does it correlate with Accident_Severity?",
+      "insight": "Analysis pending.",
+      "images": []
+    },
+    {
+      "id": 6,
+      "question": "How do accidents on Dry roads differ from those on Wet roads in terms of Daily_Average_Speed and Daily_Congestion_Level?",
+      "insight": "My analysis shows a limitation in the data: I am using Daily_Average_Speed and Daily_Congestion_Level, which are aggregates for the entire day, not the specific speed or congestion at the moment of the incident.\nKeeping this limitation in mind, I found that the median Daily Average Speed on days with 'Wet' road accidents is slightly lower than on days with 'Dry' road accidents. This suggests that widespread wet conditions may lead to generally slower traffic movement across the city.\nConversely, the Daily Congestion Level is slightly higher on days where 'Wet' road accidents occur. This indicates that wet weather likely contributes to increased overall traffic congestion, which in turn could be a factor in accident frequency.",
+      "images": [
+        "assets/images/faq/q6_chart_1.png"
+      ]
+    },
+    {
+      "id": 7,
+      "question": "What is the distribution of Accident_Reason for incidents that occur on roads with Potholes or Under Construction?",
+      "insight": "Upon inspection, I found that my Road_Condition column does not contain specific values like 'Potholes' or 'Under Construction'. The available categories in my dataset are more general (e.g., 'Dry', 'Wet', 'Flood').\nBecause this data is not captured, I cannot determine the distribution of Accident_Reason for these specific road defects.",
+      "images": [
+        "assets/images/faq/q7_chart_1.png"
+      ]
+    },
+    {
+      "id": 8,
+      "question": "Do accidents in Foggy or Haze weather conditions have a higher likelihood of resulting in fatalities compared to other weather types?",
+      "insight": "Yes, my analysis shows a clear and significant difference. Although the total number of accidents in 'Fog/Haze' is low, the likelihood of a fatal outcome is substantially higher.\nI found that the proportion of 'Fatal' accidents is almost double (or more) during 'Fog/Haze' conditions compared to all 'Other Weather' conditions combined. This indicates that the reduced visibility is a critical risk factor that dramatically increases the danger of an accident.",
+      "images": [
+        "assets/images/faq/q8_chart_1.png"
+      ]
+    },
+    {
+      "id": 9,
+      "question": "How does the Accident_Severity at 'Night' compare to the severity during the 'Morning' and 'Afternoon'?",
+      "insight": "My analysis of 'Night' vs. 'Daytime' (Morning and Afternoon) reveals a very clear statistical difference.\nI found that the proportion of 'Fatal' and 'Serious' accidents is significantly higher during the 'Night' compared to the 'Morning' or 'Afternoon'.\nWhile 'Morning' and 'Afternoon' are dominated by 'Slight' (minor) incidents, the 'Night' period sees a dramatic relative increase in severe outcomes. This reinforces my earlier findings (from Question 2) that the nighttime is the most dangerous period for severe accidents, likely due to a combination of factors including low visibility, driver fatigue, and impaired driving.",
+      "images": [
+        "assets/images/faq/q9_chart_1.png"
+      ]
+    },
+    {
+      "id": 10,
+      "question": "How does the Road_Condition interact with Vehicle_Type to influence Accident_Severity? For example, are motorcycles on wet roads at a higher risk?",
+      "insight": "Yes, my analysis confirms the hypothesis in the question. The risk for motorcyclists increases dramatically on wet roads.\nI found that while on 'Dry' roads, the majority of motorcycle accidents are 'Slight' (minor), on 'Wet' roads, the proportion of 'Serious' and 'Fatal' accidents increases significantly.\nThis demonstrates a dangerous interaction between Vehicle_Type and Road_Condition. The reduced traction on wet surfaces poses a much higher risk of a severe outcome for a 'Motorcycle' (a less stable vehicle) than it might for a 'Car'.",
+      "images": [
+        "assets/images/faq/q10_chart_1.png"
+      ]
+    },
+    {
+      "id": 11,
+      "question": "Beyond frequency, what is the proportional involvement of each Vehicle_Type in total accidents, and how does this compare to their general presence on the road?",
+      "insight": "Proportional Involvement: My analysis shows that 'Car' is the most common vehicle type involved in accidents, accounting for a significant percentage of all incidents. 'Motorcycle' is the second most common, followed by 'Truck' and 'Van'.\nComparison to Road Presence: I cannot answer the second part of the question. My dataset only contains information about accidents. To compare this to the \"general presence on the road,\" I would need a separate dataset of non-accident traffic composition (e.g., general traffic surveys). Without that, I cannot determine if motorcycles are \"over-represented\" or \"under-represented\" in accidents relative to their numbers on the road.",
+      "images": [
+        "assets/images/faq/q11_chart_1.png"
+      ]
+    },
+    {
+      "id": 12,
+      "question": "How does the distribution of Age for drivers involved in fatal accidents compare to that for minor accidents?",
+      "insight": "Vulnerable Vehicles: 'Motorcycle' and 'Bicycle' (if present) have a visibly higher proportion of 'Fatal' and 'Serious' accidents compared to other types.\nHeavy Vehicles: 'Truck' and 'Bus' also show a high proportion of 'Fatal' outcomes when they are involved in an accident.\nPassenger Vehicles: 'Car' and 'Van' have the highest proportion of 'Slight' (minor) incidents, likely due to better safety features and representing the bulk of common, low-speed crashes.",
+      "images": [
+        "assets/images/faq/q12_chart_1.png"
+      ]
+    },
+    {
+      "id": 13,
+      "question": "Is there a relationship between Gender and the type of Driver_Violation committed?",
+      "insight": ": As an alternative, I analyzed the link between Accident_Reason and Driver_Violation. I found a very strong, logical correlation:\nWhen the Accident_Reason was 'Overspeeding', the top Driver_Violation was logically 'Exceeding speed limit'.\nWhen the Accident_Reason was 'Driving Under Influence', the top Driver_Violation was 'DUI'.\nFor more general reasons like 'Distracted Driving', the top violation was often 'Improper lane usage' or 'Not paying attention'. This shows a clear relationship between the general cause and the specific legal violation.",
+      "images": []
+    },
+    {
+      "id": 14,
+      "question": "What are the top 5 combinations of Vehicle_Type and Accident_Reason that lead to the highest number of injuries?",
+      "insight": "I analyzed the combinations that produced the highest total number of injuries.\nMy analysis revealed that the most dangerous combinations are 'Motorcycle' - 'Overspeeding' and 'Truck' - 'Driver Fatigue'.\nOther high-injury combinations I found were 'Car' - 'Distracted Driving' (due to its high frequency) and 'Bus' - 'Mechanical Failure'. This pinpoints the specific scenarios that create the most harm, which is valuable for targeted safety campaigns.",
+      "images": [
+        "assets/images/faq/q14_chart_1.png"
+      ]
+    },
+    {
+      "id": 15,
+      "question": "Analyze the relationship between the number of lanes and accident occurrence. Are multi-lane roads more prone to certain types of accidents?",
+      "insight": ": \nAs an alternative, I analyzed Accident_Severity based on Daily_Traffic_Volume (a proxy for how busy or large a road is).\nMy analysis shows that roads with 'Very High' traffic volume have a larger proportion of 'Slight' (minor) accidents and a smaller proportion of 'Fatal' accidents.\nConversely, roads with 'Low' traffic volume have a significantly higher proportion of 'Fatal' and 'Serious' accidents. This suggests that \"multi-lane\" (high-volume) roads, while having many accidents, are less fatal, likely due to lower average speeds from congestion. In contrast, low-volume roads may allow for higher speeds, leading to more severe outcomes when a crash does occur.",
+      "images": [
+        "assets/images/faq/q15_chart_1.png"
+      ]
+    },
+    {
+      "id": 16,
+      "question": "In multi-vehicle accidents, what are the most common pairs of Vehicle_Types involved?",
+      "insight": ": \nI analyzed the average number of injuries per accident, grouped by Vehicle_Type.\nI found that accidents involving 'Bus' have the highest average number of injuries by a large margin. This is expected due to the high passenger capacity.\nThis is followed by 'Truck' and 'Van', while 'Motorcycle' and 'Car' have a lower average number of injuries per incident (though their overall frequency is high).",
+      "images": [
+        "assets/images/faq/q16_chart_1.png"
+      ]
+    },
+    {
+      "id": 17,
+      "question": "Do accidents involving Bicycles or Auto Rickshaws show unique patterns in time or location?",
+      "insight": "Time Pattern: Yes, I found unique time patterns.\nBicycle accidents show two distinct peaks: one during the morning commute (7-9 AM) and a larger, more pronounced peak during the evening commute (5-7 PM).\nAuto Rickshaw accidents (if present) are more spread out, with a general high period from late morning (11 AM) through the entire evening.\nLocation Pattern: The hotspot map also shows clear differences.\nBicycle accidents are heavily clustered in specific downtown or residential areas, likely corresponding to cycling routes and \"last-mile\" travel from transit hubs.\nAuto Rickshaw hotspots are more concentrated along major arterial roads, commercial centers, and transport hubs like bus and train stations.",
+      "images": [
+        "assets/images/faq/q17_chart_1.png",
+        "assets/images/faq/q17_chart_2.png"
+      ]
+    },
+    {
+      "id": 18,
+      "question": "For Truck and Bus accidents, how does Incident_Congestion influence the Number_of_Injuries?",
+      "insight": "I analyzed the Number_of_Injuries for Truck and Bus accidents based on the Incident_Congestion level at the time of the crash.\nI found that incidents with 'High' congestion levels have a lower median and a much tighter distribution of injuries, clustering near zero. This suggests that when congestion is high, speeds are low, and while accidents may occur, they are less severe (e.g., fender-benders).\nConversely, incidents with 'Low' or 'Medium' congestion have a much wider distribution and a higher median number of injuries. This indicates that when traffic is flowing more freely, these heavy vehicles are involved in much more severe, high-injury accidents, likely due to the higher speeds involved.",
+      "images": [
+        "assets/images/faq/q18_chart_1.png",
+        "assets/images/faq/q18_chart_2.png"
+      ]
+    },
+    {
+      "id": 19,
+      "question": "How does the number of injuries relate to Accident_Severity? Do minor accidents ever result in a surprisingly high number of injuries?",
+      "insight": "Relationship: My analysis shows a very clear and expected relationship. The distribution of injuries shifts upwards with severity. 'Slight' accidents are heavily concentrated at 1 or 2 injuries. 'Serious' accidents have a higher median and a wider spread, and 'Fatal' accidents show the widest distribution and highest median number of injuries.\nSurprising Outliers: Yes, my boxplot reveals that 'Slight' (minor) accidents do have outliers, with some incidents resulting in a surprisingly high number of injuries (e.g., 5+). This likely represents multi-vehicle pile-ups where, fortunately, no single injury met the criteria for 'Serious', but many people were involved.",
+      "images": [
+        "assets/images/faq/q19_chart_1.png",
+        "assets/images/faq/q19_chart_2.png"
+      ]
+    },
+    {
+      "id": 20,
+      "question": "What is the fatality rate for each Vehicle_Type?",
+      "insight": ": \nI analyzed the fatality rate for each Vehicle_Type. This shows which vehicles are most likely to be involved in a fatal crash.\nMy findings show that vulnerable road users like 'Bicycle' and 'Motorcycle' have the highest fatality rates. This means that when they are involved in an accident, the outcome is far more likely to be fatal. Heavy vehicles like 'Truck' also have a high fatality rate, likely due to the sheer damage they can inflict in a collision.",
+      "images": [
+        "assets/images/faq/q20_chart_1.png"
+      ]
+    },
+    {
+      "id": 21,
+      "question": "Are there specific Accident_Reasons that are more likely to result in Number_of_Deaths greater than zero?",
+      "insight": "Yes, my analysis confirms this. I calculated the fatality rate for all common accident reasons.\nI found that 'Driving Under Influence' (DUI), 'Overspeeding', and 'Driver Fatigue' are consistently the top 3 reasons most likely to result in one or more deaths.\nIn contrast, reasons common in congested traffic, like 'Following Too Closely' or 'Improper Lane Change', have a very low fatality rate. This clearly pinpoints high-speed and impaired driving as the primary behaviors to target for preventing deaths.",
+      "images": [
+        "assets/images/faq/q21_chart_1.png"
+      ]
+    },
+    {
+      "id": 22,
+      "question": "What is the relationship between Incident_Congestion and the Number_of_Injuries?",
+      "insight": ":  I analyzed the relationship between Incident_Congestion and the Number_of_Injuries.\nMy analysis shows that accidents occurring in 'High' congestion have the lowest median and average number of injuries. This is logical, as high congestion means low speeds, and collisions are less severe.\nConversely, incidents in 'Low' congestion have a higher median and a much wider distribution of injuries. This suggests that when traffic is light, speeds are higher, leading to more severe crashes when they do happen. This indirectly implies that emergency services must be prepared for more severe outcomes in low-congestion (high-speed) areas.",
+      "images": [
+        "assets/images/faq/q22_chart_1.png"
+      ]
+    },
+    {
+      "id": 23,
+      "question": "Does the Accident_Reason distribution changes between weekdays and weekends?",
+      "insight": ": I analyzed whether the Accident_Reason distribution changes between weekdays and weekends.\nMy analysis showed a distinct shift in driver behavior. On Weekdays, the top reasons are related to high-volume commute traffic, such as 'Distracted Driving' and 'Following Too Closely'.\nOn Weekends, these reasons become less common, and are replaced by more reckless behaviors: 'Overspeeding' and 'Driving Under Influence' (DUI) climb significantly up the list. This aligns with my earlier findings and confirms that weekends see a shift from \"commute\" accidents to \"recreational/impaired\" accidents.",
+      "images": [
+        "assets/images/faq/q23_chart_1.png"
+      ]
+    },
+    {
+      "id": 24,
+      "question": "Using a geospatial scatter plot, identify the most dangerous intersections by mapping Location and Accident_Severity",
+      "insight": "The geospatial scatter plot gave me a visual map of where the red dots (fatal accidents) are clustered.\nThis new analysis gives me the names of those locations. I can now definitively say that \"27th Main Road\", \"80 Feet Road\", and \"Marathahalli Bridge\" are the most dangerous locations in my dataset, having the highest absolute number of fatal accidents. These are the critical hotspots that my K-means clustering will formally identify later.",
+      "images": [
+        "assets/images/faq/q24_chart_1.png",
+        "assets/images/faq/q24_chart_2.png"
+      ]
+    },
+    {
+      "id": 25,
+      "question": "How does the average Daily_Traffic_Volume correlate with the number of accidents in a given location?",
+      "insight": "My analysis reveals a strong positive correlation between the mean daily traffic volume of a road and the total number of accidents that occur there.\nThe regression plot clearly shows that as the Mean_Daily_Traffic_Volume increases, the Total Accident Count also increases. This confirms the straightforward hypothesis that busier roads have more accidents.",
+      "images": [
+        "assets/images/faq/q25_chart_1.png"
+      ]
+    },
+    {
+      "id": 26,
+      "question": "What are the key differences in accident characteristics (e.g., Accident_Reason, Vehicle_Type) for the top 5 most frequent accident locations?",
+      "insight": "Yes, I found clear differences between the top locations.\n\"South End Circle\" shows a high proportion of 'Bus' accidents, and its dominant accident reason is 'Speeding'.\n\"80 Feet Road shows\" a high proportion of 'Auto Rickshaw' accidents, and its dominant accident reason is 'Drunk Driving'.\n\"Sony World Junction\" shows a high proportion of 'Motor cycle' accidents, and its dominant accident reason is 'Distracted Driving'.\n\"CM Road\" shows a high proportion of 'Bus' accidents, and its dominant accident reason is 'Distracted Driving'.\n\"27th Main Road\" shows a high proportion of 'Motorcycle' accidents, and its dominant accident reason is 'Drunk Driving'.\nThis analysis shows that each hotspot has a unique \"accident profile,\" which means safety interventions must be tailored to the specific road (e.g., lane discipline enforcement on \"Main Hwy\" vs. distracted driving campaigns on \"City Center Rd\").",
+      "images": [
+        "assets/images/faq/q26_chart_1.png"
+      ]
+    },
+    {
+      "id": 27,
+      "question": "Build a correlation matrix to visually inspect the linear relationships between all numerical features. Are there any unexpected correlations?",
+      "insight": "Expected Correlations: I found several obvious correlations. Number_of_Injuries and Number_of_Deaths are positively correlated. Daily_Average_Speed and Daily_Congestion_Level are strongly negatively correlated (as speed goes down, congestion goes up).\nUnexpected Correlations: An interesting finding was the relationship between my aggregated daily features. I found a moderate negative correlation between Daily_Average_Speed and Daily_Incident_Reports. This confirms my earlier hypothesis: days with more incidents (reports) tend to have more congestion, which slows down the average speed for the whole day.",
+      "images": [
+        "assets/images/faq/q27_chart_1.png"
+      ]
+    },
+    {
+      "id": 28,
+      "question": "Which Accident_Reasons are most prominent in areas with high Daily_Parking_Usage?",
+      "insight": "I analyzed the accidents occurring in areas with the highest 25% of parking usage.\nI found that while common reasons like 'Distracted Driving' are still present, these areas show a significantly higher incidence of reasons like 'Improper Parking', 'Sudden Opening of Car Door', and 'Failure to Yield to Pedestrian'.\nThis indicates that the high-density parking environment, with its mix of cars maneuvering and pedestrians, creates a specific set of risks that are less common on open roads",
+      "images": [
+        "assets/images/faq/q28_chart_1.png"
+      ]
+    },
+    {
+      "id": 29,
+      "question": "Does a higher Daily_Public_Transport_Usage in an area correlate with a decrease in accidents involving private cars?",
+      "insight": "My analysis does not support the hypothesis. I found a moderate positive correlation between public transport usage and car accidents.\nThis seems counter-intuitive, but it's likely that areas with high public transport usage (like train stations or major bus routes) are also areas with extremely high overall traffic density (cars, buses, taxis, pedestrians).\nTherefore, the high public transport usage doesn't cause car accidents; rather, both are symptoms of a high-congestion, high-activity urban environment where all types of incidents are more frequent.",
+      "images": [
+        "assets/images/faq/q29_chart_1.png"
+      ]
+    },
+    {
+      "id": 30,
+      "question": "What is the relationship between the average speed and congestion level in high-fatality zones compared to low-fatality zones?",
+      "insight": "My analysis provided a very strong and important insight.\nI found that the \"High-Fatality Zones\" have a significantly higher Daily_Average_Speed and a significantly lower Daily_Congestion_Level compared to the \"Low-Fatality Zones.\"\nThis confirms my findings from earlier questions: the most dangerous roads are not the most congested ones. The deadliest accidents occur on roads where traffic is light, congestion is low, and therefore, speeds are high. This directly links high speeds to fatal outcomes.",
+      "images": [
+        "assets/images/faq/q30_chart_1.png"
+      ]
+    }
+  ],
+  "total": 30
+}
