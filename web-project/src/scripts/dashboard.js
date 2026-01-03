@@ -111,47 +111,124 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (dashboardContent) dashboardContent.style.display = "block";
     document.body.classList.add("loaded");
 
-    loadMockStats();
+    // loadMockStats(); // Removed in favor of real data
     initMap();
   }
 
-  function initMap() {
+  async function initMap() {
     if (!document.getElementById("crash-map")) return;
 
-    const map = L.map("crash-map").setView([12.9716, 77.5946], 12);
+    const map = L.map("crash-map", {
+      minZoom: 10,
+      maxBounds: [
+        [12.73, 77.37], // Southwest coordinates
+        [13.20, 77.88], // Northeast coordinates
+      ],
+      maxBoundsViscosity: 1.0,
+    }).setView([12.9716, 77.5946], 11);
+
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "&copy; OpenStreetMap contributors",
+      attribution: "© OpenStreetMap contributors",
     }).addTo(map);
 
-    const riskCircle = L.circle([12.9716, 77.5946], {
-      color: "red",
-      fillColor: "#f03",
-      fillOpacity: 0.5,
-      radius: 1500,
-    }).addTo(map);
+    // OPTIMIZATION: Use Canvas renderer for better performance with 20k+ points
+    const myRenderer = L.canvas({ padding: 0.5 });
 
-    riskCircle
-      .bindPopup("<b>High Risk Zone</b><br>Silk Board Junction")
-      .openPopup();
+    try {
+      // Fetch real data from backend (Port 8001 to avoid zombie process on 8000)
+      const response = await fetch("http://127.0.0.1:8001/api/map-data");
+      const data = await response.json();
 
-    map.on("click", function (e) {
-      const elAcc = document.getElementById("stat-accidents");
-      const elFat = document.getElementById("stat-fatalities");
-      if (elAcc) elAcc.innerText = Math.floor(Math.random() * 500);
-      if (elFat) elFat.innerText = Math.floor(Math.random() * 10);
-    });
+      if (data.error) {
+        console.error("Map Data Error:", data.error);
+        return;
+      }
+
+      console.log(`Loaded ${data.length} crash points.`);
+
+      data.forEach((point) => {
+        if (!point.Latitude || !point.Longitude) return;
+
+        let color = "#3b82f6"; // Default blue
+        const sever = String(point.Accident_Severity).toLowerCase();
+
+        if (sever.includes("fatal")) {
+          color = "#ef4444"; // Red
+        } else if (sever.includes("serious")) {
+          color = "#f97316"; // Orange
+        } else if (sever.includes("slight")) {
+          color = "#eab308"; // Yellow
+        }
+
+        L.circleMarker([point.Latitude, point.Longitude], {
+          renderer: myRenderer, // Use Canvas
+          radius: 4,           // Smaller dots as requested
+          fillColor: color,
+          color: color,        // Stroke color same as fill
+          weight: 0,           // No stroke
+          opacity: 1,
+          fillOpacity: 0.7,    // Slight translucency
+        })
+          .bindPopup(
+            `<b>${point.Location || "Unknown Location"}</b><br>
+             Severity: ${point.Accident_Severity}`
+          )
+          .addTo(map);
+      });
+      // 3. INITIAL STATS
+      updateStats(map, data);
+
+      // 4. EVENT LISTENER
+      map.on("moveend click", () => {
+        updateStats(map, data);
+      });
+
+    } catch (err) {
+      console.error("Failed to load map data:", err);
+    }
   }
 
-  function loadMockStats() {
+  function updateStats(map, allData) {
+    const bounds = map.getBounds();
+    
+    // Filter points within current view
+    const visiblePoints = allData.filter(p => {
+        if(!p.Latitude || !p.Longitude) return false;
+        return bounds.contains([p.Latitude, p.Longitude]);
+    });
+
     const elAccidents = document.getElementById("stat-accidents");
     const elFatalities = document.getElementById("stat-fatalities");
     const elCommon = document.getElementById("stat-common");
 
-    setTimeout(() => {
-      if (elAccidents) elAccidents.innerText = "1,245";
-      if (elFatalities) elFatalities.innerText = "32";
-      if (elCommon) elCommon.innerText = "Rear-End";
-    }, 800);
+    // 1. Total Accidents
+    const total = visiblePoints.length;
+    if (elAccidents) elAccidents.innerText = total.toLocaleString();
+
+    // 2. Fatalities
+    const fatalCount = visiblePoints.filter(p => String(p.Accident_Severity).toLowerCase().includes("fatal")).length;
+    if (elFatalities) elFatalities.innerText = fatalCount.toLocaleString();
+
+    // 3. Most Common Vehicle
+    if (elCommon) {
+        if (total === 0) {
+            elCommon.innerText = "-";
+        } else {
+            const counts = {};
+            let maxCount = 0;
+            let mostCommon = "-";
+            
+            visiblePoints.forEach(p => {
+                const v = p.Vehicle_Type || "Unknown";
+                counts[v] = (counts[v] || 0) + 1;
+                if(counts[v] > maxCount) {
+                    maxCount = counts[v];
+                    mostCommon = v;
+                }
+            });
+            elCommon.innerText = mostCommon;
+        }
+    }
   }
 
   async function handleLogout() {
