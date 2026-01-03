@@ -2,6 +2,7 @@ import os
 import json
 import pandas as pd
 import numpy as np
+from pymongo import MongoClient
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sklearn.ensemble import RandomForestClassifier
@@ -30,55 +31,44 @@ dataset = pd.DataFrame()
 def load_and_train():
     global dataset, model, encoders
 
-    # A. FIND THE FILE
-    # Get the folder where THIS script (main.py) lives
-    current_script_dir = os.path.dirname(os.path.abspath(__file__))
+    # B. LOAD DATA
+    # Connect to MongoDB
+    client = MongoClient("mongodb://localhost:27018/")
+    db = client["crash_db"]
+    collection = db["crash_records"]
 
-    # Go UP two levels (scripts -> web-project -> CrashIntel)
-    # then DOWN into (Analysis -> Datasets)
-    csv_path = os.path.join(
-        current_script_dir,
-        "..",
-        "..",
-        "Analysis",
-        "Datasets",
-        "cleaned_for_phase_3.csv",
-    )
-    csv_path = os.path.normpath(csv_path)  # Fixes slashes for Windows
+    print("📂 Connecting to Local MongoDB...")
 
-    print(f"📂 Looking for dataset at: {csv_path}")
+    # Fetch data (exclude _id)
+    data = list(collection.find({}, {"_id": 0}))
 
-    try:
-        # B. LOAD DATA
-        df = pd.read_csv(csv_path)
-        dataset = df.copy()
-        print(f"✅ Dataset loaded! ({len(df)} records)")
+    if not data:
+        raise Exception("MongoDB collection 'crash_records' is empty!")
 
-        # C. TRAIN MODEL (For Predictive RA)
-        print("🤖 Training Prediction Model...")
+    df = pd.DataFrame(data)
+    dataset = df.copy()
+    print(f"✅ Dataset loaded from MongoDB! ({len(df)} records)")
 
-        # Select features
-        features = ["Location", "Vehicle_Type", "Weather_Condition"]
-        target = "Accident_Severity"
+    # C. TRAIN MODEL (For Predictive RA)
+    print("🤖 Training Prediction Model...")
 
-        # Drop rows with missing values in these columns to prevent errors
-        df_clean = df.dropna(subset=features + [target]).copy()
+    # Select features
+    features = ["Location", "Vehicle_Type", "Weather_Condition"]
+    target = "Accident_Severity"
 
-        # Encode text to numbers (e.g., "Car" -> 1)
-        for col in features:
-            le = LabelEncoder()
-            df_clean[col] = le.fit_transform(df_clean[col].astype(str))
-            encoders[col] = le
+    # Drop rows with missing values in these columns to prevent errors
+    df_clean = df.dropna(subset=features + [target]).copy()
 
-        # Train Random Forest
-        model = RandomForestClassifier(n_estimators=50, random_state=42)
-        model.fit(df_clean[features], df_clean[target])
-        print("✅ AI Model Ready!")
+    # Encode text to numbers (e.g., "Car" -> 1)
+    for col in features:
+        le = LabelEncoder()
+        df_clean[col] = le.fit_transform(df_clean[col].astype(str))
+        encoders[col] = le
 
-    except FileNotFoundError:
-        print("❌ ERROR: Could not find the CSV file. Check your folder structure.")
-    except Exception as e:
-        print(f"❌ ERROR loading data: {e}")
+    # Train Random Forest
+    model = RandomForestClassifier(n_estimators=50, random_state=42)
+    model.fit(df_clean[features], df_clean[target])
+    print("✅ AI Model Ready!")
 
 
 # Run setup immediately on startup
