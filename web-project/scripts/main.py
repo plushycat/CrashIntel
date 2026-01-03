@@ -31,23 +31,51 @@ dataset = pd.DataFrame()
 def load_and_train():
     global dataset, model, encoders
 
-    # B. LOAD DATA
-    # Connect to MongoDB
-    client = MongoClient("mongodb://localhost:27018/")
-    db = client["crash_db"]
-    collection = db["crash_records"]
+    data = []
+    try:
+        # B. LOAD DATA
+        # Connect to MongoDB
+        print("📂 Connecting to Local MongoDB...")
+        client = MongoClient(
+            "mongodb://localhost:27018/", serverSelectionTimeoutMS=3000
+        )
+        # Force connection check
+        client.admin.command("ping")
 
-    print("📂 Connecting to Local MongoDB...")
+        db = client["crash_db"]
+        collection = db["crash_records"]
 
-    # Fetch data (exclude _id)
-    data = list(collection.find({}, {"_id": 0}))
+        # Fetch data (exclude _id)
+        data = list(collection.find({}, {"_id": 0}))
+        print(f"✅ Loaded from MongoDB! ({len(data)} records)")
+
+    except Exception as e:
+        print(f"⚠️ MongoDB not available: {e}")
+        print("🔄 Falling back to CSV dataset...")
+
+        try:
+            # Fallback path relative to this script
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            csv_path = os.path.join(
+                base_dir, "..", "..", "Analysis", "Datasets", "cleaned_for_phase_3.csv"
+            )
+            data_df = pd.read_csv(csv_path)
+
+            # Handle NaN for JSON compatibility
+            data_df = data_df.where(pd.notnull(data_df), None)
+            data = data_df.to_dict(orient="records")
+            print(f"✅ Loaded from CSV! ({len(data)} records)")
+
+        except Exception as csv_e:
+            print(f"❌ Critical Error: Could not load data from Mongo or CSV. {csv_e}")
+            return
 
     if not data:
-        raise Exception("MongoDB collection 'crash_records' is empty!")
+        print("❌ No data found.")
+        return
 
     df = pd.DataFrame(data)
     dataset = df.copy()
-    print(f"✅ Dataset loaded from MongoDB! ({len(df)} records)")
 
     # C. TRAIN MODEL (For Predictive RA)
     print("🤖 Training Prediction Model...")
@@ -239,5 +267,48 @@ def get_phase3_faq():
 
     except FileNotFoundError:
         return {"error": "FAQ data file not found. Run phase3_faq_extractor.py first."}
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.get("/api/map-data")
+def get_map_data():
+    """
+    Returns crash data for the map: Location, Severity, Latitude, Longitude.
+    Limits to 500 records to prevent frontend lag, or use clustering.
+    """
+    if dataset.empty:
+        return []
+
+    try:
+        # Filter for rows that have valid coordinates
+        # Ensure Latitude and Longitude are not null/NaN
+        valid_data = dataset.dropna(subset=["Latitude", "Longitude"]).copy()
+
+        # Limit to 1000 records for performance (random sample if needed, or first N)
+        # Taking top 2000 most recent if sorted, or just head for now.
+        # Dataset might be large, so let's cap it.
+        # limit = 2000
+        # result_df = valid_data.head(limit)
+
+        # WE ARE NOW RETURNING ALL DATA (~20k-40k rows).
+        # Frontend must handle this via Canvas rendering.
+        result_df = valid_data
+
+        # Select only necessary columns
+        columns_to_keep = [
+            "Latitude",
+            "Longitude",
+            "Accident_Severity",
+            "Location",
+        ]
+
+        # Ensure all columns exist, fill missing with None
+        for col in columns_to_keep:
+            if col not in result_df.columns:
+                result_df[col] = None
+
+        return clean_nans(result_df[columns_to_keep].to_dict(orient="records"))
+
     except Exception as e:
         return {"error": str(e)}
