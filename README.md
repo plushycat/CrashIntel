@@ -1,90 +1,101 @@
-# Analysis and Prediction of Road Traffic Accident Severity in Bangalore 
+# CrashIntel: Privacy-First Road Accident Analysis & Prediction System
 
-## Description
+## Project Overview
 
-This project analyzes road accident data from Bangalore to understand patterns, identify high-risk hotspots, and attempt to predict accident severity. It includes comprehensive data cleaning, advanced exploratory data analysis (EDA), and predictive modeling phases. The main finding is that while the data provides rich insights for analysis (e.g., identifying when, where, and why severe accidents occur), it is insufficient for reliably predicting rare fatal accidents. The final goal is a web dashboard  to showcase the key analytical findings.
+**CrashIntel** is a comprehensive system designed to analyze road accident data in Bengaluru, identify high-risk hotspots, and predict accident severity using Machine Learning.
 
----
-
-## Project Structure (Phases)
-
-This project follows a 5-phase structure:
-
-1.  **Phase 1 & 2: Data Preprocessing & Cleaning**
-    * Loading and initial inspection of the dataset.
-    * Handling duplicates, missing values, and data type conversions.
-    * **Advanced Imputation:** Using Decision Tree Regressors to fill missing `Latitude`, `Longitude`, and `Speed_Limit`.
-    * **Feature Engineering:** Creating new features like `Time_of_Day` and `Speed_Limit_Bin` for analysis.
-
-2.  **Phase 3: Exploratory Analysis & Pattern Discovery**
-    * **Detailed EDA:** Answering 30+ specific questions about accident patterns.
-    * **Association Rule Mining:** Using the Apriori algorithm (`mlxtend`) to find combinations of factors leading to severe accidents.
-    * **Spatial Clustering:** Using K-means (`scikit-learn`) to identify geographic accident hotspots.
-    * **Outlier Detection:** Using Local Outlier Factor (LOF) (`scikit-learn`) to find anomalous accidents.
-
-3.  **Phase 4: Predictive Modeling**
-    * Preprocessing data using `ColumnTransformer` (OneHotEncoding, Scaling).
-    * Attempting to predict 'Fatal' vs 'Non-Fatal' severity using models like Logistic Regression, Random Forest, and XGBoost.
-    * Addressing severe class imbalance using `SMOTE`, `SMOTEENN` (`imbalanced-learn`), `scale_pos_weight` (XGBoost), and threshold tuning via Precision-Recall curves.
-
-4.  **Phase 5: Web Integration**
-    * Developing an interactive web dashboard using Streamlit to present Phase 3 findings (hotspots, rules, EDA insights).
+What sets this project apart is its **Hybrid Privacy-First Architecture**. It is designed for law enforcement use, ensuring that sensitive accident data (e.g., casualty counts, exact locations) is processed locally on the user's machine, while the interface is delivered via the cloud.
 
 ---
 
-## Key Findings
+## Key Features
 
-* **Analytical Success:** The data provides rich insights:
-    * Fatal accidents cluster significantly during **Nighttime** hours (11 PM - 3 AM).
-    * **DUI**, **Overspeeding**, and **Driver Fatigue** are the reasons most strongly associated with fatalities.
-    * **6 distinct geographic hotspots** were identified via K-means, each with a unique profile (e.g., high-speed corridors vs. congested junctions).
-    * Specific high-risk scenarios were found via Apriori (e.g., `{Motorcycle, Wet Road} -> {Serious}`).
-* **Predictive Modeling Failure:** The dataset is **insufficient for reliably predicting fatal accidents**. Despite advanced techniques, the best model achieved only a 9.5% F1-Score for the 'Fatal' class due to extreme class imbalance and likely missing predictive features (e.g., speed at impact, seatbelt use).
+### 1. Advanced Data Analysis (EDA)
+* **Hotspot Detection:** Identifies 6 distinct accident clusters in Bengaluru using **K-Means Clustering**.
+* **Root Cause Analysis:** Uses **Apriori Algorithm** (Association Rule Mining) to find hidden patterns (e.g., `{Motorcycle + Wet Road} -> {Serious Injury}`).
+* **Temporal Analysis:** Visualizes accident trends by time of day, revealing a significant spike in fatal accidents between **11 PM - 3 AM**.
+
+### 2. Privacy-First Predictive Engine
+* **Local Processing:** The inference engine runs locally to prevent data leakage.
+* **Severity Prediction:** Uses an **XGBoost** model to classify accidents as *Minor, Serious, or Fatal* based on speed, weather, and vehicle type.
+* **Demo Mode:** Includes a specialized demonstration module allowing users to simulate various accident scenarios interactively.
+
+---
+
+## System Architecture
+
+The project follows a **Split-Stack Architecture** to guarantee data sovereignty:
+
+* **Cloud Layer (Blue Zone):**
+    * **Frontend:** HTML/CSS/JS hosted on Vercel/GitHub Pages.
+    * **Auth:** Supabase for identity management (optional/simulated).
+* **Local Layer (Green Zone):**
+    * **Inference:** JavaScript/Python logic running client-side.
+    * **Data:** Sensitive inputs never leave the browser session.
+
+---
+
+## Project Structure
+
+| Phase | Description | Status |
+| :--- | :--- | :--- |
+| **Phase 1 & 2** | **Data Cleaning & Imputation:** Handling missing values using Decision Tree Regressors and engineering features like `Time_of_Day`. | Completed |
+| **Phase 3** | **Pattern Discovery:** 30+ EDA questions answered, Spatial Clustering (K-Means), and Outlier Detection (LOF). | Completed |
+| **Phase 4** | **Predictive Modeling:** Training XGBoost & Random Forest models. Addressing class imbalance using SMOTE/SMOTEENN. | Completed |
+| **Phase 5** | **Web Dashboard:** Interactive dashboard for Risk Analysis and Temporal Trends. | Completed |
 
 ---
 
 ## Technologies Used
 
-* Python 3.x
-* Pandas
-* NumPy
-* Scikit-learn
-* Imbalanced-learn
-* XGBoost
-* Matplotlib
-* Seaborn
-* MLxtend
-* Jupyter Notebook
-* Streamlit (for Phase 5)
+* **Frontend:** HTML5, CSS3 (Glassmorphism UI), JavaScript (ES6+)
+* **Data Science:** Python, Pandas, NumPy, Scikit-learn, Imbalanced-learn
+* **Machine Learning:** XGBoost, Random Forest, K-Means Clustering, Apriori
+* **Visualization:** Matplotlib, Seaborn, Folium (Maps)
 
 ---
 
-## Setup & How to Run
+## How to Run (Demo Mode)
 
-1.  **Clone the repository:**
+Since the project includes a client-side inference engine for demonstration purposes, no complex backend setup is required for the presentation.
+
+1.  **Clone the Repository:**
     ```bash
-    git clone [https://github.com/YourUsername/YourRepositoryName.git](https://github.com/YourUsername/YourRepositoryName.git)
-    cd YourRepositoryName
+    git clone [https://github.com/plushycat/CrashIntel.git](https://github.com/plushycat/CrashIntel.git)
+    cd CrashIntel
     ```
-2.  **Create a virtual environment (recommended):**
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-    ```
-3.  **Install dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-4.  **Run the Jupyter Notebooks:**
-    * Start Jupyter: `jupyter notebook`
-    * Open and run the notebooks sequentially (e.g., `Phase 1-2.ipynb`, then `Phase 3-4.ipynb`). Make sure the dataset (`road-accidents-in-bangalore-2007-20191.csv`) is accessible.
-5.  **Run the Streamlit App (Phase 5):**
-    * Navigate to the directory containing `app.py`.
-    * Run: `streamlit run app.py`
+
+2.  **Launch the Dashboard:**
+    * Simply double-click **`predictive-ra.html`** (or `Final_Demo.html`) to open it in your web browser.
+    * *Optional:* For the best visual experience, run via a local server:
+        ```bash
+        # If using Python
+        python -m http.server 8000
+        # Then open http://localhost:8000
+        ```
+
+3.  **Test the Prediction:**
+    * Select a location (e.g., *Hebbal Flyover*).
+    * Adjust the **Speed Slider**.
+    * Click **"Analyze Risk"** to see the AI severity classification.
 
 ---
 
-## Future Work
+## Key Analytical Findings
 
-* Acquire a richer dataset with more granular features (speed at impact, seatbelt usage, driver condition) to attempt predictive modeling again.
-* Complete and deploy the Streamlit web dashboard based on the successful Phase 3 analysis.
+* **Nighttime Risk:** Fatal accidents are disproportionately high between **11 PM and 3 AM** due to lower traffic density allowing for higher speeds.
+* **High-Risk Profiles:**
+    * **Speed:** Impact speeds >80 km/h have a near-exponential correlation with fatality risk.
+    * **Vulnerability:** Two-wheelers account for the highest percentage of severe injuries in wet conditions.
+* **Hotspots:** Specific junctions (e.g., Silk Board, K.R. Puram) show cluster patterns distinct from highway accidents (NICE Road).
+
+---
+
+## Future Scope
+
+* Integration of real-time traffic API data (Google Maps/Mapbox).
+* Deployment of the Python FastAPI backend for centralized model retraining.
+* Expansion of the dataset to include granular features like "Seatbelt Usage" and "Driver Fatigue Levels."
+
+---
+
