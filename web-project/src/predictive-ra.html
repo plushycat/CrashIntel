@@ -63,71 +63,94 @@
             </div>
         </div>
 
-        <section class="glass-card hero-section">
-            <h1 class="hero-title">Predictive Risk Analysis</h1>
-            <p class="hero-subtitle">
+        <!-- Standardized Hero Section -->
+        <section class="glass-card" style="margin-bottom: 30px; text-align: center;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 15px;">Predictive Risk Analysis</h1>
+            <p style="font-size: 1.1rem; opacity: 0.8; max-width: 800px; margin: 0 auto;">
                 Use our AI model to predict accident severity based on location, vehicle type, and current weather conditions.
             </p>
         </section>
 
+        <!-- Main Grid -->
         <div class="dashboard-grid-main">
+            <!-- Left: Input Form -->
+            <!-- Left: Input Form -->
             <div class="glass-card">
-                <h3 class="card-header">Input Parameters</h3>
+                <h3 style="border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; margin-bottom: 20px;">Input Parameters</h3>
                 
-                <div class="form-group mt-20">
-                    <label for="locationSelect">Location</label>
-                    <select id="locationSelect" class="glass-input full-width">
-                        <option value="Koramangala">Koramangala</option>
-                        <option value="Indiranagar">Indiranagar</option>
-                        <option value="Jayanagar">Jayanagar</option>
-                        <option value="Whitefield">Whitefield</option>
-                        <option value="HSR Layout">HSR Layout</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="vehicleSelect">Vehicle Type</label>
-                    <select id="vehicleSelect" class="glass-input full-width">
-                        <option value="Car">Car</option>
-                        <option value="Motorcycle">Motorcycle</option>
-                        <option value="Auto Rickshaw">Auto Rickshaw</option>
-                        <option value="Bus">Bus</option>
-                        <option value="Truck">Truck</option>
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="locationSelect">Accident Location</label>
+                    <select id="locationSelect">
+                        <option value="Koramangala">Koramangala (Urban)</option>
+                        <option value="Hebbal">Hebbal Flyover (High Traffic)</option>
+                        <option value="NiceRoad">NICE Road (Expressway)</option>
+                        <option value="Indiranagar">Indiranagar (Commercial)</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label for="weatherSelect">Weather Condition</label>
-                    <select id="weatherSelect" class="glass-input full-width">
-                        <option value="Clear">Clear</option>
-                        <option value="Raining">Raining</option>
-                        <option value="Cloudy">Cloudy</option>
-                        <option value="Foggy">Foggy</option>
+                    <select id="weatherSelect">
+                        <option value="Clear">Clear / Sunny</option>
+                        <option value="Rain">Heavy Rain / Wet</option>
+                        <option value="Fog">Fog / Low Visibility</option>
                     </select>
                 </div>
 
-                <button id="analyzeBtn" class="btn-submit full-width mt-20">Analyze Risk</button>
+                <div class="form-group">
+                    <label for="vehicleSelect">Vehicle Type</label>
+                    <select id="vehicleSelect">
+                        <option value="Car">Passenger Car</option>
+                        <option value="Motorcycle">Motorcycle / Scooter</option>
+                        <option value="Truck">Heavy Truck</option>
+                        <option value="Bus">Bus</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="speedRange">Vehicle Speed (km/h)</label>
+                    <div class="speed-display-container">
+                        <span id="speedValueDisplay">40</span> <span style="font-size: 0.9rem; opacity: 0.7;">km/h</span>
+                    </div>
+                    <input type="range" id="speedRange" min="0" max="140" value="40" class="glass-slider">
+                </div>
+
+                <button id="analyzeBtn" class="btn-submit" style="width: 100%; margin-top: 20px;">Run AI Prediction</button>
             </div>
 
+            <!-- Right: Result Card -->
             <div class="glass-card result-wrapper">
-                <h3>AI Prediction Result</h3>
+                <h3 style="border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; margin-bottom: 20px; width: 100%;">Prediction Result</h3>
                 
-                <div id="resultContainer" class="result-container">
-                    <div class="result-icon" id="resultIcon">🔮</div>
-                    <h2 id="predictionResult" class="prediction-text">--</h2>
-                    <p id="confidenceLevel" class="confidence-text">Confidence: --</p>
-                    <p id="resultMessage" class="result-message"></p>
+                <div id="terminalContainer" class="terminal-container">
+                    <div id="terminal" class="terminal-box">
+                        <div class="log-line">> System Ready...</div>
+                        <div class="log-line">> XGBoost Model Loaded (v2.4)</div>
+                    </div>
+                </div>
+
+                <div id="riskResultContainer" class="result-container" style="display: none; width: 100%;">
+                    <div class="risk-circle-container">
+                        <div id="riskCircle" class="risk-circle">
+                            <span id="riskScore">--</span>
+                        </div>
+                        <div class="risk-label-text">RISK SCORE</div>
+                    </div>
+                    
+                    <h2 id="predictionResult" class="prediction-text" style="font-size: 1.8rem;">--</h2>
+                    <p id="resultMessage" class="result-message" style="max-width: 100%;"></p>
                 </div>
 
                 <div id="placeholderResult" class="placeholder-container">
                     <div class="placeholder-icon">🤖</div>
-                    <p>Select parameters and click "Analyze Risk" to see the prediction.</p>
+                    <p>Select parameters and click "Run AI Prediction"</p>
                 </div>
             </div>
         </div>
 
-        <section class="glass-card mt-30 mb-80">
-            <h3>Model Capabilities</h3>
+        <!-- Footnote / Extra Info -->
+        <section class="glass-card" style="margin-top: 30px; margin-bottom: 80px;">
+            <h3 style="border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; margin-bottom: 20px;">Model Capabilities</h3>
             <div class="paradox-cards">
                 <div class="mini-card">
                     <div class="card-icon">🌲</div>
