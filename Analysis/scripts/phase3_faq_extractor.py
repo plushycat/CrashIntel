@@ -16,7 +16,16 @@ def extract_phase3_faq():
     # Paths
     script_dir = os.path.dirname(os.path.abspath(__file__))
     notebook_path = os.path.join(script_dir, "..", "Phase 3.ipynb")
-    json_output_path = os.path.join(script_dir, "phase3_faq.json")
+    json_output_path = os.path.join(
+        script_dir,
+        "..",
+        "..",
+        "web-project",
+        "src",
+        "assets",
+        "data",
+        "phase3_faq.json",
+    )
 
     # Image output directory (in web-project)
     img_output_dir = os.path.join(

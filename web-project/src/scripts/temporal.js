@@ -15,8 +15,8 @@ async function initTemporalPage() {
     if (!container) return;
     
     try {
-        // Fetch FAQ data from API
-        const response = await fetch(`${API_BASE}/api/phase3/faq`);
+        // Fetch FAQ data from static JSON (no backend required)
+        const response = await fetch('assets/data/phase3_faq.json');
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
