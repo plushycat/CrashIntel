@@ -1,90 +1,90 @@
-# Analysis and Prediction of Road Traffic Accident Severity in Bangalore 
+# Analysis and Prediction of Road Traffic Accident Severity in Bangalore
 
 ## Description
 
-This project analyzes road accident data from Bangalore to understand patterns, identify high-risk hotspots, and attempt to predict accident severity. It includes comprehensive data cleaning, advanced exploratory data analysis (EDA), and predictive modeling phases. The main finding is that while the data provides rich insights for analysis (e.g., identifying when, where, and why severe accidents occur), it is insufficient for reliably predicting rare fatal accidents. The final goal is a web dashboard  to showcase the key analytical findings.
+This project performs a comprehensive analysis of road accident data in Bangalore to identify high-risk patterns and hotspots. It evolves from raw data cleaning and exploratory analysis into a **modern, interactive web dashboard**. 
+
+The solution combines advanced data science techniques (Spatial Clustering, Association Rule Mining) with a full-stack web application to visualize crash data dynamically.
 
 ---
 
-## Project Structure (Phases)
+## Project Phases
 
 This project follows a 5-phase structure:
 
 1.  **Phase 1 & 2: Data Preprocessing & Cleaning**
-    * Loading and initial inspection of the dataset.
-    * Handling duplicates, missing values, and data type conversions.
-    * **Advanced Imputation:** Using Decision Tree Regressors to fill missing `Latitude`, `Longitude`, and `Speed_Limit`.
-    * **Feature Engineering:** Creating new features like `Time_of_Day` and `Speed_Limit_Bin` for analysis.
-
+    *   cleaning, imputation, and feature engineering on the raw dataset.
 2.  **Phase 3: Exploratory Analysis & Pattern Discovery**
-    * **Detailed EDA:** Answering 30+ specific questions about accident patterns.
-    * **Association Rule Mining:** Using the Apriori algorithm (`mlxtend`) to find combinations of factors leading to severe accidents.
-    * **Spatial Clustering:** Using K-means (`scikit-learn`) to identify geographic accident hotspots.
-    * **Outlier Detection:** Using Local Outlier Factor (LOF) (`scikit-learn`) to find anomalous accidents.
-
+    *   **Spatial Clustering (K-means):** Identifying 6 distinct accident hotspots.
+    *   **Association Rule Mining (Apriori):** Finding distinct cause-effect patterns (e.g., *Wet Road + Motorcycle -> Serious Injury*).
 3.  **Phase 4: Predictive Modeling**
-    * Preprocessing data using `ColumnTransformer` (OneHotEncoding, Scaling).
-    * Attempting to predict 'Fatal' vs 'Non-Fatal' severity using models like Logistic Regression, Random Forest, and XGBoost.
-    * Addressing severe class imbalance using `SMOTE`, `SMOTEENN` (`imbalanced-learn`), `scale_pos_weight` (XGBoost), and threshold tuning via Precision-Recall curves.
-
-4.  **Phase 5: Web Integration**
-    * Developing an interactive web dashboard using Streamlit to present Phase 3 findings (hotspots, rules, EDA insights).
-
----
-
-## Key Findings
-
-* **Analytical Success:** The data provides rich insights:
-    * Fatal accidents cluster significantly during **Nighttime** hours (11 PM - 3 AM).
-    * **DUI**, **Overspeeding**, and **Driver Fatigue** are the reasons most strongly associated with fatalities.
-    * **6 distinct geographic hotspots** were identified via K-means, each with a unique profile (e.g., high-speed corridors vs. congested junctions).
-    * Specific high-risk scenarios were found via Apriori (e.g., `{Motorcycle, Wet Road} -> {Serious}`).
-* **Predictive Modeling Failure:** The dataset is **insufficient for reliably predicting fatal accidents**. Despite advanced techniques, the best model achieved only a 9.5% F1-Score for the 'Fatal' class due to extreme class imbalance and likely missing predictive features (e.g., speed at impact, seatbelt use).
+    *   Attempting severity prediction using Random Forest and XGBoost (noted limitations due to dataset class imbalance).
+4.  **Phase 5: Web Integration (Current State)**
+    *   **Backend:** A **FastAPI** server that exposes machine learning models and refined datasets via REST APIs.
+    *   **Frontend:** A responsive Dashboard built with **HTML5, CSS3, and JavaScript**.
+    *   **Visualization:** An interactive **Leaflet Map** rendering over **20,000 accident points** with heatmap-like density effects, strictly bound to the Bangalore region.
 
 ---
 
-## Technologies Used
+## Technical Stack
 
-* Python 3.x
-* Pandas
-* NumPy
-* Scikit-learn
-* Imbalanced-learn
-* XGBoost
-* Matplotlib
-* Seaborn
-* MLxtend
-* Jupyter Notebook
-* Streamlit (for Phase 5)
+### Data Science & Backend
+*   **Python 3.x**: Core logic.
+*   **Pandas & NumPy**: Data manipulation.
+*   **Scikit-learn**: Machine Learning (Random Forest, K-Means, LOF).
+*   **FastAPI**: High-performance API server.
+*   **MongoDB**: Primary database (with automatic CSV fallback).
+
+### Frontend
+*   **HTML5 / CSS3**: Responsive Glassmorphism UI.
+*   **JavaScript (ES6+)**: Dynamic logic.
+*   **Leaflet.js**: Interactive maps with Canvas rendering for high performance.
+*   **Chart.js**: Statistical visualizations.
+
+---
+
+## Key Features
+
+*   **Interactive Crash Map**: 
+    *   Visualizes the **entire dataset (20,085 records)**.
+    *   Uses **Canvas rendering** to maintain 60fps performance.
+    *   Smart interactions: Panning or clicking the map automatically updates "Deep Dive" statistics based on the visible area.
+*   **Predictive Risk Assessment**:
+    *   A dedicated module to predict accident severity based on user inputs (Location, Vehicle, Weather).
+*   **Temporal Analysis**:
+    *   Visual breakdown of accidents by Hour of Day and Day of Week.
 
 ---
 
 ## Setup & How to Run
 
-1.  **Clone the repository:**
-    ```bash
-    git clone [https://github.com/YourUsername/YourRepositoryName.git](https://github.com/YourUsername/YourRepositoryName.git)
-    cd YourRepositoryName
-    ```
-2.  **Create a virtual environment (recommended):**
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-    ```
-3.  **Install dependencies:**
+### Prerequisities
+*   Python 3.9+
+*   MongoDB (Optional - system will fallback to CSV if not running)
+
+### 1. Backend Setup
+1.  Navigate to the root directory.
+2.  Install dependencies:
     ```bash
     pip install -r requirements.txt
     ```
-4.  **Run the Jupyter Notebooks:**
-    * Start Jupyter: `jupyter notebook`
-    * Open and run the notebooks sequentially (e.g., `Phase 1-2.ipynb`, then `Phase 3-4.ipynb`). Make sure the dataset (`road-accidents-in-bangalore-2007-20191.csv`) is accessible.
-5.  **Run the Streamlit App (Phase 5):**
-    * Navigate to the directory containing `app.py`.
-    * Run: `streamlit run app.py`
+    *(Ensure fastapi, uvicorn, pymongo, pandas, scikit-learn are included)*
+3.  Start the API Server:
+    ```bash
+    # Run from the root directory
+    python -m uvicorn scripts.main:app --app-dir web-project --port 8001
+    ```
+    *Note: We use port **8001** to avoid conflicts.*
+
+### 2. Frontend Setup
+1.  Navigate to `web-project/src`.
+2.  Open `dashboard.html` (or `index.html`) directly in your browser.
+    *   *For best results, use a simple HTTP server (e.g., Live Server in VS Code).*
 
 ---
 
-## Future Work
+## Key Findings
 
-* Acquire a richer dataset with more granular features (speed at impact, seatbelt usage, driver condition) to attempt predictive modeling again.
-* Complete and deploy the Streamlit web dashboard based on the successful Phase 3 analysis.
+*   **High Risk Hours:** Fatal accidents cluster significantly during **Nighttime (11 PM - 3 AM)**.
+*   **Hotspots:** 6 specific geographic clusters identified via K-Means.
+*   **Prediction Limits:** Predicting "Fatal" accidents remains challenging (F1-Score ~9.5%) due to the rarity of the event class, despite advanced resampling techniques.
