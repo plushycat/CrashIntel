@@ -3,7 +3,7 @@
  * Fetches FAQ data from /api/phase3/faq and renders accordion
  */
 
-const API_BASE = 'http://127.0.0.1:8000';
+const API_BASE = 'http://127.0.0.1:8001';
 
 /**
  * Initialize the temporal analysis page
@@ -15,8 +15,8 @@ async function initTemporalPage() {
     if (!container) return;
     
     try {
-        // Fetch FAQ data from static JSON (no backend required)
-        const response = await fetch('assets/data/phase3_faq.json');
+        // Fetch FAQ data from Backend API (MongoDB/JSON Hybrid)
+        const response = await fetch(`${API_BASE}/api/phase3/faq`);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

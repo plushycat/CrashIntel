@@ -125,7 +125,13 @@ document.addEventListener("DOMContentLoaded", async function () {
         [13.20, 77.88], // Northeast coordinates
       ],
       maxBoundsViscosity: 1.0,
-    }).setView([12.9716, 77.5946], 11);
+    }).setView(
+        [
+            parseFloat(localStorage.getItem("map_center_lat")) || 12.9716,
+            parseFloat(localStorage.getItem("map_center_lng")) || 77.5946
+        ], 
+        parseInt(localStorage.getItem("map_zoom")) || 11
+    );
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "© OpenStreetMap contributors",
@@ -178,24 +184,208 @@ document.addEventListener("DOMContentLoaded", async function () {
       // 3. INITIAL STATS
       updateStats(map, data);
 
-      // 4. EVENT LISTENER
-      map.on("moveend click", () => {
-        updateStats(map, data);
+      // 4. EVENT LISTENERS
+      let selectionCircle = null;
+      let debounceTimer;
+
+      // A. CLICK - Select a region (Dynamic radius)
+      map.on("click", (e) => {
+        const center = e.latlng;
+        const zoom = map.getZoom();
+        
+        let radius = 1500; // Default (Zoom < 12)
+        if (zoom >= 14) radius = 500;
+        else if (zoom === 13) radius = 750;
+        else if (zoom === 12) radius = 1000;
+
+        // Remove existing circle
+        if (selectionCircle) {
+            map.removeLayer(selectionCircle);
+        }
+
+        // Draw new circle
+        selectionCircle = L.circle(center, {
+            color: '#3b82f6',
+            fillColor: '#3b82f6',
+            fillOpacity: 0.2,
+            radius: radius,
+            weight: 2
+        }).addTo(map);
+
+        // Update stats for this circle
+        updateStats(map, data, center, radius);
+        
+        // Update Title to indicate mode
+        const title = document.querySelector(".stats-header h3");
+        if(title) title.innerText = `Deep Dive (Local ${radius < 1000 ? radius + 'm' : (radius/1000) + 'km'})`;
+
+        // SHOW CLEAR BUTTON
+        const clearBtn = document.getElementById("clear-selection-btn");
+        if(clearBtn) clearBtn.style.display = "flex";
+
+        // Save Selection State
+        localStorage.setItem("sel_lat", center.lat);
+        localStorage.setItem("sel_lng", center.lng);
+        localStorage.setItem("sel_rad", radius);
       });
+
+      // B. MOVE - Reset selection on pan/zoom
+      map.on("moveend", () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            // Save Persistence State
+            const center = map.getCenter();
+            localStorage.setItem("map_center_lat", center.lat);
+            localStorage.setItem("map_center_lng", center.lng);
+            localStorage.setItem("map_zoom", map.getZoom());
+
+            // Only update stats if NO selection is active
+            if (selectionCircle) {
+                // Do not clear. Do not update to viewport.
+                // Keep the "Deep Dive (Local)" stats active.
+                return;
+            }
+            
+            updateStats(map, data);
+        }, 200);
+      });
+
+      // C. CLEAR BUTTON
+      const clearBtn = document.getElementById("clear-selection-btn");
+      if(clearBtn) {
+        clearBtn.addEventListener("click", () => {
+             if (selectionCircle) {
+                map.removeLayer(selectionCircle);
+                selectionCircle = null;
+            }
+            updateStats(map, data); // Reset to viewport stats
+            
+            // Clear Saved Selection
+            localStorage.removeItem("sel_lat");
+            localStorage.removeItem("sel_lng");
+            localStorage.removeItem("sel_rad");
+
+            // Reset Title
+            const title = document.querySelector(".stats-header h3"); // Updated selector
+            // Or fallback if not found (though structure changed)
+            if(title) title.innerText = "Deep Dive";
+            
+            // Hide Button
+            clearBtn.style.display = "none";
+        });
+      }
+
+      // D. RESET BUTTON
+      const resetBtn = document.getElementById("reset-map-btn");
+      if (resetBtn) {
+          resetBtn.addEventListener("click", () => {
+              // 1. Clear Selection
+              if (selectionCircle) {
+                  map.removeLayer(selectionCircle);
+                  selectionCircle = null;
+              }
+              if (clearBtn) clearBtn.style.display = "none";
+
+              // 2. Reset View
+              map.setView([12.9716, 77.5946], 11);
+
+              // 3. Clear Storage
+              localStorage.removeItem("map_center_lat");
+              localStorage.removeItem("map_center_lng");
+              localStorage.removeItem("map_zoom");
+              localStorage.removeItem("sel_lat");
+              localStorage.removeItem("sel_lng");
+              localStorage.removeItem("sel_rad");
+
+              // 4. Reset Stats
+              updateStats(map, data);
+              
+              // 5. Reset Title
+              const title = document.querySelector(".stats-header h3");
+              if (title) title.innerText = "Deep Dive";
+          });
+      }
+
+      // D. RESTORE SELECTION (if exists)
+      const savedLat = parseFloat(localStorage.getItem("sel_lat"));
+      const savedLng = parseFloat(localStorage.getItem("sel_lng"));
+      const savedRad = parseFloat(localStorage.getItem("sel_rad"));
+
+      if (!isNaN(savedLat) && !isNaN(savedLng) && !isNaN(savedRad)) {
+          const center = L.latLng(savedLat, savedLng);
+          
+          // Draw restored circle
+          selectionCircle = L.circle(center, {
+            color: '#3b82f6',
+            fillColor: '#3b82f6',
+            fillOpacity: 0.2,
+            radius: savedRad,
+            weight: 2
+          }).addTo(map);
+
+          // Update stats
+          updateStats(map, data, center, savedRad);
+          
+          // Update Title
+          const title = document.querySelector(".stats-header h3");
+          if(title) title.innerText = `Deep Dive (Local ${savedRad < 1000 ? savedRad + 'm' : (savedRad/1000) + 'km'})`;
+          
+          // Show Button
+          if(clearBtn) clearBtn.style.display = "flex";
+      }
 
     } catch (err) {
       console.error("Failed to load map data:", err);
+      showOfflineError();
     }
   }
+  
+  function showOfflineError() {
+      const statsContainer = document.querySelector(".stats-container");
+      if(statsContainer) {
+          statsContainer.innerHTML = `
+            <div class="offline-card">
+                <h3>Overview Unavailable</h3>
+                
+                <div class="offline-status" style="border:none; box-shadow:none; background:transparent; padding:0; margin-bottom:10px;">
+                     <span class="stat-value" style="font-size: 1rem; font-weight:600; display:flex; align-items:center; gap:6px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
+                        Server Offline
+                     </span>
+                </div>
+                
+                <div class="offline-instruction" style="margin-bottom: 20px;">
+                    <span style="opacity:0.75">Run in <strong>Project Root</strong>:</span><br>
+                    <code>run_server.bat</code>
+                </div>
 
-  function updateStats(map, allData) {
+                <button class="offline-retry-btn" onclick="window.location.reload()" title="Retry Connection">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                </button>
+            </div>
+          `;
+      }
+  }
+
+  function updateStats(map, allData, center = null, radius = 0) {
     const bounds = map.getBounds();
-    
-    // Filter points within current view
-    const visiblePoints = allData.filter(p => {
-        if(!p.Latitude || !p.Longitude) return false;
-        return bounds.contains([p.Latitude, p.Longitude]);
-    });
+    let visiblePoints;
+
+    // Filter Logic
+    if (center && radius > 0) {
+        // LOCAL MODE: Filter by distance
+        visiblePoints = allData.filter(p => {
+            if(!p.Latitude || !p.Longitude) return false;
+            const ptLatLng = L.latLng(p.Latitude, p.Longitude);
+            return center.distanceTo(ptLatLng) <= radius;
+        });
+    } else {
+        // VIEWPORT MODE: Filter by map bounds
+        visiblePoints = allData.filter(p => {
+            if(!p.Latitude || !p.Longitude) return false;
+            return bounds.contains([p.Latitude, p.Longitude]);
+        });
+    }
 
     const elAccidents = document.getElementById("stat-accidents");
     const elFatalities = document.getElementById("stat-fatalities");
@@ -209,7 +399,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const fatalCount = visiblePoints.filter(p => String(p.Accident_Severity).toLowerCase().includes("fatal")).length;
     if (elFatalities) elFatalities.innerText = fatalCount.toLocaleString();
 
-    // 3. Most Common Vehicle
+    // 3. Most Common Cause
     if (elCommon) {
         if (total === 0) {
             elCommon.innerText = "-";
@@ -219,11 +409,11 @@ document.addEventListener("DOMContentLoaded", async function () {
             let mostCommon = "-";
             
             visiblePoints.forEach(p => {
-                const v = p.Vehicle_Type || "Unknown";
-                counts[v] = (counts[v] || 0) + 1;
-                if(counts[v] > maxCount) {
-                    maxCount = counts[v];
-                    mostCommon = v;
+                const reason = p.Accident_Reason || "Unknown";
+                counts[reason] = (counts[reason] || 0) + 1;
+                if(counts[reason] > maxCount) {
+                    maxCount = counts[reason];
+                    mostCommon = reason;
                 }
             });
             elCommon.innerText = mostCommon;
@@ -232,6 +422,16 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   async function handleLogout() {
+    // Clear Map State
+    localStorage.removeItem("map_center_lat");
+    localStorage.removeItem("map_center_lng");
+    localStorage.removeItem("map_zoom");
+    
+    // Clear Selection State
+    localStorage.removeItem("sel_lat");
+    localStorage.removeItem("sel_lng");
+    localStorage.removeItem("sel_rad");
+
     await supabase.auth.signOut();
     window.location.href = "login.html";
   }

@@ -47,6 +47,13 @@ def load_and_train():
 
         # Fetch data (exclude _id)
         data = list(collection.find({}, {"_id": 0}))
+
+        # Clean NaN values from MongoDB data (same as CSV path)
+        for record in data:
+            for key, value in record.items():
+                if isinstance(value, float) and (np.isnan(value) or np.isinf(value)):
+                    record[key] = None
+
         print(f"✅ Loaded from MongoDB! ({len(data)} records)")
 
     except Exception as e:
@@ -243,32 +250,47 @@ def analyze_temporal(granularity: str = "Hourly"):
 def get_phase3_faq():
     """
     Returns all 30 analysis questions and insights from Phase 3 notebook
-    for the Temporal Analysis FAQ page.
+    Priority: MongoDB -> JSON File
     """
-    try:
-        # Get the folder where THIS script (main.py) lives
-        current_script_dir = os.path.dirname(os.path.abspath(__file__))
+    data = []
 
-        # Path to the FAQ JSON file
+    # 1. Try MongoDB
+    try:
+        client = MongoClient(
+            "mongodb://localhost:27018/", serverSelectionTimeoutMS=2000
+        )
+        # Check connection
+        client.admin.command("ping")
+
+        db = client["crash_db"]
+        collection = db["phase3_faq"]
+
+        # Sort by ID to keep order
+        data = list(collection.find({}, {"_id": 0}).sort("id", 1))
+
+        if data:
+            return {"total": len(data), "faq": data, "source": "MongoDB"}
+
+    except Exception as e:
+        print(f"⚠️ MongoDB FAQ fetch failed: {e}")
+
+    # 2. Fallback to JSON
+    try:
+        current_script_dir = os.path.dirname(os.path.abspath(__file__))
         faq_path = os.path.join(
-            current_script_dir,
-            "..",
-            "..",
-            "Analysis",
-            "scripts",
-            "phase3_faq.json",
+            current_script_dir, "..", "..", "Analysis", "scripts", "phase3_faq.json"
         )
         faq_path = os.path.normpath(faq_path)
 
         with open(faq_path, "r", encoding="utf-8") as f:
             faq_data = json.load(f)
 
+        # Add source info
+        faq_data["source"] = "JSON"
         return faq_data
 
-    except FileNotFoundError:
-        return {"error": "FAQ data file not found. Run phase3_faq_extractor.py first."}
     except Exception as e:
-        return {"error": str(e)}
+        return {"error": f"Failed to load FAQs from DB or File: {str(e)}"}
 
 
 @app.get("/api/map-data")
@@ -301,6 +323,7 @@ def get_map_data():
             "Longitude",
             "Accident_Severity",
             "Location",
+            "Accident_Reason",
         ]
 
         # Ensure all columns exist, fill missing with None
