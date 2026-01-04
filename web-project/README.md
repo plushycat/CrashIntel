@@ -1,50 +1,30 @@
-# Web Project
+# Web Project (Phase 5)
+
+This folder contains the frontend and backend integration for the **CrashIntel** dashboard.
 
 ## Overview
-This web project consists of a responsive landing page and a login page, designed with modern transparency and gradient effects for a visually appealing user experience.
-
-## Project Structure
-```
-web-project
-├── src
-│   ├── index.html          # Main entry point of the web application
-│   ├── landing.html        # HTML structure for the landing page
-│   ├── login.html          # HTML structure for the login page
-│   ├── assets
-│   │   └── styles
-│   │       ├── landing.css # Styles specific to the landing page
-│   │       ├── login.css   # Styles specific to the login page
-│   │       └── main.css    # Shared styles across the application
-│   └── scripts
-│       ├── landing.js      # JavaScript functionality for the landing page
-│       └── login.js        # JavaScript functionality for the login page
-├── package.json            # npm configuration file
-└── README.md               # Project documentation
-```
+The web application serves as the user interface for the crash analysis system.
+- **Backend**: FastAPI (Python) serving REST APIs.
+- **Frontend**: HTML/JS/CSS (Leaflet Map, Dashboard).
 
 ## Features
-- **Responsive Design**: The landing and login pages are designed to be fully responsive, ensuring a seamless experience across devices.
-- **Modern Aesthetics**: Utilizes transparency and gradient effects to enhance visual appeal.
-- **User Authentication**: The login page includes a user-friendly form for authentication.
+- **Interactive Map**: 20,000+ crash points rendered via Canvas.
+- **Deep Dive Stats**: Real-time statistics based on map view.
+- **Predictive Risk Assessment**: ML-powered severity prediction.
 
-## Setup Instructions
-1. Clone the repository:
-   ```
-   git clone <repository-url>
-   ```
-2. Navigate to the project directory:
-   ```
-   cd web-project
-   ```
-3. Install dependencies:
-   ```
-   npm install
-   ```
-4. Open `src/index.html` in your browser to view the application.
+## How to Run
 
-## Usage Guidelines
-- Navigate to the landing page to explore features and call-to-action options.
-- Use the login page to authenticate users with the provided form.
+### 1. Start the Backend Server
+This is critical for the map and predictions to work.
 
-## Contributing
-Contributions are welcome! Please submit a pull request or open an issue for any enhancements or bug fixes.
+**From the ROOT directory of the repository:**
+```bash
+python -m uvicorn scripts.main:app --app-dir web-project --port 8001
+```
+
+### 2. Open the Frontend
+Simply open the HTML files in `src/` folder in your browser.
+- **Dashboard**: `src/dashboard.html`
+- **Landing**: `src/index.html`
+
+*Recommendation: Use a local HTTP server (like VS Code "Live Server") for the best experience.*
