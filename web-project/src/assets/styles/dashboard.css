@@ -711,3 +711,38 @@ body:not(.dark-mode) #logout-btn-mobile {
     color: #fb923c; /* Light Orange */
     text-shadow: 0 0 10px rgba(251, 146, 60, 0.3);
 }
+
+/* 10. RESET BUTTON */
+.reset-btn {
+    background: rgba(255, 255, 255, 0.15); /* Slight fill for visibility */
+    border: 1px solid rgba(0,0,0,0.2);     /* Stronger border */
+    color: #374151;                        /* Darker, higher contrast text */
+    border-radius: 50%;
+    width: 32px;                           /* Slightly larger touch target */
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Subtle lift */
+}
+.reset-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: rotate(180deg) scale(1.1);
+    color: #000;
+    border-color: rgba(0,0,0,0.4);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.dark-mode .reset-btn {
+    background: rgba(0, 0, 0, 0.2);
+    border-color: rgba(255,255,255,0.2);
+    color: #ccc;
+    box-shadow: none;
+}
+.dark-mode .reset-btn:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border-color: white;
+}

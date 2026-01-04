@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         updateStats(map, data, center, radius);
         
         // Update Title to indicate mode
-        const title = document.querySelector(".stats-card h3");
+        const title = document.querySelector(".stats-header h3");
         if(title) title.innerText = `Deep Dive (Local ${radius < 1000 ? radius + 'm' : (radius/1000) + 'km'})`;
 
         // SHOW CLEAR BUTTON
@@ -266,12 +266,44 @@ document.addEventListener("DOMContentLoaded", async function () {
             localStorage.removeItem("sel_rad");
 
             // Reset Title
-            const title = document.querySelector(".stats-card h3");
-            if(title) title.innerText = "Deep Dive (Viewport)";
+            const title = document.querySelector(".stats-header h3"); // Updated selector
+            // Or fallback if not found (though structure changed)
+            if(title) title.innerText = "Deep Dive";
             
             // Hide Button
             clearBtn.style.display = "none";
         });
+      }
+
+      // D. RESET BUTTON
+      const resetBtn = document.getElementById("reset-map-btn");
+      if (resetBtn) {
+          resetBtn.addEventListener("click", () => {
+              // 1. Clear Selection
+              if (selectionCircle) {
+                  map.removeLayer(selectionCircle);
+                  selectionCircle = null;
+              }
+              if (clearBtn) clearBtn.style.display = "none";
+
+              // 2. Reset View
+              map.setView([12.9716, 77.5946], 11);
+
+              // 3. Clear Storage
+              localStorage.removeItem("map_center_lat");
+              localStorage.removeItem("map_center_lng");
+              localStorage.removeItem("map_zoom");
+              localStorage.removeItem("sel_lat");
+              localStorage.removeItem("sel_lng");
+              localStorage.removeItem("sel_rad");
+
+              // 4. Reset Stats
+              updateStats(map, data);
+              
+              // 5. Reset Title
+              const title = document.querySelector(".stats-header h3");
+              if (title) title.innerText = "Deep Dive";
+          });
       }
 
       // D. RESTORE SELECTION (if exists)
@@ -295,7 +327,7 @@ document.addEventListener("DOMContentLoaded", async function () {
           updateStats(map, data, center, savedRad);
           
           // Update Title
-          const title = document.querySelector(".stats-card h3");
+          const title = document.querySelector(".stats-header h3");
           if(title) title.innerText = `Deep Dive (Local ${savedRad < 1000 ? savedRad + 'm' : (savedRad/1000) + 'km'})`;
           
           // Show Button
