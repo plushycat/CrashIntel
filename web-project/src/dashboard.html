@@ -78,20 +78,23 @@
         <div class="dashboard-grid-main">
             <div class="map-container glass-card" style="padding: 0;">
                 <div id="crash-map" style="width: 100%; height: 100%; border-radius: 20px;"></div>
+                <button id="clear-selection-btn" class="map-clear-btn" style="display: none;">
+                    Clear ✕
+                </button>
             </div>
 
             <div class="stats-container glass-card">
                 <h3>Deep Dive</h3>
-                <div class="stat-box">
+                <div class="stat-box stat-callout callout-blue">
                     <span class="stat-label">Total Accidents</span>
-                    <span class="stat-value" id="stat-accidents">Loading...</span>
+                    <span class="stat-value highlight" id="stat-accidents">Loading...</span>
                 </div>
-                <div class="stat-box">
+                <div class="stat-box stat-callout callout-orange">
                     <span class="stat-label">Total Fatalities</span>
-                    <span class="stat-value" id="stat-fatalities">Loading...</span>
+                    <span class="stat-value highlight" id="stat-fatalities">Loading...</span>
                 </div>
-                <div class="stat-box">
-                    <span class="stat-label">Most Common</span>
+                <div class="stat-box stat-callout callout-red">
+                    <span class="stat-label">Most Common Cause</span>
                     <span class="stat-value highlight" id="stat-common">Loading...</span>
                 </div>
                 <p class="stat-note">*Based on Location/Click</p>
@@ -113,10 +116,10 @@
                 <div style="display: flex; gap: 30px; flex-wrap: wrap; margin-top: 20px;">
                     <div style="flex: 1; min-width: 300px;">
                         <ul style="list-style: none; padding: 0;">
-                            <li style="margin-bottom: 15px; padding: 15px; background: rgba(0,255,0,0.1); border-left: 4px solid #10b981; border-radius: 4px;">
+                            <li class="report-callout callout-success">
                                 <strong>Non-Fatal Accidents (The Majority Class):</strong> ~95% of the dataset.
                             </li>
-                            <li style="margin-bottom: 15px; padding: 15px; background: rgba(255,0,0,0.1); border-left: 4px solid #ef4444; border-radius: 4px;">
+                            <li class="report-callout callout-danger">
                                 <strong>Fatal Accidents (The Minority Class):</strong> ~5% of the dataset.
                             </li>
                         </ul>

@@ -193,7 +193,8 @@ body {
   font-weight: 700;
 }
 .stat-value.highlight {
-  color: #4facfe;
+  color: #ef4444; /* Stronger Red for Light Mode contrast */
+  text-shadow: none;
 }
 .stat-note {
   font-size: 0.8rem;
@@ -464,4 +465,249 @@ body:not(.dark-mode) #logout-btn-mobile {
 /* Dark mode h1 override */
 .dark-mode h1 {
     color: #ffffff !important;
+}
+
+/* 6. MAP CONTROLS */
+.map-clear-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 999; /* Above Leaflet controls */
+  
+  background: rgba(255, 255, 255, 0.9);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dark-mode .map-clear-btn {
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  color: #f87171;
+}
+
+.map-clear-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.15);
+  background: #ef4444;
+  color: white;
+  border-color: #ef4444;
+}
+
+.map-clear-btn:active {
+  transform: translateY(0);
+}
+
+/* 7. OFFLINE ERROR STATE */
+.offline-card {
+    text-align: center;
+    padding: 10px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.offline-card h3 {
+    margin-bottom: 15px;
+    color: #334155; /* Slate 700 - Neutral Dark */
+    font-size: 1.1rem;
+}
+
+.offline-status {
+    background: rgba(255, 255, 255, 0.5); /* Glass, not solid pink */
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 16px;
+    padding: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.offline-status .stat-value {
+    color: #475569; /* Slate 600 - Neutral Text */
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: -0.02em;
+}
+
+.offline-instruction {
+    font-size: 0.85rem;
+    color: #475569;
+    background: #f1f5f9;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.offline-instruction code {
+    background: #e2e8f0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    color: #0f172a;
+    font-weight: 600;
+    display: block;
+    margin-top: 5px;
+    text-align: center;
+}
+
+.offline-retry-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* Circular */
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto; /* Center it */
+    
+    background: #ef4444;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+}
+
+.offline-retry-btn:hover {
+    background: #dc2626;
+    transform: rotate(180deg) scale(1.1); /* Rotate effect on hover */
+    box-shadow: 0 6px 15px rgba(239, 68, 68, 0.4);
+}
+
+.offline-retry-btn svg {
+    display: block;
+}
+
+/* DARK MODE OVERRIDES */
+.dark-mode .offline-card h3 {
+    color: #f1f5f9; /* White text for dark mode */
+}
+
+.dark-mode .offline-status {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.dark-mode .offline-status .stat-value {
+    color: #fca5a5; /* Lighter red for dark mode status */
+}
+
+.dark-mode .offline-instruction {
+    background: rgba(255, 255, 255, 0.05);
+    color: #cbd5e1;
+}
+
+.dark-mode .offline-instruction code {
+    background: rgba(0, 0, 0, 0.3);
+    color: #e2e8f0;
+}
+
+
+.dark-mode .stat-value.highlight {
+  color: #4facfe; /* Bright Cyan for Dark Mode */
+  text-shadow: 0 0 10px rgba(79, 172, 254, 0.3);
+}
+
+/* 8. REPORT CALLOUTS */
+.report-callout {
+    padding: 16px 20px;
+    margin-bottom: 15px;
+    border-radius: 0 12px 12px 0; /* Squared left for the bar */
+    border-left-width: 6px;
+    border-left-style: solid;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.03); /* Subtle glass base */
+    backdrop-filter: blur(5px);
+    transition: transform 0.2s;
+}
+
+.report-callout:hover {
+    transform: translateX(5px);
+}
+
+.callout-success {
+    border-left-color: #10b981;
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.0) 100%);
+}
+
+.callout-danger {
+    border-left-color: #ef4444;
+    background: linear-gradient(90deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.0) 100%);
+}
+
+.dark-mode .report-callout {
+    color: #e2e8f0;
+}
+
+/* 9. DASHBOARD STAT CALLOUTS */
+.stat-box.stat-callout {
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    border-left-width: 6px;
+    border-left-style: solid;
+}
+
+/* === RED VARIANT (Most Common Cause) === */
+.stat-box.callout-red {
+    border-left-color: #ef4444;
+    background: linear-gradient(90deg, rgba(239, 68, 68, 0.2) 0%, rgba(255, 255, 255, 0.05) 100%);
+}
+.stat-box.callout-red .stat-value.highlight {
+    color: #b91c1c; /* Deep Red */
+}
+.dark-mode .stat-box.callout-red {
+    background: linear-gradient(90deg, rgba(239, 68, 68, 0.25) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+.dark-mode .stat-box.callout-red .stat-value.highlight {
+    color: #f87171; /* Bright Red/Pink for Dark Mode Consistency */
+    text-shadow: 0 0 10px rgba(248, 113, 113, 0.3);
+}
+
+/* === BLUE VARIANT (Total Accidents) === */
+.stat-box.callout-blue {
+    border-left-color: #3b82f6;
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.2) 0%, rgba(255, 255, 255, 0.05) 100%);
+}
+.stat-box.callout-blue .stat-value.highlight {
+    color: #1e40af; /* Deep Blue */
+}
+.dark-mode .stat-box.callout-blue {
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.25) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+.dark-mode .stat-box.callout-blue .stat-value.highlight {
+    color: #60a5fa; /* Light Blue */
+    text-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
+}
+
+/* === ORANGE VARIANT (Total Fatalities) === */
+.stat-box.callout-orange {
+    border-left-color: #f97316;
+    background: linear-gradient(90deg, rgba(249, 115, 22, 0.2) 0%, rgba(255, 255, 255, 0.05) 100%);
+}
+.stat-box.callout-orange .stat-value.highlight {
+    color: #c2410c; /* Deep Orange */
+}
+.dark-mode .stat-box.callout-orange {
+    background: linear-gradient(90deg, rgba(249, 115, 22, 0.25) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+.dark-mode .stat-box.callout-orange .stat-value.highlight {
+    color: #fb923c; /* Light Orange */
+    text-shadow: 0 0 10px rgba(251, 146, 60, 0.3);
 }

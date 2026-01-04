@@ -1,3 +1,33 @@
-node_modules
+# MongoDB Runtime Noise (Redundant)
+database/data/metrics.*
+database/data/diagnostic.data/
+database/data/journal/
+database/data/_tmp/
+database/data/mongod.lock
+*.log
+
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+.ipynb_checkpoints/
+
+# Node/Web
+node_modules/
+dist/
+.cache/
+.npm/
+
+# IDE & System
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ALLOW Database Data (Keep the rest of database/data)
+!database/data/

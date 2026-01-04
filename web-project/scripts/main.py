@@ -47,6 +47,13 @@ def load_and_train():
 
         # Fetch data (exclude _id)
         data = list(collection.find({}, {"_id": 0}))
+
+        # Clean NaN values from MongoDB data (same as CSV path)
+        for record in data:
+            for key, value in record.items():
+                if isinstance(value, float) and (np.isnan(value) or np.isinf(value)):
+                    record[key] = None
+
         print(f"✅ Loaded from MongoDB! ({len(data)} records)")
 
     except Exception as e:
@@ -301,6 +308,7 @@ def get_map_data():
             "Longitude",
             "Accident_Severity",
             "Location",
+            "Accident_Reason",
         ]
 
         # Ensure all columns exist, fill missing with None
