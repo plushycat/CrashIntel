@@ -62,7 +62,10 @@ This project follows a 5-phase structure:
 *   Python 3.9+
 *   MongoDB (Optional - system will fallback to CSV if not running)
 
-### 1. Backend Setup
+### Quick Start (Windows)
+Double-click the `run_server.bat` file in the root directory to instantly start the backend server.
+
+### 1. Backend Setup (Manual)
 1.  Navigate to the root directory.
 2.  Install dependencies:
     ```bash
