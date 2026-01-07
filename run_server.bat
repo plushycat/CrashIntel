@@ -6,6 +6,36 @@ echo   CrashIntel - Full Stack Startup
 echo ===================================================
 echo.
 
+:: ===================================================
+:: DATA VERSION SELECTION
+:: ===================================================
+echo Choose data version:
+echo   [1] GEOFIXED  - Geo-accurate coords (clustered by location) [DEFAULT]
+echo   [2] ORIGINAL  - Random coords (original synthetic data)
+echo   [3] Skip      - Use current active data
+echo.
+set /p dataChoice="Enter choice (1/2/3) [default=1]: "
+
+if "%dataChoice%"=="" set dataChoice=1
+
+if "%dataChoice%"=="1" (
+    echo.
+    echo Switching to GEOFIXED version...
+    python Analysis\scripts\switch_data_version.py geofixed
+    echo.
+) else if "%dataChoice%"=="2" (
+    echo.
+    echo Switching to ORIGINAL version...
+    python Analysis\scripts\switch_data_version.py original
+    echo.
+) else (
+    echo.
+    echo Using current active data...
+    echo.
+)
+
+echo ===================================================
+
 :: Set paths
 set "SCRIPT_DIR=%~dp0"
 set "DB_DIR=%SCRIPT_DIR%database\data"

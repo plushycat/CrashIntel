@@ -1,24 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
+import { useEffect } from 'react';
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Predictive Risk Analysis - CrashIntel</title>
+// Import CSS
+import '../assets/styles/main.css';
+import '../assets/styles/dashboard.css';
+import '../assets/styles/predictive.css';
 
-    <link rel="stylesheet" href="assets/styles/main.css">
-    <link rel="stylesheet" href="assets/styles/dashboard.css">
-    <link rel="stylesheet" href="assets/styles/predictive.css">
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
-    <link rel="manifest" href="assets/icons/site.webmanifest">
-    <meta name="theme-color" content="#ffffff">
-</head>
-
-<body>
+const pageHTML = `
     <div id="loading-screen" class="loading-screen">
         Loading Predictive Analysis...
     </div>
@@ -32,9 +19,9 @@
                     <span class="nav-icon">☰</span>
                 </button>
                 <div class="nav-links" id="nav-links">
-                    <a href="dashboard.html" class="nav-item">Home</a>
-                    <a href="predictive-ra.html" class="nav-item active">Predictive RA</a>
-                    <a href="temporal.html" class="nav-item">Temporal</a>
+                    <a href="/dashboard" class="nav-item">Home</a>
+                    <a href="/predictive-ra" class="nav-item active">Predictive RA</a>
+                    <a href="/temporal" class="nav-item">Temporal</a>
                     <div class="mobile-user-profile">
                         <span id="welcome-email-mobile" class="email-text">...</span>
                         <button id="logout-btn-mobile" class="btn-logout-small">Sign Out</button>
@@ -52,7 +39,7 @@
                         <span class="nav-icon">☰</span>
                     </button>
                     <div class="nav-menu">
-                        <a href="index.html" class="nav-link" title="Home">🏠</a>
+                        <a href="/" class="nav-link" title="Home">🏠</a>
                         <button onclick="handleBackButton()" class="nav-link" title="Go Back"
                             style="border:none; cursor:pointer; font-size:1.2rem;">⬅️</button>
                     </div>
@@ -191,10 +178,37 @@
         </section>
 
     </div>
+`;
 
-    <script src="scripts/supabaseConfig.js"></script>
-    <script src="scripts/supabaseClient.js"></script>
-    <script src="scripts/dashboard.js"></script>
-    <script src="scripts/predictive.js"></script>
-</body>
-</html>
+export default function PredictiveRAPage() {
+  useEffect(() => {
+    const loadScript = (src) => {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.body.appendChild(script);
+      });
+    };
+
+    const initPage = async () => {
+      try {
+        await loadScript('/scripts/supabaseConfig.js');
+        await loadScript('/scripts/supabaseClient.js');
+        await loadScript('/scripts/dashboard.js');
+        await loadScript('/scripts/predictive.js');
+      } catch (e) {
+        console.error('Failed to load scripts:', e);
+      }
+    };
+
+    initPage();
+
+    return () => {
+      // Cleanup if needed
+    };
+  }, []);
+
+  return <div dangerouslySetInnerHTML={{ __html: pageHTML }} />;
+}

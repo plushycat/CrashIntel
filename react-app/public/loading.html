@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifying - CrashIntel</title>
+    <link rel="stylesheet" href="assets/styles/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #121212; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-family: sans-serif;
+            overflow: hidden;
+        }
+
+        .loader-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 40px 60px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #00f2fe;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .message {
+            font-weight: 500;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+    </style>
+</head>
+<body class="loaded">
+    <div class="loader-card">
+        <div class="spinner"></div>
+        <div class="message">Verifying Session...</div>
+    </div>
+
+    <script src="scripts/supabaseConfig.js"></script>
+    <script src="scripts/supabaseClient.js"></script>
+    <script>
+        //Ensure the body is visible immediately
+        window.addEventListener('load', () => document.body.classList.add('loaded'));
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const supabase = window.supabaseClient;
+            
+            if (!supabase) {
+                document.querySelector('.message').textContent = 'Error: Supabase Client Missing';
+                setTimeout(() => window.location.href = 'login.html', 2000);
+                return;
+            }
+
+            // 1. Listen for the auth state change
+            supabase.auth.onAuthStateChange((event, session) => {
+                if (event === 'SIGNED_IN' || session) {
+                    window.location.href = 'dashboard.html';
+                }
+            });
+
+            // 2. Safety Check / Fallback
+            setTimeout(async () => {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) {
+                    window.location.href = 'dashboard.html';
+                } else {
+                    if (!window.location.hash.includes('error') && !window.location.hash.includes('access_token')) {
+                         console.warn("No session found, redirecting to login.");
+                         window.location.href = 'login.html';
+                    }
+                }
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

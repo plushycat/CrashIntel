@@ -1,0 +1,250 @@
+import { useEffect } from 'react';
+
+// Import CSS
+import '../assets/styles/main.css';
+import '../assets/styles/dashboard.css';
+
+const pageHTML = `
+    <div id="loading-screen"
+        style="height: 100vh; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+        Connecting to satellite...
+    </div>
+
+    <div id="dashboard-content" class="dashboard-container" style="display: none;">
+
+        <div class="dashboard-header">
+
+            <nav class="glass-nav">
+                <div class="nav-brand">CrashIntel</div>
+
+                <button id="mobile-menu-btn" class="nav-toggle-dashboard" aria-label="Toggle Dashboard Menu">
+                    <span class="nav-icon">☰</span>
+                </button>
+
+                <div class="nav-links" id="nav-links">
+                    <a href="/dashboard" class="nav-item active">Home</a>
+                    <a href="/predictive-ra" class="nav-item">Predictive RA</a>
+                    <a href="/temporal" class="nav-item">Temporal</a>
+
+                    <div class="mobile-user-profile">
+                        <span id="welcome-email-mobile" class="email-text">...</span>
+                        <button id="logout-btn-mobile" class="btn-logout-small">Sign Out</button>
+                    </div>
+                </div>
+
+                <div class="user-profile desktop-only">
+                    <span id="welcome-email" class="email-text">...</span>
+                    <button id="logout-btn" class="btn-logout-small">Sign Out</button>
+                </div>
+            </nav>
+
+            <div class="top-controls">
+
+                <div class="nav-container">
+                    <button id="nav-toggle" class="nav-toggle" aria-label="Navigation menu">
+                        <span class="nav-icon">☰</span>
+                    </button>
+                    <div class="nav-menu">
+                        <a href="/" class="nav-link" title="Home">🏠</a>
+                        <button onclick="handleBackButton()" class="nav-link" title="Go Back"
+                            style="border:none; cursor:pointer; font-size:1.2rem;">⬅️</button>
+                    </div>
+                </div>
+
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+
+        </div>
+
+        <div class="dashboard-grid-main">
+            <div class="map-container glass-card" style="padding: 0;">
+                <div id="crash-map" style="width: 100%; height: 100%; border-radius: 20px;"></div>
+                <button id="clear-selection-btn" class="map-clear-btn" style="display: none;">
+                    Clear ✕
+                </button>
+            </div>
+
+            <div class="stats-container glass-card">
+                <div class="stats-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; margin-bottom: 10px;">
+                    <h3 style="border: none; padding: 0; margin: 0;">Deep Dive</h3>
+                    <button id="reset-map-btn" class="reset-btn" title="Reset View & Stats">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    </button>
+                </div>
+                <div class="stat-box stat-callout callout-blue">
+                    <span class="stat-label">Total Accidents</span>
+                    <span class="stat-value highlight" id="stat-accidents">Loading...</span>
+                </div>
+                <div class="stat-box stat-callout callout-orange">
+                    <span class="stat-label">Total Fatalities</span>
+                    <span class="stat-value highlight" id="stat-fatalities">Loading...</span>
+                </div>
+                <div class="stat-box stat-callout callout-red">
+                    <span class="stat-label">Most Common Cause</span>
+                    <span class="stat-value highlight" id="stat-common">Loading...</span>
+                </div>
+                <p class="stat-note">*Based on Location/Click</p>
+            </div>
+        </div>
+
+        <section class="glass-card full-width" style="padding: 40px; margin-top: 60px; margin-bottom: 80px;">
+            <h1 style="font-size: 2.2rem; margin-bottom: 10px; color: #111827;">The Accuracy Paradox: Why 95% is Not Enough</h1>
+            <h3 class="report-subtitle">Unveiling the Hidden Failure of Traditional Metrics in Accident Severity Prediction</h3>
+
+            <div class="report-content">
+                
+                <h4 class="report-section-title">1. Introduction: The Illusion of Success</h4>
+                <p>In the world of data science, 'Accuracy' is often the first metric we look at to judge a model's performance. In the initial phase of our predictive modeling for road safety, we achieved a stunning result: our Random Forest model predicted accident severity with <strong>95% Accuracy</strong>.</p>
+                <p>On paper, this looked like a massive success. A 95% success rate implies a highly reliable system. However, a deeper, critical analysis revealed a catastrophic failure hidden beneath this high score. While the model was excellent at identifying non-fatal accidents, it was missing <strong>100% of the fatal accidents</strong>. It did not predict a single death correctly.</p>
+                <p>This counter-intuitive phenomenon is known as the <strong>Accuracy Paradox</strong>. It occurs when predictive models operate on <strong>Imbalanced Data</strong>—a scenario where one outcome (like a fatal crash) is far rarer than the other (minor damage).</p>
+
+                <h4 class="report-section-title">The Data Reality: Understanding Class Imbalance</h4>
+                <div style="display: flex; gap: 30px; flex-wrap: wrap; margin-top: 20px;">
+                    <div style="flex: 1; min-width: 300px;">
+                        <ul style="list-style: none; padding: 0;">
+                            <li class="report-callout callout-success">
+                                <strong>Non-Fatal Accidents (The Majority Class):</strong> ~95% of the dataset.
+                            </li>
+                            <li class="report-callout callout-danger">
+                                <strong>Fatal Accidents (The Minority Class):</strong> ~5% of the dataset.
+                            </li>
+                        </ul>
+                        <p style="margin-top: 15px;">Real-world accident data is naturally imbalanced. Because 95% of records were 'Non-Fatal', a 'lazy' model discovered a shortcut: it could simply guess 'Non-Fatal' for every single case. By doing so, it would statistically be correct 95% of the time, but for a safety system, this is useless.</p>
+                    </div>
+                </div>
+
+                <h4 class="report-section-title">2. The "Baseline" Model Failure</h4>
+                <p><strong>Table Title:</strong> Performance Metrics of the Initial 95% Accuracy Model</p>
+                <table class="glass-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Score</th>
+                            <th>Interpretation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Overall Accuracy</td>
+                            <td>95.0%</td>
+                            <td>The model is correct 95 times out of 100.</td>
+                        </tr>
+                        <tr>
+                            <td>Precision (Fatal)</td>
+                            <td>0.0%</td>
+                            <td>When it predicted a fatality, it was never right.</td>
+                        </tr>
+                        <tr>
+                            <td>Recall (Fatal)</td>
+                            <td>0.0%</td>
+                            <td><strong>It found 0 out of 200 real fatal accidents.</strong></td>
+                        </tr>
+                        <tr>
+                            <td>F1-Score (Fatal)</td>
+                            <td>0.0%</td>
+                            <td>The harmonic mean of Precision and Recall is zero.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><em>As the table shows, 'Accuracy' masked the model's total inability to perform its primary task. A Recall of 0.0% means that if deployed in the real world, this system would have failed to alert authorities to any of the fatal accidents that occurred.</em></p>
+
+                <h4 class="report-section-title">3. The Solution: Forcing the Model to Learn</h4>
+                <p>To correct this behavior, we had to change how the model viewed the data. We employed advanced techniques to 'force' the model to pay attention to the minority class:</p>
+                <ol style="margin-left: 20px;">
+                    <li style="margin-bottom: 10px;"><strong>SMOTE (Synthetic Minority Over-sampling Technique):</strong> We artificially generated new examples of fatal accidents to balance the training data.</li>
+                    <li><strong>Threshold Tuning:</strong> We adjusted the decision boundary. Instead of requiring 50% certainty to flag a fatal accident, we lowered the bar, telling the model to flag danger even if it was only slightly suspicious.</li>
+                </ol>
+
+                <h4 class="report-section-title">4. The Consequence: The Precision-Recall Trade-Off</h4>
+                <p>Prioritizing <strong>Recall</strong> (finding every death) comes at a cost. By widening the net to ensure no fatal accident slipped through, we inevitably caught thousands of non-fatal accidents in the process. This is the <strong>Precision-Recall Trade-Off</strong>:</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li style="margin-bottom: 5px;"><strong>High Recall:</strong> You catch all the bad events.</li>
+                    <li><strong>Low Precision:</strong> You raise many false alarms.</li>
+                </ul>
+                <p style="margin-top: 10px;">5. Given the stakes—human life—we decided that missing a fatal accident (False Negative) was far worse than incorrectly flagging a minor one (False Positive).</p>
+
+                <h4 class="report-section-title">5. The Final "Honest" Model Results</h4>
+                <p><strong>Table Title:</strong> Performance of the Final Tuned Model (The "Warning System")</p>
+                <table class="glass-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Score</th>
+                            <th>Interpretation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Overall Accuracy</td>
+                            <td>5.4%</td>
+                            <td>The accuracy plummeted, but this is misleading.</td>
+                        </tr>
+                        <tr>
+                            <td>Precision (Fatal)</td>
+                            <td>5.0%</td>
+                            <td>Only 1 in 20 alerts is actually fatal. (High False Alarm rate)</td>
+                        </tr>
+                        <tr>
+                            <td>Recall (Fatal)</td>
+                            <td>100.0%</td>
+                            <td><strong>Success: It identified 200 out of 200 real deaths.</strong></td>
+                        </tr>
+                        <tr>
+                            <td>F1-Score</td>
+                            <td>9.5%</td>
+                            <td>Reflects the extreme trade-off we accepted.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4 class="report-section-title">6. Honest Evaluation</h4>
+                <p>"Our final model operates not as a precise predictor, but as a High-Sensitivity Warning System.</p>
+                <ul style="list-style: none; margin-top: 15px;">
+                    <li style="margin-bottom: 10px;"> <strong>The Good:</strong> It achieved a Recall of 100%, meaning it successfully identified the characteristics of every fatal crash in our test set.</li>
+                    <li style="margin-bottom: 10px;"> <strong>The Bad:</strong> To do so, it flagged nearly everything as potentially dangerous, resulting in a Precision of just 5%.</li>
+                    <li><strong>The Verdict:</strong> While the F1-Score of 9.5% is mathematically low, this model is practically useful as a screening tool. It ensures no high-risk scenario is ignored, even if it requires human verification to filter out the false alarms."</li>
+                </ul>
+
+                <h4 class="report-section-title">7. Conclusion & Future Path</h4>
+                <p>This project demonstrates a critical lesson in AI for social good: <strong>optimization goals matter</strong>. Optimizing for accuracy would have cost lives. Optimizing for recall saved them, but at the cost of precision.</p>
+                <p>Ultimately, the limitations of this model stem from the <strong>data</strong>, not the algorithm. The available features (Time, Weather, Location) were not distinct enough to mathematically separate a fatal crash from a serious one without overlap. To bridge the gap between High Recall and High Precision, future systems must integrate granular, causal data—such as speed at impact, seatbelt usage, and driver condition.</p>
+
+            </div>
+        </section>
+
+    </div>
+`;
+
+export default function DashboardPage() {
+  useEffect(() => {
+    const loadScript = (src) => {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.body.appendChild(script);
+      });
+    };
+
+    const initPage = async () => {
+      try {
+        await loadScript('/scripts/supabaseConfig.js');
+        await loadScript('/scripts/supabaseClient.js');
+        await loadScript('/scripts/dashboard.js');
+      } catch (e) {
+        console.error('Failed to load scripts:', e);
+      }
+    };
+
+    initPage();
+
+    return () => {
+      // Cleanup if needed
+    };
+  }, []);
+
+  return <div dangerouslySetInnerHTML={{ __html: pageHTML }} />;
+}

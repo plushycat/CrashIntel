@@ -73,9 +73,6 @@
 
         <!-- Main Grid -->
         <div class="dashboard-grid-main">
-            <!-- Error Container -->
-            <div id="riskError" class="error-message error" style="grid-column: 1 / -1; display: none;"></div>
-
             <!-- Left: Input Form -->
             <!-- Left: Input Form -->
             <div class="glass-card">
@@ -84,24 +81,10 @@
                 <div class="form-group" style="margin-top: 20px;">
                     <label for="locationSelect">Accident Location</label>
                     <select id="locationSelect">
-                        <option value="27th Main Road">27th Main Road (High Fatality Zone)</option>
-                        <option value="80 Feet Road">80 Feet Road (High Fatality Zone)</option>
-                        <option value="Marathahalli Bridge">Marathahalli Bridge (Highway)</option>
-                        <option value="Outer Ring Road">Outer Ring Road (Arterial)</option>
-                        <option value="Sony World Junction">Sony World Junction (Urban)</option>
-                        <option value="100 Feet Road">100 Feet Road (Commercial)</option>
-                        <option value="South End Circle">South End Circle (Junction)</option>
-                        <option value="ITPL Main Road">ITPL Main Road (IT Corridor)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="timeSelect">Time of Day</label>
-                    <select id="timeSelect">
-                        <option value="Morning">Morning (6 AM - 12 PM)</option>
-                        <option value="Afternoon">Afternoon (12 PM - 5 PM)</option>
-                        <option value="Evening">Evening Rush (5 PM - 9 PM)</option>
-                        <option value="Night">Night (9 PM - 6 AM) ⚠️</option>
+                        <option value="Koramangala">Koramangala (Urban)</option>
+                        <option value="Hebbal">Hebbal Flyover (High Traffic)</option>
+                        <option value="NiceRoad">NICE Road (Expressway)</option>
+                        <option value="Indiranagar">Indiranagar (Commercial)</option>
                     </select>
                 </div>
 
@@ -109,9 +92,8 @@
                     <label for="weatherSelect">Weather Condition</label>
                     <select id="weatherSelect">
                         <option value="Clear">Clear / Sunny</option>
-                        <option value="Cloudy">Cloudy / Overcast</option>
-                        <option value="Rain">Raining / Wet Roads</option>
-                        <option value="Fog">Fog / Haze (Low Visibility) ⚠️</option>
+                        <option value="Rain">Heavy Rain / Wet</option>
+                        <option value="Fog">Fog / Low Visibility</option>
                     </select>
                 </div>
 
@@ -119,11 +101,9 @@
                     <label for="vehicleSelect">Vehicle Type</label>
                     <select id="vehicleSelect">
                         <option value="Car">Passenger Car</option>
-                        <option value="Motorcycle">Motorcycle / Scooter ⚠️</option>
+                        <option value="Motorcycle">Motorcycle / Scooter</option>
                         <option value="Truck">Heavy Truck</option>
                         <option value="Bus">Bus</option>
-                        <option value="Auto Rickshaw">Auto Rickshaw</option>
-                        <option value="Bicycle">Bicycle</option>
                     </select>
                 </div>
 
