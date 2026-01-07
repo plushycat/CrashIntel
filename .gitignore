@@ -1,9 +1,11 @@
-# MongoDB Runtime Noise (Redundant)
+# Database Runtime Files (Ignore these)
 database/data/metrics.*
 database/data/diagnostic.data/
 database/data/journal/
 database/data/_tmp/
 database/data/mongod.lock
+database/data/WiredTiger.lock
+
 *.log
 
 # Python
@@ -28,6 +30,3 @@ dist/
 .idea/
 .DS_Store
 Thumbs.db
-
-# ALLOW Database Data (Keep the rest of database/data)
-!database/data/
