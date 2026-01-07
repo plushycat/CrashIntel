@@ -335,3 +335,65 @@ def get_map_data():
 
     except Exception as e:
         return {"error": str(e)}
+
+
+@app.get("/api/risk-weights")
+def get_risk_weights():
+    """
+    Returns risk weight configuration for the Predictive RA page.
+    Data is loaded from CSV file containing weights derived from Phase 3 analysis.
+    """
+    try:
+        # Build path to risk_weights.csv
+        current_script_dir = os.path.dirname(os.path.abspath(__file__))
+        csv_path = os.path.join(
+            current_script_dir, "..", "src", "assets", "data", "risk_weights.csv"
+        )
+        csv_path = os.path.normpath(csv_path)
+
+        # Read CSV, skip comment lines
+        df = pd.read_csv(csv_path, comment="#")
+
+        # Organize into structured format for frontend
+        result = {
+            "location": {},
+            "time": {},
+            "weather": {},
+            "vehicle": {},
+            "speed_thresholds": [],
+            "interactions": {},
+        }
+
+        for _, row in df.iterrows():
+            category = row["category"]
+            key = row["key"]
+            score = int(row["risk_score"])
+            desc = row["description"]
+
+            if category == "location":
+                result["location"][key] = {"score": score, "description": desc}
+            elif category == "time":
+                result["time"][key] = {"score": score, "description": desc}
+            elif category == "weather":
+                result["weather"][key] = {"score": score, "description": desc}
+            elif category == "vehicle":
+                result["vehicle"][key] = {"score": score, "description": desc}
+            elif category == "speed_threshold":
+                result["speed_thresholds"].append(
+                    {"max_speed": int(key), "score": score, "description": desc}
+                )
+            elif category == "interaction":
+                result["interactions"][key] = {"score": score, "description": desc}
+
+        # Sort speed thresholds by max_speed
+        result["speed_thresholds"].sort(key=lambda x: x["max_speed"])
+
+        return {"status": "ok", "data": result, "source": "CSV"}
+
+    except FileNotFoundError:
+        return {
+            "error": "Risk weights configuration file not found.",
+            "status": "error",
+        }
+    except Exception as e:
+        return {"error": f"Failed to load risk weights: {str(e)}", "status": "error"}

@@ -1,0 +1,214 @@
+import { useEffect } from 'react';
+
+// Import CSS
+import '../assets/styles/main.css';
+import '../assets/styles/dashboard.css';
+import '../assets/styles/predictive.css';
+
+const pageHTML = `
+    <div id="loading-screen" class="loading-screen">
+        Loading Predictive Analysis...
+    </div>
+
+    <div id="dashboard-content" class="dashboard-container" style="display: none;">
+
+        <div class="dashboard-header">
+            <nav class="glass-nav">
+                <div class="nav-brand">CrashIntel</div>
+                <button id="mobile-menu-btn" class="nav-toggle-dashboard" aria-label="Toggle Dashboard Menu">
+                    <span class="nav-icon">☰</span>
+                </button>
+                <div class="nav-links" id="nav-links">
+                    <a href="/dashboard" class="nav-item">Home</a>
+                    <a href="/predictive-ra" class="nav-item active">Predictive RA</a>
+                    <a href="/temporal" class="nav-item">Temporal</a>
+                    <div class="mobile-user-profile">
+                        <span id="welcome-email-mobile" class="email-text">...</span>
+                        <button id="logout-btn-mobile" class="btn-logout-small">Sign Out</button>
+                    </div>
+                </div>
+                <div class="user-profile desktop-only">
+                    <span id="welcome-email" class="email-text">...</span>
+                    <button id="logout-btn" class="btn-logout-small">Sign Out</button>
+                </div>
+            </nav>
+
+            <div class="top-controls">
+                <div class="nav-container">
+                    <button id="nav-toggle" class="nav-toggle" aria-label="Navigation menu">
+                        <span class="nav-icon">☰</span>
+                    </button>
+                    <div class="nav-menu">
+                        <a href="/" class="nav-link" title="Home">🏠</a>
+                        <button onclick="handleBackButton()" class="nav-link" title="Go Back"
+                            style="border:none; cursor:pointer; font-size:1.2rem;">⬅️</button>
+                    </div>
+                </div>
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Standardized Hero Section -->
+        <section class="glass-card" style="margin-bottom: 30px; text-align: center;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 15px;">Predictive Risk Analysis</h1>
+            <p style="font-size: 1.1rem; opacity: 0.8; max-width: 800px; margin: 0 auto;">
+                Use our AI model to predict accident severity based on location, vehicle type, and current weather conditions.
+            </p>
+        </section>
+
+        <!-- Main Grid -->
+        <div class="dashboard-grid-main">
+            <!-- Error Container -->
+            <div id="riskError" class="error-message error" style="grid-column: 1 / -1; display: none;"></div>
+
+            <!-- Left: Input Form -->
+            <!-- Left: Input Form -->
+            <div class="glass-card">
+                <h3 style="border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; margin-bottom: 20px;">Input Parameters</h3>
+                
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="locationSelect">Accident Location</label>
+                    <select id="locationSelect">
+                        <option value="27th Main Road">27th Main Road (High Fatality Zone)</option>
+                        <option value="80 Feet Road">80 Feet Road (High Fatality Zone)</option>
+                        <option value="Marathahalli Bridge">Marathahalli Bridge (Highway)</option>
+                        <option value="Outer Ring Road">Outer Ring Road (Arterial)</option>
+                        <option value="Sony World Junction">Sony World Junction (Urban)</option>
+                        <option value="100 Feet Road">100 Feet Road (Commercial)</option>
+                        <option value="South End Circle">South End Circle (Junction)</option>
+                        <option value="ITPL Main Road">ITPL Main Road (IT Corridor)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="timeSelect">Time of Day</label>
+                    <select id="timeSelect">
+                        <option value="Morning">Morning (6 AM - 12 PM)</option>
+                        <option value="Afternoon">Afternoon (12 PM - 5 PM)</option>
+                        <option value="Evening">Evening Rush (5 PM - 9 PM)</option>
+                        <option value="Night">Night (9 PM - 6 AM) ⚠️</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="weatherSelect">Weather Condition</label>
+                    <select id="weatherSelect">
+                        <option value="Clear">Clear / Sunny</option>
+                        <option value="Cloudy">Cloudy / Overcast</option>
+                        <option value="Rain">Raining / Wet Roads</option>
+                        <option value="Fog">Fog / Haze (Low Visibility) ⚠️</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="vehicleSelect">Vehicle Type</label>
+                    <select id="vehicleSelect">
+                        <option value="Car">Passenger Car</option>
+                        <option value="Motorcycle">Motorcycle / Scooter ⚠️</option>
+                        <option value="Truck">Heavy Truck</option>
+                        <option value="Bus">Bus</option>
+                        <option value="Auto Rickshaw">Auto Rickshaw</option>
+                        <option value="Bicycle">Bicycle</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="speedRange">Vehicle Speed (km/h)</label>
+                    <div class="speed-display-container">
+                        <span id="speedValueDisplay">40</span> <span style="font-size: 0.9rem; opacity: 0.7;">km/h</span>
+                    </div>
+                    <input type="range" id="speedRange" min="0" max="140" value="40" class="glass-slider">
+                </div>
+
+                <button id="analyzeBtn" class="btn-submit" style="width: 100%; margin-top: 20px;">Run AI Prediction</button>
+            </div>
+
+            <!-- Right: Result Card -->
+            <div class="glass-card result-wrapper">
+                <h3 style="border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; margin-bottom: 20px; width: 100%;">Prediction Result</h3>
+                
+                <div id="terminalContainer" class="terminal-container">
+                    <div id="terminal" class="terminal-box">
+                        <div class="log-line">> System Ready...</div>
+                        <div class="log-line">> XGBoost Model Loaded (v2.4)</div>
+                    </div>
+                </div>
+
+                <div id="riskResultContainer" class="result-container" style="display: none; width: 100%;">
+                    <div class="risk-circle-container">
+                        <div id="riskCircle" class="risk-circle">
+                            <span id="riskScore">--</span>
+                        </div>
+                        <div class="risk-label-text">RISK SCORE</div>
+                    </div>
+                    
+                    <h2 id="predictionResult" class="prediction-text" style="font-size: 1.8rem;">--</h2>
+                    <p id="resultMessage" class="result-message" style="max-width: 100%;"></p>
+                </div>
+
+                <div id="placeholderResult" class="placeholder-container">
+                    <div class="placeholder-icon">🤖</div>
+                    <p>Select parameters and click "Run AI Prediction"</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footnote / Extra Info -->
+        <section class="glass-card" style="margin-top: 30px; margin-bottom: 80px;">
+            <h3 style="border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; margin-bottom: 20px;">Model Capabilities</h3>
+            <div class="paradox-cards">
+                <div class="mini-card">
+                    <div class="card-icon">🌲</div>
+                    <div class="card-title">Random Forest</div>
+                    <div class="card-desc">Powered by robust ensemble learning</div>
+                </div>
+                <div class="mini-card">
+                    <div class="card-icon">⚡</div>
+                    <div class="card-title">Real-time</div>
+                    <div class="card-desc">Instant inference engine</div>
+                </div>
+                <div class="mini-card">
+                    <div class="card-icon">🎯</div>
+                    <div class="card-title">High Accuracy</div>
+                    <div class="card-desc">Trained on verified accident data</div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+`;
+
+export default function PredictiveRAPage() {
+  useEffect(() => {
+    const loadScript = (src) => {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.body.appendChild(script);
+      });
+    };
+
+    const initPage = async () => {
+      try {
+        await loadScript('/scripts/supabaseConfig.js');
+        await loadScript('/scripts/supabaseClient.js');
+        await loadScript('/scripts/dashboard.js');
+        await loadScript('/scripts/predictive.js');
+      } catch (e) {
+        console.error('Failed to load scripts:', e);
+      }
+    };
+
+    initPage();
+
+    return () => {
+      // Cleanup if needed
+    };
+  }, []);
+
+  return <div dangerouslySetInnerHTML={{ __html: pageHTML }} />;
+}

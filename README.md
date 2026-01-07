@@ -53,11 +53,51 @@ The project combines advanced data science (Spatial Clustering, Association Rule
 We have automated the entire startup process.
 
 1.  **Double-click** `run_server.bat` in the root directory.
-    *   It auto-detects your MongoDB installation (Checks v8.0 - v6.0).
-    *   Starts the Database.
-    *   Starts the Python Backend API (Port 8001).
-2.  **Open** the Dashboard:
+2.  **Choose your data version** when prompted:
+    ```
+    Choose data version:
+      [1] GEOFIXED  - Geo-accurate coords (clustered by location) [DEFAULT]
+      [2] ORIGINAL  - Random coords (original synthetic data)
+      [3] Skip      - Use current active data
+    ```
+    *   **GEOFIXED**: Location names (HSR Layout, Koramangala, etc.) are mapped to their real-world coordinates. Best for accurate map visualization.
+    *   **ORIGINAL**: Uses the original synthetic dataset with randomly distributed coordinates.
+3.  The script will:
+    *   Switch both **CSV** and **MongoDB** to your selected version.
+    *   Auto-detect your MongoDB installation (v6.0 - v8.2).
+    *   Start the Database.
+    *   Start the Python Backend API (Port 8001).
+4.  **Open** the Dashboard:
     *   Go to `web-project/src/index.html` in your browser.
+
+### React Frontend (Modern UI)
+For the modern React-based interface:
+
+1.  **Start the Backend**: You MUST run `run_server.bat` first (as described above) to enable API features.
+2.  **Navigate to the React directory**:
+    ```bash
+    cd react-app
+    ```
+3.  **Install dependencies** (first time only):
+    ```bash
+    npm install
+    ```
+4.  **Start the Development Server**:
+    ```bash
+    npm run dev
+    ```
+5.  Open the link shown in the terminal (usually `http://localhost:5173`).
+
+---
+
+### Data Version Files
+| File | Description |
+|------|-------------|
+| `Analysis/Datasets/cleaned_for_phase_3_original.csv` | Original random coordinates |
+| `Analysis/Datasets/cleaned_for_phase_3_geofixed.csv` | Geo-accurate clustered coords |
+| `Analysis/Datasets/cleaned_for_phase_3.csv` | **Active** (switched version) |
+
+MongoDB collections follow the same pattern: `crash_records_original`, `crash_records_geofixed`, `crash_records` (active).
 
 ### Manual Startup (Advanced)
 If you cannot run the `.bat` file or prefer manual control:
@@ -93,10 +133,15 @@ python -m uvicorn scripts.main:app --app-dir web-project --port 8001
 
 | Module | Description |
 | :--- | :--- |
+| **react-app/** | **Modern Frontend**: React + Vite application (Recommended UI). |
 | **Analysis/** | Jupyter Notebooks for EDA, Clustering (K-Means), and Association Rules (Apriori). |
+| **Analysis/Datasets/** | CSV datasets including versioned files (`_original`, `_geofixed`). |
+| **Analysis/scripts/** | Data processing utilities: `setup_data_versions.py`, `switch_data_version.py`, `fix_location_coordinates.py`. |
 | **web-project/scripts/** | `main.py` (FastAPI Backend) and machine learning models. |
-| **web-project/src/** | Frontend source code (`dashboard.html`, `dashboard.js`, CSS). |
+| **web-project/src/** | Legacy Frontend source code (`dashboard.html`, `dashboard.js`, CSS). |
 | **database/** | MongoDB data storage (Local). |
+| **run_server.bat** | One-click startup with data version selection. |
+| **switch_data_version.bat** | Standalone data version switcher. |
 
 ---
 

@@ -1,0 +1,40 @@
+category,key,risk_score,description
+# Location risk scores (from K-means fatal hotspot analysis)
+location,27th Main Road,25,Top fatal zone - high severity incidents
+location,80 Feet Road,25,Top fatal zone - high drunk driving incidents
+location,Marathahalli Bridge,22,Highway corridor - high speed zone
+location,Outer Ring Road,15,Arterial road - moderate risk
+location,ITPL Main Road,15,IT corridor - high traffic volume
+location,South End Circle,10,Junction - mixed traffic patterns
+location,Sony World Junction,5,Urban area - congestion reduces severity
+location,100 Feet Road,8,Commercial zone - moderate congestion
+# Time of day risk (from temporal severity analysis - Night = 40-50% of fatalities)
+time,Morning,0,Rush hour - high volume low severity
+time,Afternoon,3,Standard traffic patterns
+time,Evening,10,Rush hour plus fatigue onset
+time,Night,28,Peak fatality window 22:00-03:00
+# Weather risk (from lethality ratio analysis - Fog doubles fatality rate)
+weather,Clear,0,Baseline conditions
+weather,Cloudy,2,Minimal visibility impact
+weather,Rain,10,Wet roads reduce traction
+weather,Fog,22,Double fatality probability
+# Vehicle vulnerability (from severity stratification)
+vehicle,Car,0,Best safety features
+vehicle,Motorcycle,18,Vulnerable road user - highest fatality rate
+vehicle,Truck,12,Heavy vehicle - high damage potential
+vehicle,Bus,8,Large vehicle - high injury count
+vehicle,Auto Rickshaw,12,Exposed vehicle - moderate vulnerability
+vehicle,Bicycle,20,Most vulnerable road user
+# Speed thresholds (from speed-lethality correlation)
+speed_threshold,30,0,City traffic - low kinetic energy
+speed_threshold,50,3,Urban arterial speeds
+speed_threshold,70,10,Highway approach speeds
+speed_threshold,90,20,Highway speeds - significant kinetic energy
+speed_threshold,110,32,High speed - critical danger
+speed_threshold,140,45,Extreme speed - near-certain fatality
+# Interaction effect multipliers (from Apriori association rules)
+interaction,night_high_speed,15,Night + Speed >70kmh = >60% fatal probability
+interaction,motorcycle_rain,12,Two-wheeler + wet roads = traction loss
+interaction,truck_night,8,Trucks at night - driver fatigue factor
+interaction,fog_high_speed,10,Low visibility + speed >60 = stopping distance exceeded
+interaction,fatal_zone_night,8,High-fatality location during peak danger hours
