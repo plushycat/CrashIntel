@@ -1,0 +1,119 @@
+/* REGISTER STYLES */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.label-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+/* Password Rules Popup - Unique to Register Page */
+.pw-rules-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.pw-rules-btn {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: #111;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s ease;
+}
+.pw-rules-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.pw-rules-popup {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 10px);
+  transform: translateY(-50%);
+  min-width: 260px;
+  max-width: 380px;
+  background: rgba(255, 255, 255, 0.96);
+  color: #222;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  z-index: 80;
+  padding: 12px;
+}
+.pw-rules-close {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  float: right;
+  cursor: pointer;
+}
+.password-rules {
+  list-style: none;
+  padding-left: 0;
+  margin: 6px 0 0 0;
+  font-size: 13px;
+}
+.password-rules li {
+  color: #b33;
+  margin: 6px 0;
+  display: flex;
+  align-items: center;
+}
+.password-rules li::before {
+  content: "•";
+  width: 1em;
+  margin-right: 6px;
+}
+.password-rules li.valid {
+  color: #0a0;
+}
+.password-rules li.valid::before {
+  content: "✔";
+}
+
+.dark-mode .pw-rules-popup {
+  background: rgba(18, 18, 18, 0.98);
+  color: #e2e2e2;
+}
+.dark-mode .pw-rules-btn {
+  background: #ffffff;
+  color: #111;
+}
+
+@media (max-width: 720px) {
+  /* 1. Allow the label and button to wrap if needed */
+  .label-row {
+    flex-wrap: wrap;
+  }
+
+  .pw-rules-popup {
+    /* 'fixed' means: Ignore the button position, stick to the screen glass */
+    position: fixed;
+
+    /* Move to exact center */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    /* Size it nicely for a phone */
+    min-width: auto;
+    width: 85%;
+    max-width: 350px;
+
+    /* Ensure it sits on top of everything else */
+    z-index: 2000;
+
+    /* Optional: Dim the background so they focus on the popup */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 0 100vh rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
